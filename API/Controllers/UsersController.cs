@@ -1,6 +1,5 @@
 ﻿using API.Data;
 using API.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,7 +63,7 @@ namespace API.Controllers
 
                 await context.SaveChangesAsync();
 
-                return NoContent();
+                return Ok();
             }catch(Exception ex)
             {
                 return BadRequest($"Unable to update user. \nError: {ex.Message} \n {ex.StackTrace}");
@@ -82,7 +81,7 @@ namespace API.Controllers
 
             await context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
     }
 }
