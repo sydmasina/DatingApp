@@ -25,49 +25,6 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddUser(AppUser user)
-        {
-            try
-            {
-                user.Id = 0;
-
-                context.Users.Add(user);
-
-                await context.SaveChangesAsync();
-
-                return Ok();
-            }catch(Exception ex)
-            {
-                return BadRequest($"Unable to add user. \nError: {ex.Message} \n {ex.StackTrace}");
-            }
-        }
-
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> EditUser(int id, [FromBody] AppUser userEdit)
-        {
-            try
-            {
-                if (id != userEdit.Id)
-                {
-                    return BadRequest("The provided entry route Id does not match the body entryId.");
-                }
-
-                bool userExisting = await context.Users.AnyAsync(user => user.Id == id);
-
-                if (!userExisting) return NotFound();
-
-                context.Users.Entry(userEdit).State = EntityState.Modified;
-
-                await context.SaveChangesAsync();
-
-                return Ok();
-            }catch(Exception ex)
-            {
-                return BadRequest($"Unable to update user. \nError: {ex.Message} \n {ex.StackTrace}");
-            }
-        }
-
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
