@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
     await this.http.get('https://localhost:7159/api/Users').subscribe({
       next: response => this.users = response as User[],
       error: error=> console.log(error),
-      complete: ()=>{ this.isLoading = false; }
+      complete: ()=>{ this.isLoading = false; console.log("Request has completed")}
     })
   }
 }
