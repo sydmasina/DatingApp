@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.DTOs;
+using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,10 @@ using System.Text;
 
 namespace API.Controllers
 {
-    public class AccountController(DataContext context) : BaseApiController
+    public class AccountController(DataContext context, ITokenService tokenService) : BaseApiController
     {
         [HttpPost("register")]
-        public async Task<ActionResult> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             try
             {
@@ -34,7 +35,10 @@ namespace API.Controllers
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
 
-                return Ok();
+                return new UserDto { 
+                    Username = user.UserName,
+                    Token = tokenService.CreateToken(user)
+                };
             }
             catch (Exception ex)
             {
@@ -43,7 +47,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AppUser>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             try
             {
@@ -65,7 +69,10 @@ namespace API.Controllers
                     }
                 }
 
-                return user;
+                return new UserDto { 
+                    Username = user.UserName,
+                    Token = tokenService.CreateToken(user)
+                };
             }
             catch (Exception ex)
             {
