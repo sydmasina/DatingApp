@@ -23,11 +23,11 @@
     </div>
   </div>
 </nav>
-
+<br class="mt-5">
 <main class="container mt-5">
   <h1 class="mt-5">{{ title }}</h1>
   
-  <ng-container *ngIf="!isLoading">
+  <ng-container *ngIf="!isLoading; else show_spinner">
     <div class="container">
         <table class="table">
             <thead>
@@ -45,6 +45,12 @@
           </table>
       </div>
 </ng-container>
+
+<ng-template #show_spinner>
+  <div class="d-flex justify-content-center mt-5">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
 </main>
 
 
