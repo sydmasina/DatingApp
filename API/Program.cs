@@ -1,22 +1,10 @@
-using API.Data;
-using API.Interfaces;
-using API.Services;
-using Microsoft.EntityFrameworkCore;
+using API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Read connection string from Azure environment variables
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 // Add services to the container.
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
-
-builder.Services.AddCors();
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -35,6 +23,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Authentication
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
