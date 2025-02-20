@@ -12,6 +12,7 @@ namespace API.Extensions
         {
             var connectionString = config.GetConnectionString("DefaultConnection");
 
+            services.AddControllers();
             services.AddOpenApi();
             services.AddSwaggerGen();
             services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));

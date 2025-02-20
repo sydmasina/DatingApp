@@ -22,6 +22,8 @@ namespace API.Extensions
                 };
             });
 
+            services.AddAuthorization();
+
             return services;
         }
     }
