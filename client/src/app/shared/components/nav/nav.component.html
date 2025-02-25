@@ -1,5 +1,5 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark py-2 px-4">
-  <div class="container-fluid">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <div class="container">
     <a class="navbar-brand" href="#">DatingApp</a>
     <button
       class="navbar-toggler"
@@ -15,23 +15,26 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active" >Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="#">Lists</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+          <a class="nav-link" href="#">Matches</a>
         </li>
       </ul>
-      <form class="d-flex" role="search">
+      <form class="d-flex">
         <input
           class="form-control me-2"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
+          placeholder="username"
         />
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <input
+          class="form-control me-2"
+          placeholder="password"
+          type="password"
+        />
+        <button class="btn btn-outline-success" type="submit">Login</button>
       </form>
     </div>
   </div>
