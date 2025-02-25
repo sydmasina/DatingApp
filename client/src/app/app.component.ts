@@ -3,13 +3,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { User } from './shared/models/user';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SharedModule } from './shared/shared.module';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [CommonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatProgressSpinnerModule, SharedModule],
 })
 export class AppComponent implements OnInit {
   http = inject(HttpClient);
