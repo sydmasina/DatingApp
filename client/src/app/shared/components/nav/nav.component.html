@@ -13,17 +13,47 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
+      @if(isLoggedIn){
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link active">Home</a>
+          <a class="nav-link active">Matches</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Lists</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Matches</a>
+          <a class="nav-link" href="#">Messages</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" (click)="logout()">Logout</a>
         </li>
       </ul>
+
+      <div class="dropdown" dropdown #dropdown="bs-dropdown" [autoClose]="true">
+        <a
+          dropdownToggle
+          class="dropdown-toggle text-light text-decoration-none"
+        >
+          Welcome <span class="caret"></span>
+        </a>
+        <ul
+          role="menu"
+          *dropdownMenu
+          class="dropdown-menu"
+          role="menu"
+          aria-labelledby="button-triggers-manual"
+        >
+          <li role="menuitem">
+            <a class="dropdown-item" href="#">Edit Profile</a>
+          </li>
+          <div class="dropdown-divider"></div>
+          <li role="menuitem">
+            <a class="dropdown-item" href="#" (click)="logout()">Logout</a>
+          </li>
+        </ul>
+      </div>
+
+      } @if(!isLoggedIn){
       <form
         #loginForm="ngForm"
         (ngSubmit)="login()"
@@ -45,6 +75,7 @@
         />
         <button class="btn btn-outline-success" type="submit">Login</button>
       </form>
+      }
     </div>
   </div>
 </nav>
