@@ -9,7 +9,7 @@ export class AccountService {
   private http = inject(HttpClient);
   baseUrl = 'https://localhost:5001/api/';
  
-  login(loginModel: Login) {
-    return this.http.post(this.baseUrl + 'account/login', loginModel)
+  async login(loginModel: Login) {
+    return await this.http.post(this.baseUrl + 'account/login', loginModel)
   }
 }
