@@ -26,11 +26,7 @@ export class NavComponent {
     }
 
     this.accountService.login(this.loginModel).subscribe({
-      next: (response) => {
-        console.log(response);
-        if(response.token === null || response.token === ''){
-          throw new Error("Login failed");
-        }
+      next: () => {
         this.isLoggedIn = true;
       },
       error: error => console.log(error)
