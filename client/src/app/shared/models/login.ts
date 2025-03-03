@@ -3,7 +3,7 @@ export interface Login {
     password: string;
 }
 
-export interface LoginResponse {
+export interface LoggedInUser {
     token: string;
     username: string;
 }
