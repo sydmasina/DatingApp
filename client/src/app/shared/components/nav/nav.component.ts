@@ -9,31 +9,28 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
   selector: 'app-nav',
   standalone: true,
   imports: [FormsModule, CommonModule, BsDropdownModule],
-  templateUrl: './nav.component.html'
+  templateUrl: './nav.component.html',
 })
 export class NavComponent {
-  constructor(private accountService: AccountService) {}
-  isLoggedIn: boolean = false;
+  constructor(public accountService: AccountService) {}
   loginModel: Login = {
     username: '',
-    password: ''
+    password: '',
   };
 
-  login(){
-    if(this.loginModel.username === '' || this.loginModel.password === ''){
+  login() {
+    if (this.loginModel.username === '' || this.loginModel.password === '') {
       console.log('Username and password are required');
       return;
     }
 
     this.accountService.login(this.loginModel).subscribe({
-      next: () => {
-        this.isLoggedIn = true;
-      },
-      error: error => console.log(error)
+      next: () => {},
+      error: (error) => console.log(error),
     });
   }
 
-  logout(){
-    this.isLoggedIn = false;
+  logout() {
+    this.accountService.logout();
   }
 }
