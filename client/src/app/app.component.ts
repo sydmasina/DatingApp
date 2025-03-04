@@ -4,6 +4,7 @@ import { User } from './shared/models/user';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from './shared/shared.module';
+import { AccountService } from './shared/services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -13,13 +14,26 @@ import { SharedModule } from './shared/shared.module';
   imports: [CommonModule, MatProgressSpinnerModule, SharedModule],
 })
 export class AppComponent implements OnInit {
-  http = inject(HttpClient);
   title = 'DatingApp';
   users: User[] = [];
   isLoading: boolean = true;
 
-  async ngOnInit() {
-    await this.http.get('https://localhost:7159/api/Users').subscribe({
+  constructor(private http: HttpClient, private accountService: AccountService){}
+
+  ngOnInit() {
+    this.getUsers();
+    this.setCurrentUser();
+  }
+
+  setCurrentUser(){
+    const userString = localStorage.getItem('user');
+    if(!userString) return;
+    const user = JSON.parse(userString);
+    this.accountService.currentUser.set(user);
+  }
+
+  getUsers(){
+    this.http.get('https://localhost:7159/api/Users').subscribe({
       next: (response) => (this.users = response as User[]),
       error: (error) => console.log(error),
       complete: () => {
