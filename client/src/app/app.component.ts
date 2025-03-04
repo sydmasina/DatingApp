@@ -21,7 +21,8 @@ export class AppComponent implements OnInit {
   constructor(private http: HttpClient, private accountService: AccountService){}
 
   ngOnInit() {
-    this.getUserAsync();
+    this.getUsers();
+    this.setCurrentUser();
   }
 
   setCurrentUser(){
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit {
     this.accountService.currentUser.set(user);
   }
 
-  getUserAsync(){
+  getUsers(){
     this.http.get('https://localhost:7159/api/Users').subscribe({
       next: (response) => (this.users = response as User[]),
       error: (error) => console.log(error),
