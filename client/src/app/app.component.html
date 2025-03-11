@@ -1,32 +1,5 @@
 <app-nav></app-nav>
-<br class="mt-5">
+<br class="mt-5" />
 <main class="container mt-5">
-  <h1 class="mt-5">{{ title }}</h1>
-  <ng-container *ngIf="!isLoading; else show_spinner">
-    <div class="container">
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">UserName</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let user of users; index as i">
-                <th scope="row">{{ i + 1 }}</th>
-                <td>{{ user.userName }}</td>
-              </tr>
-            </tbody>
-          </table>
-      </div>
-</ng-container>
-
-<ng-template #show_spinner>
-  <div class="d-flex justify-content-center mt-5">
-    <mat-spinner></mat-spinner>
-  </div>
-</ng-template>
+  <router-outlet></router-outlet>
 </main>
-
-
-
