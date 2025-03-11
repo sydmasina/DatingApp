@@ -4,6 +4,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModule } from './shared/shared.module';
 import { AccountService } from './shared/services/account.service';
 import { RegisterModule } from './features/register/register.module';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import { RegisterModule } from './features/register/register.module';
     MatProgressSpinnerModule,
     SharedModule,
     RegisterModule,
+    RouterOutlet,
   ],
 })
 export class AppComponent implements OnInit {
