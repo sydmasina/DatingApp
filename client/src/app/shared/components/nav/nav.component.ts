@@ -4,11 +4,18 @@ import { Login } from '../../models/login';
 import { AccountService } from '../../services/account.service';
 import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [FormsModule, CommonModule, BsDropdownModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    BsDropdownModule,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './nav.component.html',
 })
 export class NavComponent {
