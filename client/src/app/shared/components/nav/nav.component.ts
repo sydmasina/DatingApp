@@ -5,6 +5,7 @@ import { AccountService } from '../../services/account.service';
 import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
@@ -19,7 +20,11 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './nav.component.html',
 })
 export class NavComponent {
-  constructor(public accountService: AccountService, private router: Router) {}
+  constructor(
+    public accountService: AccountService,
+    private router: Router,
+    private toastrService: ToastrService
+  ) {}
   loginModel: Login = {
     username: '',
     password: '',
@@ -27,19 +32,23 @@ export class NavComponent {
 
   login() {
     if (this.loginModel.username === '' || this.loginModel.password === '') {
-      console.log('Username and password are required');
-      return 
+      this.toastrService.error('Password and username is required!', 'Invalid input',{
+        positionClass: 'toast-top-left',
+        closeButton: true,
+        
+      });
+      return;
     }
 
     this.accountService.login(this.loginModel).subscribe({
       next: () => {},
       error: (error) => console.log(error),
-      complete: () => this.router.navigateByUrl('/members')
+      complete: () => this.router.navigateByUrl('/members'),
     });
   }
 
   logout() {
     this.accountService.logout();
-    this.router.navigateByUrl('/')
+    this.router.navigateByUrl('/');
   }
 }
