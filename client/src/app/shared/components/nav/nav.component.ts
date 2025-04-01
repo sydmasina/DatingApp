@@ -32,18 +32,23 @@ export class NavComponent {
 
   login() {
     if (this.loginModel.username === '' || this.loginModel.password === '') {
-      this.toastrService.error('Password and username is required!', 'Invalid input',{
-        positionClass: 'toast-top-left',
-        closeButton: true,
-        
-      });
+      this.showToastr('Password and username is required!', 'Invalid input');
       return;
     }
 
     this.accountService.login(this.loginModel).subscribe({
       next: () => {},
-      error: (error) => console.log(error),
+      error: (error) => {
+        this.showToastr(error.error, 'Login Failed');
+      },
       complete: () => this.router.navigateByUrl('/members'),
+    });
+  }
+
+  showToastr(message: string, heading: string) {
+    this.toastrService.error(message, heading, {
+      positionClass: 'toast-top-right',
+      closeButton: true,
     });
   }
 
