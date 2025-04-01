@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Login } from '../../models/login';
 import { AccountService } from '../../services/account.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
     BsDropdownModule,
     RouterLink,
     RouterLinkActive,
+    TitleCasePipe
   ],
   templateUrl: './nav.component.html',
 })
