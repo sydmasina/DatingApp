@@ -1,6 +1,6 @@
 <div class="container mt-5">
   <div style="text-align: center">
-    <ng-container *ngIf="!isLoading">
+    <ng-container *ngIf="!isLoading; else showLoading">
       @if (!registerMode) {
       <h1>Find your match</h1>
       <p class="lead">
@@ -24,5 +24,8 @@
       </div>
       }
     </ng-container>
+    <ng-template #showLoading>
+      <mat-spinner></mat-spinner>
+    </ng-template>
   </div>
 </div>

@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Login } from '../../models/login';
 import { AccountService } from '../../services/account.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
@@ -15,11 +16,16 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
     BsDropdownModule,
     RouterLink,
     RouterLinkActive,
+    TitleCasePipe
   ],
   templateUrl: './nav.component.html',
 })
 export class NavComponent {
-  constructor(public accountService: AccountService, private router: Router) {}
+  constructor(
+    public accountService: AccountService,
+    private router: Router,
+    private toastrService: ToastrService
+  ) {}
   loginModel: Login = {
     username: '',
     password: '',
@@ -27,19 +33,28 @@ export class NavComponent {
 
   login() {
     if (this.loginModel.username === '' || this.loginModel.password === '') {
-      console.log('Username and password are required');
-      return 
+      this.showToastr('Password and username is required!', 'Invalid input');
+      return;
     }
 
     this.accountService.login(this.loginModel).subscribe({
       next: () => {},
-      error: (error) => console.log(error),
-      complete: () => this.router.navigateByUrl('/members')
+      error: (error) => {
+        this.showToastr(error.error, 'Login Failed');
+      },
+      complete: () => this.router.navigateByUrl('/members'),
+    });
+  }
+
+  showToastr(message: string, heading: string) {
+    this.toastrService.error(message, heading, {
+      positionClass: 'toast-top-right',
+      closeButton: true,
     });
   }
 
   logout() {
     this.accountService.logout();
-    this.router.navigateByUrl('/')
+    this.router.navigateByUrl('/');
   }
 }

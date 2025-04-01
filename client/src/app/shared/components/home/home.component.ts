@@ -3,30 +3,31 @@ import { RegisterComponent } from '../../../features/register/register.component
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user';
 import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RegisterComponent, CommonModule],
+  imports: [RegisterComponent, CommonModule, MatProgressSpinnerModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
 })
-export class HomeComponent implements OnInit{
+export class HomeComponent implements OnInit {
   registerMode: boolean = false;
   users: User[] = [];
   isLoading: boolean = true;
 
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.getUsers();
   }
 
-  registerToggle(){
+  registerToggle() {
     this.registerMode = !this.registerMode;
   }
 
-  onCancelRegister(event: boolean){
+  onCancelRegister(event: boolean) {
     this.registerMode = event;
   }
 
