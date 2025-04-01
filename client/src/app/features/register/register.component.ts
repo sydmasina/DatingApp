@@ -26,13 +26,18 @@ export class RegisterComponent {
   ) {}
 
   register() {
+    if (this.registerModel.username === '' || this.registerModel.password === '') {
+      this.toastrService.error('Password and username is required!', 'Invalid input');
+      return;
+    }
+
     this.accountService.register(this.registerModel).subscribe({
       next: (response) => {
         this.cancel();
       },
       error: (error) => {
         this.toastrService.error(
-          error.error,
+          'An unexpected error occurred while submitting request',
           'Request failed',
           {
             positionClass: 'toast-bottom-left',
