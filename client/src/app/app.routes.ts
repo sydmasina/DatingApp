@@ -6,6 +6,7 @@ import { ListsComponent } from './shared/components/lists/lists.component';
 import { MessagesComponent } from './shared/components/messages/messages.component';
 import { authGuard } from './shared/_guards/auth.guard';
 import { TestErrorsComponent } from './shared/components/errors/test-errors/test-errors.component';
+import { NotFoundComponent } from './shared/components/errors/not-found/not-found.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +20,7 @@ export const routes: Routes = [
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
       { path: 'errors', component: TestErrorsComponent },
+      { path: 'not-found', component: NotFoundComponent },
     ],
   },
   { path: '**', component: HomeComponent, pathMatch: 'full' },
