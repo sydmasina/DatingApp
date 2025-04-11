@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { RegisterComponent } from '../../../features/register/register.component';
-import { HttpClient } from '@angular/common/http';
-import { User } from '../../models/user';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RegisterComponent } from '../../../features/register/register.component';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-home',
