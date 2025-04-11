@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SharedModule } from './shared/shared.module';
-import { AccountService } from './shared/services/account.service';
-import { RegisterModule } from './features/register/register.module';
 import { RouterOutlet } from '@angular/router';
+import { RegisterModule } from './features/register/register.module';
+import { AccountService } from './shared/services/account.service';
+import { SharedModule } from './shared/shared.module';
 
 @Component({
   selector: 'app-root',
@@ -23,9 +23,7 @@ export class AppComponent implements OnInit {
   title = 'DatingApp';
   isLoading: boolean = true;
 
-  constructor(
-    private accountService: AccountService
-  ) {}
+  constructor(private accountService: AccountService) {}
 
   ngOnInit() {
     this.setCurrentUser();
@@ -37,5 +35,4 @@ export class AppComponent implements OnInit {
     const user = JSON.parse(userString);
     this.accountService.currentUser.set(user);
   }
-
 }
