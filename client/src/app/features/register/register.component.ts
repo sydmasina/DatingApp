@@ -1,10 +1,9 @@
-import { Component, input, output } from '@angular/core';
-import { Register } from '../../shared/models/register';
-import { FormsModule } from '@angular/forms';
-import { User } from '../../shared/models/user';
 import { CommonModule } from '@angular/common';
-import { AccountService } from '../../shared/services/account.service';
+import { Component, output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { Register } from '../../shared/models/register';
+import { AccountService } from '../../shared/services/account.service';
 
 @Component({
   selector: 'app-register',
