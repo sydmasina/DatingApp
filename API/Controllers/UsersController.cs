@@ -1,46 +1,47 @@
-﻿using API.Data;
+﻿using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class UsersController(DataContext context) : BaseApiController
+    public class UsersController : BaseApiController
     {
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
-        {
-            var users = await context.Users.ToListAsync();
+        private readonly IRepository<AppUser> _userRepository;
 
-            return Ok(users);
+        public UsersController(IRepository<AppUser> userRepository) => _userRepository = userRepository;
+
+        [Authorize]
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteUser(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if (user == null) return NotFound();
+
+            await _userRepository.Delete(user);
+
+            return Ok();
         }
 
         [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<AppUser>> GetUser(int id)
         {
-            var user = await context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
 
-            if(user == null) return NotFound();
+            if (user == null) return NotFound();
 
             return Ok(user);
         }
 
-        [Authorize]
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> DeleteUser(int id)
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
-            var user = await context.Users.FindAsync(id);
+            var users = await _userRepository.GetAllSync();
 
-            if (user == null) return NotFound();
-
-            context.Users.Remove(user);
-
-            await context.SaveChangesAsync();
-
-            return Ok();
+            return Ok(users);
         }
     }
 }
