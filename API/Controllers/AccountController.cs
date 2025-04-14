@@ -1,7 +1,6 @@
 ﻿using API.Data;
 using API.DTOs;
 using API.Interfaces;
-using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -23,22 +22,24 @@ namespace API.Controllers
                     return BadRequest("Username already exists.");
                 }
 
-                using var hmac = new HMACSHA512();
+                return Ok();
 
-                var user = new AppUser
-                {
-                    UserName = registerDto.Username.ToLower(),
-                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                    PasswordSalt = hmac.Key
-                };
+                //using var hmac = new HMACSHA512();
 
-                context.Users.Add(user);
-                await context.SaveChangesAsync();
+                //var user = new AppUser
+                //{
+                //    UserName = registerDto.Username.ToLower(),
+                //    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+                //    PasswordSalt = hmac.Key
+                //};
 
-                return new UserDto { 
-                    Username = user.UserName,
-                    Token = tokenService.CreateToken(user)
-                };
+                //context.Users.Add(user);
+                //await context.SaveChangesAsync();
+
+                //return new UserDto { 
+                //    Username = user.UserName,
+                //    Token = tokenService.CreateToken(user)
+                //};
             }
             catch (Exception ex)
             {
@@ -53,7 +54,8 @@ namespace API.Controllers
             {
                 var user = await context.Users.FirstOrDefaultAsync(user => user.UserName.ToLower() == loginDto.Username.ToLower());
 
-                if (user == null) {
+                if (user == null)
+                {
                     return Unauthorized("User not found.");
                 }
 
@@ -69,7 +71,8 @@ namespace API.Controllers
                     }
                 }
 
-                return new UserDto { 
+                return new UserDto
+                {
                     Username = user.UserName,
                     Token = tokenService.CreateToken(user)
                 };
