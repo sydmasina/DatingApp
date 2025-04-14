@@ -1,6 +1,9 @@
 using API.Data;
 using API.Extensions;
+using API.Interfaces;
 using API.Middleware;
+using API.Models;
+using API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
+
+builder.Services.AddScoped<IRepository<AppUser>, UserRepository>();
 
 var app = builder.Build();
 
