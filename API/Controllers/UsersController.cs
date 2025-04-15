@@ -5,21 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class UsersController : BaseApiController
+    public class UsersController(IUserRepository<AppUser> userRepository) : BaseApiController
     {
-        private readonly IRepository<AppUser> _userRepository;
-
-        public UsersController(IRepository<AppUser> userRepository) => _userRepository = userRepository;
-
         [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await userRepository.GetUserByIdAsync(id);
 
             if (user == null) return NotFound();
 
-            await _userRepository.Delete(user);
+            userRepository.Delete(user);
+
+            bool hasDeletedSomething = await userRepository.SaveAllAsync();
+
+            if (!hasDeletedSomething)
+            {
+                return StatusCode(500, "Failed to delete the user. Please try again.");
+            }
 
             return Ok();
         }
@@ -28,7 +31,7 @@ namespace API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<AppUser>> GetUser(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await userRepository.GetUserByIdAsync(id);
 
             if (user == null) return NotFound();
 
@@ -39,7 +42,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
-            var users = await _userRepository.GetAllSync();
+            var users = await userRepository.GetAllUsersAsync();
 
             return Ok(users);
         }

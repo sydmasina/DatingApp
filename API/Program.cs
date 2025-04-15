@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
-builder.Services.AddScoped<IRepository<AppUser>, UserRepository>();
+builder.Services.AddScoped<IUserRepository<AppUser>, UserRepository>();
 
 var app = builder.Build();
 

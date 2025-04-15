@@ -5,45 +5,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
-    public class UserRepository : IRepository<AppUser>
+    public class UserRepository(DataContext context) : IUserRepository<AppUser>
     {
-        private DataContext _context;
-
-        public UserRepository(DataContext context)
-        {
-            _context = context;
-        }
-        public Task AddAsync(AppUser entity)
+        public Task AddUserAsync(AppUser entity)
         {
             throw new NotImplementedException();
         }
 
-        public async Task Delete(AppUser user)
+        public void Delete(AppUser user)
         {
-            _context.Users.Remove(user);
-
-            await _context.SaveChangesAsync();
-
-            return;
+            context.Users.Remove(user);
         }
 
-        public async Task<IEnumerable<AppUser>> GetAllSync()
+        public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await context.Users.ToListAsync();
         }
 
-        public async Task<AppUser> GetByIdAsync(int id)
+        public async Task<AppUser?> GetUserByIdAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null) throw new KeyNotFoundException();
-
-            return user;
+            return await context.Users.FindAsync(id);
         }
 
-        public Task Update(AppUser entity)
+        public void Update(AppUser user)
         {
-            throw new NotImplementedException();
+            context.Users.Update(user);
+        }
+
+        public async Task<AppUser?> GetUserByUsernameAsync(string username)
+        {
+            return await context.Users.SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await context.SaveChangesAsync() > 0;
         }
     }
 }
