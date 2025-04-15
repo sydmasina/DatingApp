@@ -1,14 +1,15 @@
 ﻿using API.Data;
 using API.DTOs;
 using API.Interfaces;
+using API.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace API.Controllers
 {
-    public class AccountController(DataContext context, ITokenService tokenService) : BaseApiController
+    public class AccountController(DataContext context, ITokenService tokenService, IUserRepository<AppUser> userRepository)
+        : BaseApiController
     {
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
@@ -22,24 +23,32 @@ namespace API.Controllers
                     return BadRequest("Username already exists.");
                 }
 
-                return Ok();
+                using var hmac = new HMACSHA512();
 
-                //using var hmac = new HMACSHA512();
+                var user = new AppUser
+                {
+                    UserName = registerDto.Username.ToLower(),
+                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+                    PasswordSalt = hmac.Key,
+                    DateOfBirth = registerDto.DateOfBirth,
+                    KnownAs = registerDto.KnownAs.ToLower(),
+                    Gender = registerDto.Gender.ToLower(),
+                    City = registerDto.City.ToLower(),
+                    Country = registerDto.Country.ToLower(),
+                    Introduction = registerDto.Introduction,
+                    Photos = registerDto.Photos,
+                    LookingFor = registerDto.LookingFor,
+                    Interests = registerDto.Interests,
+                };
 
-                //var user = new AppUser
-                //{
-                //    UserName = registerDto.Username.ToLower(),
-                //    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                //    PasswordSalt = hmac.Key
-                //};
+                context.Users.Add(user);
+                await context.SaveChangesAsync();
 
-                //context.Users.Add(user);
-                //await context.SaveChangesAsync();
-
-                //return new UserDto { 
-                //    Username = user.UserName,
-                //    Token = tokenService.CreateToken(user)
-                //};
+                return new UserDto
+                {
+                    Username = user.UserName,
+                    Token = tokenService.CreateToken(user)
+                };
             }
             catch (Exception ex)
             {
@@ -52,7 +61,7 @@ namespace API.Controllers
         {
             try
             {
-                var user = await context.Users.FirstOrDefaultAsync(user => user.UserName.ToLower() == loginDto.Username.ToLower());
+                var user = await userRepository.GetUserByUsernameAsync(loginDto.Username);
 
                 if (user == null)
                 {
@@ -85,7 +94,7 @@ namespace API.Controllers
 
         private async Task<bool> IsUsernameTaken(string username)
         {
-            return await context.Users.AnyAsync(user => user.UserName.ToLower() == username.ToLower());
+            return await userRepository.GetUserByUsernameAsync(username) != null;
         }
     }
 }
