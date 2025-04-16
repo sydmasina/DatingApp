@@ -28,10 +28,10 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<AppUser>> GetUser(int id)
+        [HttpGet("{username}")]
+        public async Task<ActionResult<AppUser>> GetUser(string username)
         {
-            var user = await userRepository.GetUserByIdAsync(id);
+            var user = await userRepository.GetUserByUsernameAsync(username);
 
             if (user == null) return NotFound();
 

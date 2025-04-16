@@ -19,12 +19,16 @@ namespace API.Repositories
 
         public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
         {
-            return await context.Users.ToListAsync();
+            return await context.Users
+                .Include(x => x.Photos)
+                .ToListAsync();
         }
 
         public async Task<AppUser?> GetUserByIdAsync(int id)
         {
-            return await context.Users.FindAsync(id);
+            return await context.Users
+                .Include(x => x.Photos)
+                .SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public void Update(AppUser user)
@@ -34,7 +38,9 @@ namespace API.Repositories
 
         public async Task<AppUser?> GetUserByUsernameAsync(string username)
         {
-            return await context.Users.SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+            return await context.Users
+                .Include(x => x.Photos)
+                .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
         }
 
         public async Task<bool> SaveAllAsync()
