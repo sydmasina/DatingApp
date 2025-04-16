@@ -1,11 +1,13 @@
-﻿using API.Interfaces;
+﻿using API.DTOs;
+using API.Interfaces;
 using API.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class UsersController(IUserRepository<AppUser> userRepository) : BaseApiController
+    public class UsersController(IUserRepository<AppUser> userRepository, IMapper mapper) : BaseApiController
     {
         [Authorize]
         [HttpDelete("{id:int}")]
@@ -29,22 +31,26 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet("{username}")]
-        public async Task<ActionResult<AppUser>> GetUser(string username)
+        public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             var user = await userRepository.GetUserByUsernameAsync(username);
 
             if (user == null) return NotFound();
 
-            return Ok(user);
+            var userToRerturn = mapper.Map<MemberDto>(user);
+
+            return Ok(userToRerturn);
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
         {
             var users = await userRepository.GetAllUsersAsync();
 
-            return Ok(users);
+            var usersToReturn = mapper.Map<IEnumerable<MemberDto>>(users);
+
+            return Ok(usersToReturn);
         }
     }
 }

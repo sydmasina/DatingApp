@@ -7,7 +7,7 @@ namespace API.Extensions
 {
     public static class ApplicationServiceExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, 
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services,
             IConfiguration config)
         {
             var connectionString = config.GetConnectionString("DefaultConnection");
@@ -18,6 +18,7 @@ namespace API.Extensions
             services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             return services;
         }

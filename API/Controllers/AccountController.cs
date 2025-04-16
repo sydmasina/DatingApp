@@ -2,13 +2,15 @@
 using API.DTOs;
 using API.Interfaces;
 using API.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace API.Controllers
 {
-    public class AccountController(DataContext context, ITokenService tokenService, IUserRepository<AppUser> userRepository)
+    public class AccountController(DataContext context, ITokenService tokenService, IUserRepository<AppUser> userRepository,
+        IMapper mapper)
         : BaseApiController
     {
         [HttpPost("register")]
@@ -25,21 +27,26 @@ namespace API.Controllers
 
                 using var hmac = new HMACSHA512();
 
-                var user = new AppUser
-                {
-                    UserName = registerDto.Username.ToLower(),
-                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                    PasswordSalt = hmac.Key,
-                    DateOfBirth = registerDto.DateOfBirth,
-                    KnownAs = registerDto.KnownAs.ToLower(),
-                    Gender = registerDto.Gender.ToLower(),
-                    City = registerDto.City.ToLower(),
-                    Country = registerDto.Country.ToLower(),
-                    Introduction = registerDto.Introduction,
-                    Photos = registerDto.Photos,
-                    LookingFor = registerDto.LookingFor,
-                    Interests = registerDto.Interests,
-                };
+
+                //var user = new AppUser
+                //{
+                //    UserName = registerDto.Username.ToLower(),
+                //    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+                //    PasswordSalt = hmac.Key,
+                //    DateOfBirth = registerDto.DateOfBirth,
+                //    KnownAs = registerDto.KnownAs.ToLower(),
+                //    Gender = registerDto.Gender.ToLower(),
+                //    City = registerDto.City.ToLower(),
+                //    Country = registerDto.Country.ToLower(),
+                //    Introduction = registerDto.Introduction,
+                //    Photos = registerDto.Photos,
+                //    LookingFor = registerDto.LookingFor,
+                //    Interests = registerDto.Interests,
+                //};
+
+                var user = mapper.Map<AppUser>(registerDto);
+                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
+                user.PasswordSalt = hmac.Key;
 
                 context.Users.Add(user);
                 await context.SaveChangesAsync();

@@ -1,5 +1,4 @@
-﻿using API.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs
 {
@@ -22,6 +21,6 @@ namespace API.DTOs
         public string City { get; set; }
         [Required]
         public string Country { get; set; }
-        public List<Photo> Photos { get; set; } = [];
+        public List<RegisterPhotoDto> Photos { get; set; } = [];
     }
 }
