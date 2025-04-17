@@ -1,6 +1,4 @@
-﻿using API.Extensions;
-
-namespace API.Models
+﻿namespace API.Models
 {
     public class AppUser
     {
@@ -20,10 +18,10 @@ namespace API.Models
         public required string Country { get; set; }
         public List<Photo> Photos { get; set; } = [];
 
-        public int GetAge()
-        {
-            return DateOfBirth.CalculateAge();
-        }
+        //public int GetAge()
+        //{
+        //    return DateOfBirth.CalculateAge();
+        //}
 
     }
 }
