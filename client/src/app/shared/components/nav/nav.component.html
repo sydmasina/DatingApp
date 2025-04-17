@@ -15,7 +15,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
-      @if(accountService.currentUser()){
+      @if(authService.currentUser()){
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
           <a class="nav-link" routerLink="/members" routerLinkActive="active"
@@ -41,7 +41,7 @@
 
       <div class="dropdown" dropdown #dropdown="bs-dropdown" [autoClose]="true">
         <a dropdownToggle class="dropdown-toggle nav-link">
-          Welcome {{ accountService.currentUser()?.username | titlecase }}
+          Welcome {{ authService.currentUser()?.username | titlecase }}
         </a>
         <ul
           role="menu"
@@ -60,7 +60,7 @@
         </ul>
       </div>
 
-      } @if(!accountService.currentUser()){
+      } @if(!authService.currentUser()){
       <form
         #loginForm="ngForm"
         (ngSubmit)="login()"

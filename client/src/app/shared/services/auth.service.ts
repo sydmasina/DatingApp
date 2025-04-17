@@ -1,33 +1,35 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { map } from 'rxjs';
+import {
+  LoginEndpoint,
+  RegisterEndpoint,
+} from '../constants/api-enpoints/auth';
 import { LoggedInUser, Login } from '../models/login';
 import { Register } from '../models/register';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AccountService {
-  private http = inject(HttpClient);
-  baseUrl = 'https://localhost:7159/api/';
+export class AuthService {
   currentUser = signal<LoggedInUser | null>(null);
 
+  constructor(private _httpClient: HttpClient) {}
+
   login(loginModel: Login) {
-    return this.http
-      .post<LoggedInUser>(this.baseUrl + 'account/login', loginModel)
-      .pipe(
-        map((user) => {
-          if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-            this.currentUser.set(user);
-          }
-        })
-      );
+    return this._httpClient.post<LoggedInUser>(LoginEndpoint, loginModel).pipe(
+      map((user) => {
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          this.currentUser.set(user);
+        }
+      })
+    );
   }
 
   register(registerModel: Register) {
-    return this.http
-      .post<LoggedInUser>(this.baseUrl + 'account/register', registerModel)
+    return this._httpClient
+      .post<LoggedInUser>(RegisterEndpoint, registerModel)
       .pipe(
         map((user) => {
           if (user) {
