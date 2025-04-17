@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterOutlet } from '@angular/router';
 import { RegisterModule } from './features/register/register.module';
-import { AccountService } from './shared/services/account.service';
+import { AuthService } from './shared/services/auth.service';
 import { SharedModule } from './shared/shared.module';
 
 @Component({
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   title = 'DatingApp';
   isLoading: boolean = true;
 
-  constructor(private accountService: AccountService) {}
+  constructor(private _authService: AuthService) {}
 
   ngOnInit() {
     this.setCurrentUser();
@@ -33,6 +33,6 @@ export class AppComponent implements OnInit {
     const userString = localStorage.getItem('user');
     if (!userString) return;
     const user = JSON.parse(userString);
-    this.accountService.currentUser.set(user);
+    this._authService.currentUser.set(user);
   }
 }

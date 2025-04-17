@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RegisterComponent } from '../../../features/register/register.component';
-import { User } from '../../models/user';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -14,13 +13,11 @@ import { User } from '../../models/user';
 })
 export class HomeComponent implements OnInit {
   registerMode: boolean = false;
-  users: User[] = [];
-  isLoading: boolean = true;
 
-  constructor(private http: HttpClient) {}
+  constructor(private _userService: UserService) {}
 
   ngOnInit(): void {
-    this.getUsers();
+    this._userService.getUsers();
   }
 
   registerToggle() {
@@ -31,14 +28,7 @@ export class HomeComponent implements OnInit {
     this.registerMode = event;
   }
 
-  getUsers() {
-    this.http.get('https://localhost:7159/api/Users').subscribe({
-      next: (response) => (this.users = response as User[]),
-      error: (error) => console.log(error),
-      complete: () => {
-        console.log('Request has completed');
-        this.isLoading = false;
-      },
-    });
+  get isLoading() {
+    return this._userService.isRunningFetchData;
   }
 }

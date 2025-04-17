@@ -3,7 +3,7 @@ import { Component, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Register } from '../../shared/models/register';
-import { AccountService } from '../../shared/services/account.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -20,17 +20,23 @@ export class RegisterComponent {
   };
 
   constructor(
-    private accountService: AccountService,
+    private authService: AuthService,
     private toastrService: ToastrService
   ) {}
 
   register() {
-    if (this.registerModel.username === '' || this.registerModel.password === '') {
-      this.toastrService.error('Password and username is required!', 'Invalid input');
+    if (
+      this.registerModel.username === '' ||
+      this.registerModel.password === ''
+    ) {
+      this.toastrService.error(
+        'Password and username is required!',
+        'Invalid input'
+      );
       return;
     }
 
-    this.accountService.register(this.registerModel).subscribe({
+    this.authService.register(this.registerModel).subscribe({
       next: (response) => {
         this.cancel();
       },

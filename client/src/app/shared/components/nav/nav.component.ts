@@ -5,7 +5,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ToastrService } from 'ngx-toastr';
 import { Login } from '../../models/login';
-import { AccountService } from '../../services/account.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -22,7 +22,7 @@ import { AccountService } from '../../services/account.service';
 })
 export class NavComponent {
   constructor(
-    public accountService: AccountService,
+    public authService: AuthService,
     private router: Router,
     private toastrService: ToastrService
   ) {}
@@ -37,7 +37,7 @@ export class NavComponent {
       return;
     }
 
-    this.accountService.login(this.loginModel).subscribe({
+    this.authService.login(this.loginModel).subscribe({
       next: () => {},
       error: (error) => {
         this.showToastr(error.error, 'Login Failed');
@@ -54,7 +54,7 @@ export class NavComponent {
   }
 
   logout() {
-    this.accountService.logout();
+    this.authService.logout();
     this.router.navigateByUrl('/');
   }
 }
