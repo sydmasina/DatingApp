@@ -1,73 +1,72 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-test-errors',
   standalone: true,
   imports: [],
   templateUrl: './test-errors.component.html',
-  styleUrl: './test-errors.component.css'
+  styleUrl: './test-errors.component.css',
 })
 export class TestErrorsComponent {
-  baseUrl = 'https://localhost:7159/api/';
+  baseUrl = environment.apiUrl;
   private http = inject(HttpClient);
   validationErrors: string[] = [];
 
-  get400Error(){
+  get400Error() {
     this.http.get(this.baseUrl + 'buggy/bad-request').subscribe({
-      next: (response)=>{
+      next: (response) => {
         console.log(response);
       },
-      error: (error)=>{
+      error: (error) => {
         console.log(error);
-      }
-    })
+      },
+    });
   }
 
-  get400ValidationError(){
+  get400ValidationError() {
     this.http.post(this.baseUrl + 'account/register', {}).subscribe({
-      next: (response)=>{
+      next: (response) => {
         console.log(response);
       },
-      error: (error)=>{
+      error: (error) => {
         console.log(error);
         this.validationErrors = error;
-      }
-    })
+      },
+    });
   }
 
-  get401Error(){
+  get401Error() {
     this.http.get(this.baseUrl + 'buggy/auth').subscribe({
-      next: (response)=>{
+      next: (response) => {
         console.log(response);
       },
-      error: (error)=>{
+      error: (error) => {
         console.log(error);
-      }
-    })
+      },
+    });
   }
 
-  get404Error(){
+  get404Error() {
     this.http.get(this.baseUrl + 'buggy/not-found').subscribe({
-      next: (response)=>{
+      next: (response) => {
         console.log(response);
       },
-      error: (error)=>{
+      error: (error) => {
         console.log(error);
-      }
-    })
+      },
+    });
   }
 
-  get500Error(){
+  get500Error() {
     this.http.get(this.baseUrl + 'buggy/server-error').subscribe({
-      next: (response)=>{
+      next: (response) => {
         console.log(response);
       },
-      error: (error)=>{
+      error: (error) => {
         console.log(error);
-      }
-    })
+      },
+    });
   }
-
-
 }
