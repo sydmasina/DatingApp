@@ -12,8 +12,6 @@ import { UserService } from '../../../shared/services/user.service';
   styleUrl: './member-detail.component.css',
 })
 export class MemberDetailComponent implements OnInit {
-  username: string | null = null;
-
   constructor(
     private route: ActivatedRoute,
     private location: Location,
@@ -25,13 +23,14 @@ export class MemberDetailComponent implements OnInit {
   }
 
   initUserDetails() {
-    this.username = this.route.snapshot.paramMap.get('username');
+    const username = this.route.snapshot.paramMap.get('username');
 
-    if (this.username == null) {
+    if (!username) {
       this.location.back();
+      return;
     }
 
-    this.userService.fetchUserByUsername(this.username);
+    this.userService.fetchUserByUsername(username);
   }
 
   get user() {

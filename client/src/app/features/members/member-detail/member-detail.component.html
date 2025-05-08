@@ -5,7 +5,7 @@
         <ng-container *ngFor="let photo of user.photos">
           <div class="carousel-item active">
             <img
-              [src]="photo.url"
+              src="{{ photo.url || 'assets/images/user-icon.jpeg' }}"
               class="d-block w-100"
               [alt]="user.userName + 'image'"
             />
@@ -40,19 +40,32 @@
     </h1>
 
     <h6 class="fs-6 text-muted mb-0 pb-0">
-      <i class="fa fa-map-marker" aria-hidden="true"></i> {{ user.country }},
+      <i class="fa fa-map-marker" aria-hidden="true"></i>
+      <strong> Location:</strong> {{ user.country }},
       {{ user.city }}
     </h6>
 
     @if(user.gender.toLowerCase() == 'male'){
     <h6 class="fs-6 text-muted mb-0 pb-0">
-      <i class="fa fa-mars" aria-hidden="true"></i> Male
+      <i class="fa fa-mars" aria-hidden="true"></i>
+      <strong> Gender:</strong> Male
     </h6>
     } @else if(user.gender.toLowerCase() == 'female' ){
     <h6 class="fs-6 text-muted mb-0 pb-0">
-      <i class="fa fa-mars" aria-hidden="true"></i> Male
+      <i class="fa fa-mars" aria-hidden="true"></i>
+      <strong> Gender:</strong> Female
     </h6>
     }
+
+    <h6 class="fs-6 text-muted mb-0 pb-0">
+      <i class="fa fa-clock-o" aria-hidden="true"></i>
+      <strong> Last Active:</strong> {{ user.lastActive | date }}
+    </h6>
+
+    <h6 class="fs-6 text-muted mb-0 pb-0">
+      <i class="fa fa-clock-o" aria-hidden="true"></i>
+      <strong> Joined:</strong> {{ user.created | date }}
+    </h6>
 
     <div class="my-3">
       <h6 class="fs-5">Introduction</h6>
@@ -66,11 +79,12 @@
     </div>
 
     <div class="row justify-content-between pb-5">
-      <button class="btn btn-outline-danger col-4">
-        <i class="fa fa-times"></i> Skip
-      </button>
       <button class="btn btn-outline-success col-4">
         <i class="fa fa-heart" aria-hidden="true"></i> Like
+      </button>
+
+      <button class="btn btn-outline-primary col-4">
+        <i class="fa fa-envelope" aria-hidden="true"></i> Message
       </button>
     </div>
   </div>

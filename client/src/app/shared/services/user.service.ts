@@ -37,8 +37,8 @@ export class UserService {
     });
   }
 
-  fetchUserByUsername(username: string | null) {
-    if (this.isFetchingUserData() || username == null) {
+  fetchUserByUsername(username: string) {
+    if (this.isFetchingUserData()) {
       return;
     }
 
