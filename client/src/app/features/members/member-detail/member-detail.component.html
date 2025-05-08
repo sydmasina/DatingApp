@@ -1,6 +1,78 @@
-<ng-container *ngIf="!isLoading; else showLoading">
-  <div class="row">
-    <h1>{{ user?.userName }}</h1>
+<ng-container *ngIf="!isLoading && user; else showLoading">
+  <div class="container">
+    <div id="carouselExampleFade" class="carousel slide carousel-fade">
+      <div class="carousel-inner">
+        <ng-container *ngFor="let photo of user.photos">
+          <div class="carousel-item active">
+            <img
+              [src]="photo.url"
+              class="d-block w-100"
+              [alt]="user.userName + 'image'"
+            />
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="user.photos.length > 1">
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleFade"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleFade"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </ng-container>
+    </div>
+
+    <h1 class="fs-2 pb-0 mb-0 text-capitalize">
+      {{ user.userName }}, <strong>{{ user.age }}</strong>
+    </h1>
+
+    <h6 class="fs-6 text-muted mb-0 pb-0">
+      <i class="fa fa-map-marker" aria-hidden="true"></i> {{ user.country }},
+      {{ user.city }}
+    </h6>
+
+    @if(user.gender.toLowerCase() == 'male'){
+    <h6 class="fs-6 text-muted mb-0 pb-0">
+      <i class="fa fa-mars" aria-hidden="true"></i> Male
+    </h6>
+    } @else if(user.gender.toLowerCase() == 'female' ){
+    <h6 class="fs-6 text-muted mb-0 pb-0">
+      <i class="fa fa-mars" aria-hidden="true"></i> Male
+    </h6>
+    }
+
+    <div class="my-3">
+      <h6 class="fs-5">Introduction</h6>
+      <p class="fs-6">{{ user.introduction }}</p>
+
+      <h6 class="fs-5 mt-4">Interests</h6>
+      <p class="fs-6">{{ user.interests }}</p>
+
+      <h6 class="fs-5 mt-4">Looking for</h6>
+      <p class="fs-6">{{ user.lookingFor }}</p>
+    </div>
+
+    <div class="row justify-content-between pb-5">
+      <button class="btn btn-outline-danger col-4">
+        <i class="fa fa-times"></i> Skip
+      </button>
+      <button class="btn btn-outline-success col-4">
+        <i class="fa fa-heart" aria-hidden="true"></i> Like
+      </button>
+    </div>
   </div>
 </ng-container>
 <ng-template #showLoading>
