@@ -4,11 +4,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
+import { ListCardComponent } from './list-card/list-card.component';
 
 @Component({
   selector: 'app-lists',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatProgressSpinnerModule, ListCardComponent],
   templateUrl: './lists.component.html',
   styleUrl: './lists.component.css',
 })
