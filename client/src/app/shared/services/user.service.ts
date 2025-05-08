@@ -1,75 +1,59 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, Signal, signal } from '@angular/core';
 import { GetUsersEndpoint } from '../constants/api-enpoints/user';
 import { User } from '../models/user';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private isFetchingUserData: boolean = false;
+  private readonly _isFetchingUserData = signal<boolean>(false);
+  public readonly isFetchingUserData: Signal<boolean> =
+    this._isFetchingUserData.asReadonly();
 
-  //Initialize observable subjects
-  private usersSubject = new BehaviorSubject<User[]>([]);
-  public users$: Observable<User[]> = this.usersSubject.asObservable();
-  private userSubject = new BehaviorSubject<User | null>(null);
-  public user$: Observable<User | null> = this.userSubject.asObservable();
+  //Initialize signals
+  private readonly _users = signal<User[]>([]);
+  public readonly users: Signal<User[]> = this._users.asReadonly();
+  private readonly _user = signal<User | null>(null);
+  public readonly user: Signal<User | null> = this._user.asReadonly();
 
-  constructor(
-    private _httpClient: HttpClient,
-    private _authService: AuthService
-  ) {}
+  constructor(private _httpClient: HttpClient) {}
 
   fetchUsers() {
-    if (this.isFetchingUserData) {
+    if (this.isFetchingUserData()) {
       return;
     }
 
-    this.isFetchingUserData = true;
+    this._isFetchingUserData.set(true);
 
     return this._httpClient.get<User[]>(GetUsersEndpoint).subscribe({
       next: (response) => {
-        this.usersSubject.next(response);
+        this._users.set(response);
       },
       error: (error) => console.log(error),
       complete: () => {
-        console.log('Request has completed');
-        this.isFetchingUserData = false;
+        this._isFetchingUserData.set(false);
       },
     });
   }
 
-  fetchUserByUsername(username: string) {
-    if (this.isFetchingUserData) {
+  fetchUserByUsername(username: string | null) {
+    if (this.isFetchingUserData() || username == null) {
       return;
     }
 
-    this.isFetchingUserData = true;
+    this._isFetchingUserData.set(true);
 
     return this._httpClient
-      .get<User>(GetUsersEndpoint + '/' + username, this.getHttpOptions())
+      .get<User>(GetUsersEndpoint + '/' + username)
       .subscribe({
         next: (response) => {
-          this.userSubject.next(response);
+          this._user.set(response);
         },
         error: () => {},
         complete: () => {
-          this.isFetchingUserData = false;
+          this._isFetchingUserData.set(false);
         },
       });
-  }
-
-  getHttpOptions() {
-    return {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this._authService.currentUser()?.token}`,
-      }),
-    };
-  }
-
-  get isRunningFetchData() {
-    return this.isFetchingUserData;
   }
 }

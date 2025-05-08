@@ -1,1 +1,8 @@
-<p>member-detail works!</p>
+<ng-container *ngIf="!isLoading; else showLoading">
+  <div class="row">
+    <h1>{{ user?.userName }}</h1>
+  </div>
+</ng-container>
+<ng-template #showLoading>
+  <mat-spinner></mat-spinner>
+</ng-template>
