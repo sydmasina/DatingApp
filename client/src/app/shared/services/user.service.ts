@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GetUsersEndpoint } from '../constants/api-enpoints/user';
 import { User } from '../models/user';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,10 +16,7 @@ export class UserService {
   private userSubject = new BehaviorSubject<User | null>(null);
   public user$: Observable<User | null> = this.userSubject.asObservable();
 
-  constructor(
-    private _httpClient: HttpClient,
-    private _authService: AuthService
-  ) {}
+  constructor(private _httpClient: HttpClient) {}
 
   fetchUsers() {
     if (this.isFetchingUserData) {
@@ -35,7 +31,6 @@ export class UserService {
       },
       error: (error) => console.log(error),
       complete: () => {
-        console.log('Request has completed');
         this.isFetchingUserData = false;
       },
     });
@@ -49,7 +44,7 @@ export class UserService {
     this.isFetchingUserData = true;
 
     return this._httpClient
-      .get<User>(GetUsersEndpoint + '/' + username, this.getHttpOptions())
+      .get<User>(GetUsersEndpoint + '/' + username)
       .subscribe({
         next: (response) => {
           this.userSubject.next(response);
@@ -59,14 +54,6 @@ export class UserService {
           this.isFetchingUserData = false;
         },
       });
-  }
-
-  getHttpOptions() {
-    return {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this._authService.currentUser()?.token}`,
-      }),
-    };
   }
 
   get isRunningFetchData() {
