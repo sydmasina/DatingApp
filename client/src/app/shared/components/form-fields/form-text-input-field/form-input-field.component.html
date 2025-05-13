@@ -1,0 +1,13 @@
+<ng-container *ngIf="label != null">
+  <label for="usernameInput" class="form-label">
+    {{ label() }} <ng-container *ngIf="isRequired">*</ng-container>
+  </label>
+</ng-container>
+
+<input
+  [formControl]="formControlInput()"
+  [type]="type()"
+  [placeholder]="placeholder()"
+  class="form-control"
+  id="usernameInput"
+/>
