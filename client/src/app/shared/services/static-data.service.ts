@@ -29,7 +29,7 @@ export class StaticDataService {
       return;
     }
 
-    this._isFetchingCityData.set(true);
+    this._isFetchingCountryData.set(true);
 
     return this._httpClient.get<Country[]>(GetCountriesEndpoint).subscribe({
       next: (response) => {
@@ -43,10 +43,6 @@ export class StaticDataService {
   }
 
   async GetCitiesByCountyId(countryId: number) {
-    if (this.isFetchingCityData()) {
-      return;
-    }
-
     this._isFetchingCityData.set(true);
 
     return this._httpClient
