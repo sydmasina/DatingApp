@@ -13,6 +13,8 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddScoped<IUserRepository<AppUser>, UserRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
 
 var app = builder.Build();
 

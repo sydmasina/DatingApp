@@ -1,0 +1,136 @@
+<ng-container *ngIf="!isLoading; else showLoading">
+  <div class="container">
+    <h1 class="text-center">Edit Profile</h1>
+    <hr />
+    <form (submit)="submitMemberEdit()">
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <app-form-input-field
+            [formControlInput]="userNameFormControl"
+            [label]="'Username'"
+            [isRequired]="true"
+            [placeholder]="'Enter user name'"
+          ></app-form-input-field>
+        </div>
+        <div class="mb-3 col-md-6">
+          <app-form-input-field
+            [formControlInput]="knownAsFormControl"
+            [label]="'Known As'"
+            [isRequired]="true"
+            [placeholder]="'Enter known as'"
+          ></app-form-input-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <app-form-select-field
+            [formControlInput]="genderFormControl"
+            [options]="GenderOptions"
+            [isRequired]="true"
+            label="City"
+            placeholder="Select gender...."
+          ></app-form-select-field>
+        </div>
+        <div class="mb-3 col-md-6">
+          <label for="usernameInput" class="form-label">Date of Birth</label>
+          <input
+            [formControl]="dateOfBirthFormControl"
+            type="date"
+            class="form-control"
+            id="usernameInput"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <app-form-select-field
+            [formControlInput]="countryFormControl"
+            [options]="Countries"
+            [isRequired]="true"
+            label="Country"
+            placeholder="Select a country..."
+            optionIdentifier="name"
+            trackKey="id"
+          ></app-form-select-field>
+        </div>
+
+        <div class="mb-3 col-md-6">
+          <app-form-select-field
+            [formControlInput]="cityFormControl"
+            [options]="Cities"
+            [isDisabled]="this.countryFormControl.invalid"
+            [isRequired]="true"
+            label="City"
+            placeholder="Select a city..."
+            optionIdentifier="name"
+            trackKey="id"
+          ></app-form-select-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <label for="usernameInput" class="form-label">Description</label>
+          <input
+            [formControl]="descriptionFormControl"
+            type="text"
+            class="form-control"
+            id="usernameInput"
+          />
+        </div>
+        <div class="mb-3 col-md-6">
+          <label for="usernameInput" class="form-label">Interests</label>
+          <input
+            [formControl]="descriptionFormControl"
+            type="text"
+            class="form-control"
+            id="usernameInput"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <label for="usernameInput" class="form-label">Looking For</label>
+          <input
+            [formControl]="lookingForFormControl"
+            type="text"
+            class="form-control"
+            id="usernameInput"
+          />
+        </div>
+        <div class="mb-3 col-md-6">
+          <label for="usernameInput" class="form-label">Uploaded Photos</label>
+          <input
+            [formControl]="lookingForFormControl"
+            type="text"
+            class="form-control"
+            id="usernameInput"
+          />
+        </div>
+      </div>
+      <hr />
+      <div class="row justify-content-between">
+        <button
+          type="submit"
+          class="btn btn-secondary col-sm-3 col-md-2 mb-2 mb-sm-0"
+          routerLink="/members"
+        >
+          Cancel
+        </button>
+        <button
+          [disabled]="memberEditFormGroup.invalid"
+          type="submit"
+          class="btn btn-primary col-sm-3 col-md-2"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-container>
+<ng-template #showLoading>
+  <mat-spinner></mat-spinner>
+</ng-template>
