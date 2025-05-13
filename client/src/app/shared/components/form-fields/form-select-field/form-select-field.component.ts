@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, input } from '@angular/core';
+import { Component, EventEmitter, Input, input, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -14,6 +14,7 @@ export class FormSelectFieldComponent {
   @Input() placeholder: string = 'Enter input';
   @Input() optionIdentifier: string | null = null;
   @Input() trackKey: string | null = null;
+  @Output() inputChangeEvent = new EventEmitter();
 
   //Signal input types
   formControlInput = input.required<FormControl>();
@@ -23,5 +24,9 @@ export class FormSelectFieldComponent {
 
   trackByFn(index: number, option: any) {
     return this.trackKey ? option[this.trackKey] : index;
+  }
+
+  onInputChange() {
+    this.inputChangeEvent.emit();
   }
 }

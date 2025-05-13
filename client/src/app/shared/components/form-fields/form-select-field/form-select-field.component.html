@@ -9,11 +9,12 @@
     [formControl]="formControlInput()"
     class="form-select"
     id="inputGroupSelect01"
+    (change)="onInputChange()"
   >
-    <option value="" disabled selected>{{ placeholder }}</option>
+    <option ngValue="" disabled selected>{{ placeholder }}</option>
     <option
       *ngFor="let option of options(); trackBy: trackByFn"
-      [value]="option"
+      [ngValue]="option"
     >
       {{ optionIdentifier == null ? option : option[optionIdentifier] }}
     </option>

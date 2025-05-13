@@ -41,9 +41,21 @@ export class MemberEditComponent implements OnInit {
   ngOnInit(): void {
     this._initFormGroups();
     this.staticData.GetCountries();
+    console.log('Is fetching cities..', this.isFetchingCities);
   }
 
   submitMemberEdit() {}
+
+  handleCountryInputChange() {
+    const countryId = this.countryFormControl.getRawValue()?.id;
+
+    if (!countryId) {
+      return;
+    }
+
+    this.staticData.GetCitiesByCountyId(countryId);
+    this.cityFormControl.setValue('');
+  }
 
   private _initFormGroups() {
     this.memberEditFormGroup = this.formBuilder.group({
@@ -62,6 +74,10 @@ export class MemberEditComponent implements OnInit {
 
   get isLoading() {
     return this.staticData.isFetchingCountryData();
+  }
+
+  get isFetchingCities() {
+    return this.staticData.isFetchingCityData();
   }
 
   get Countries() {
@@ -114,5 +130,13 @@ export class MemberEditComponent implements OnInit {
 
   get disableCityInput() {
     return this.countryFormControl.invalid;
+  }
+
+  get enableCityFreeTextInput() {
+    return (
+      this.countryFormControl.valid &&
+      !this.isFetchingCities &&
+      this.Cities.length === 0
+    );
   }
 }

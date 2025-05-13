@@ -6,3 +6,12 @@
     height: auto !important;
     min-height: 100%;
 }
+
+.cities-loader{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: start;
+    height: 100%;
+    width: 100%;
+}

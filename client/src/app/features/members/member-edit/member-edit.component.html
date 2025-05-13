@@ -48,6 +48,7 @@
             [formControlInput]="countryFormControl"
             [options]="Countries"
             [isRequired]="true"
+            (inputChangeEvent)="handleCountryInputChange()"
             label="Country"
             placeholder="Select a country..."
             optionIdentifier="name"
@@ -56,16 +57,33 @@
         </div>
 
         <div class="mb-3 col-md-6">
-          <app-form-select-field
-            [formControlInput]="cityFormControl"
-            [options]="Cities"
-            [isDisabled]="this.countryFormControl.invalid"
-            [isRequired]="true"
-            label="City"
-            placeholder="Select a city..."
-            optionIdentifier="name"
-            trackKey="id"
-          ></app-form-select-field>
+          <ng-container *ngIf="!isFetchingCities; else showLoadingCities">
+            <ng-container *ngIf="enableCityFreeTextInput; else showSelectField">
+              <app-form-input-field
+                [formControlInput]="cityFormControl"
+                label="City"
+                [isRequired]="true"
+                placeholder="Enter city name"
+              ></app-form-input-field>
+            </ng-container>
+            <ng-template #showSelectField>
+              <app-form-select-field
+                [formControlInput]="cityFormControl"
+                [options]="Cities"
+                [isDisabled]="this.countryFormControl.invalid"
+                [isRequired]="true"
+                label="City"
+                placeholder="Select a city..."
+                optionIdentifier="name"
+                trackKey="id"
+              ></app-form-select-field>
+            </ng-template>
+          </ng-container>
+          <ng-template #showLoadingCities>
+            <div class="cities-loader text-start">
+              <p>Loading...</p>
+            </div>
+          </ng-template>
         </div>
       </div>
 
