@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { StaticDataService } from '../../../shared/services/static-data.service';
@@ -23,6 +24,7 @@ import { StaticDataService } from '../../../shared/services/static-data.service'
     ReactiveFormsModule,
     FormInputFieldComponent,
     FormSelectFieldComponent,
+    FormDateFieldComponent,
   ],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css',
@@ -39,9 +41,21 @@ export class MemberEditComponent implements OnInit {
   ngOnInit(): void {
     this._initFormGroups();
     this.staticData.GetCountries();
+    console.log('Is fetching cities..', this.isFetchingCities);
   }
 
   submitMemberEdit() {}
+
+  handleCountryInputChange() {
+    const countryId = this.countryFormControl.getRawValue()?.id;
+
+    if (!countryId) {
+      return;
+    }
+
+    this.staticData.GetCitiesByCountyId(countryId);
+    this.cityFormControl.setValue('');
+  }
 
   private _initFormGroups() {
     this.memberEditFormGroup = this.formBuilder.group({
@@ -60,6 +74,10 @@ export class MemberEditComponent implements OnInit {
 
   get isLoading() {
     return this.staticData.isFetchingCountryData();
+  }
+
+  get isFetchingCities() {
+    return this.staticData.isFetchingCityData();
   }
 
   get Countries() {
@@ -112,5 +130,13 @@ export class MemberEditComponent implements OnInit {
 
   get disableCityInput() {
     return this.countryFormControl.invalid;
+  }
+
+  get enableCityFreeTextInput() {
+    return (
+      this.countryFormControl.valid &&
+      !this.isFetchingCities &&
+      this.Cities.length === 0
+    );
   }
 }
