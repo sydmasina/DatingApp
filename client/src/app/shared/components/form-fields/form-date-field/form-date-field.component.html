@@ -1,0 +1,19 @@
+<fieldset [disabled]="isDisabled()">
+  <ng-container *ngIf="label != null">
+    <label for="usernameInput" class="form-label">
+      {{ label }} <ng-container *ngIf="isRequired">*</ng-container>
+    </label>
+  </ng-container>
+  <mat-form-field class="w-100">
+    <input
+      matInput
+      [min]="minDate"
+      [max]="maxDate"
+      [matDatepicker]="picker"
+      readonly
+      (click)="picker.open(); $event.preventDefault()"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</fieldset>

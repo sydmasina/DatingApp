@@ -33,13 +33,12 @@
           ></app-form-select-field>
         </div>
         <div class="mb-3 col-md-6">
-          <label for="usernameInput" class="form-label">Date of Birth</label>
-          <input
-            [formControl]="dateOfBirthFormControl"
-            type="date"
-            class="form-control"
-            id="usernameInput"
-          />
+          <app-form-date-field
+            [formControlInput]="dateOfBirthFormControl"
+            [isRequired]="true"
+            label="Date of Birth"
+          >
+          </app-form-date-field>
         </div>
       </div>
 
