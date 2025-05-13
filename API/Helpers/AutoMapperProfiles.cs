@@ -15,6 +15,7 @@ namespace API.Helpers
                     o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain)!.Url));
             CreateMap<Photo, PhotoDto>();
             CreateMap<RegisterDto, AppUser>();
+            CreateMap<Country, CountryDto>();
         }
     }
 }
