@@ -88,38 +88,38 @@
       </div>
 
       <div class="row">
-        <div class="mb-3 col-md-6">
-          <label for="usernameInput" class="form-label">Description</label>
-          <input
-            [formControl]="descriptionFormControl"
-            type="text"
-            class="form-control"
-            id="usernameInput"
-          />
+        <div class="mb-3 col-12">
+          <app-form-input-field
+            [formControlInput]="descriptionFormControl"
+            label="Description"
+            [isRequired]="true"
+            type="textarea"
+            placeholder="Enter a description of who you are.."
+          ></app-form-input-field>
         </div>
-        <div class="mb-3 col-md-6">
-          <label for="usernameInput" class="form-label">Interests</label>
-          <input
-            [formControl]="descriptionFormControl"
-            type="text"
-            class="form-control"
-            id="usernameInput"
-          />
+        <div class="mb-3 col-12">
+          <app-form-input-field
+            [formControlInput]="interestsFormControl"
+            label="Interests"
+            type="textarea"
+            [isRequired]="true"
+            placeholder="Enter your interests.."
+          ></app-form-input-field>
+        </div>
+        <div class="mb-3 col-12">
+          <app-form-input-field
+            [formControlInput]="lookingForFormControl"
+            label="Looking For"
+            type="textarea"
+            [isRequired]="true"
+            placeholder="Describe the type of person you are looking for.."
+          ></app-form-input-field>
         </div>
       </div>
 
       <div class="row">
-        <div class="mb-3 col-md-6">
-          <label for="usernameInput" class="form-label">Looking For</label>
-          <input
-            [formControl]="lookingForFormControl"
-            type="text"
-            class="form-control"
-            id="usernameInput"
-          />
-        </div>
-        <div class="mb-3 col-md-6">
-          <label for="usernameInput" class="form-label">Uploaded Photos</label>
+        <div class="mb-3 col-12">
+          <label for="usernameInput" class="form-label">Upload Photos</label>
           <input
             [formControl]="lookingForFormControl"
             type="text"
