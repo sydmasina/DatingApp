@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -12,7 +12,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 export class FormInputFieldComponent {
   formControlInput = input.required<FormControl>();
   isRequired = input<boolean>(false);
-  label = input<string | null>(null);
-  type = input<string>('text');
-  placeholder = input<string>('Enter input');
+  @Input() label: string | null = null;
+  @Input() type: string = 'text';
+  @Input() placeholder: string = 'Enter input';
 }
