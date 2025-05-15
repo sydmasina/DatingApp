@@ -16,6 +16,9 @@ export class UserService {
   public readonly users: Signal<User[]> = this._users.asReadonly();
   private readonly _user = signal<User | null>(null);
   public readonly user: Signal<User | null> = this._user.asReadonly();
+  private readonly _loggedInUserData = signal<User | null>(null);
+  public readonly loggedInUserData: Signal<User | null> =
+    this._loggedInUserData.asReadonly();
 
   constructor(private _httpClient: HttpClient) {}
 
@@ -55,5 +58,23 @@ export class UserService {
           this._isFetchingUserData.set(false);
         },
       });
+  }
+
+  fetchCurrentUserData(username: string) {
+    if (this.isFetchingUserData()) {
+      return;
+    }
+
+    this._isFetchingUserData.set(true);
+
+    this._httpClient.get<User>(GetUsersEndpoint + '/' + username).subscribe({
+      next: (response) => {
+        this._loggedInUserData.set(response);
+      },
+      error: () => {},
+      complete: () => {
+        this._isFetchingUserData.set(false);
+      },
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -12,7 +12,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
+import { User } from '../../../shared/models/user';
+import { AuthService } from '../../../shared/services/auth.service';
 import { StaticDataService } from '../../../shared/services/static-data.service';
+import { UserService } from '../../../shared/services/user.service';
 
 @Component({
   selector: 'app-member-edit',
@@ -31,17 +34,28 @@ import { StaticDataService } from '../../../shared/services/static-data.service'
 })
 export class MemberEditComponent implements OnInit {
   memberEditFormGroup!: FormGroup;
-  GenderOptions: string[] = ['Male', 'Female'];
+  GenderOptions: string[] = ['male', 'female'];
+  currentUserData = signal<User | undefined>(undefined);
 
   constructor(
     public staticData: StaticDataService,
-    private formBuilder: FormBuilder
-  ) {}
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private userService: UserService
+  ) {
+    effect(() => {
+      const user = this.userService.loggedInUserData();
+      if (user) {
+        this.memberEditFormGroup.patchValue(user);
+        this._initSelectedCountry(user.country);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this._initFormGroups();
     this.staticData.GetCountries();
-    console.log('Is fetching cities..', this.isFetchingCities);
+    this._initUserData();
   }
 
   submitMemberEdit() {}
@@ -57,15 +71,33 @@ export class MemberEditComponent implements OnInit {
     this.cityFormControl.setValue('');
   }
 
+  private _initUserData() {
+    const username = this.authService.currentUser()?.username;
+    if (!username) {
+      return;
+    }
+    this.userService.fetchCurrentUserData(username);
+  }
+
+  private _initSelectedCountry(countryName: string) {
+    const selectedCountry = this.Countries.find(
+      (country) => (country.name = countryName)
+    );
+
+    if (selectedCountry) {
+      this.countryFormControl.setValue(selectedCountry);
+    }
+  }
+
   private _initFormGroups() {
     this.memberEditFormGroup = this.formBuilder.group({
-      username: ['', [Validators.required]],
+      userName: ['', [Validators.required]],
       knownAs: ['', [Validators.required]],
       gender: ['', [Validators.required]],
       dateOfBirth: ['', [Validators.required]],
       country: ['', [Validators.required]],
       city: ['', [Validators.required]],
-      description: ['', [Validators.required]],
+      introduction: ['', [Validators.required]],
       interests: ['', [Validators.required]],
       lookingFor: ['', [Validators.required]],
       photos: ['', [Validators.required]],
@@ -89,7 +121,7 @@ export class MemberEditComponent implements OnInit {
   }
 
   get userNameFormControl() {
-    return this.memberEditFormGroup.get('username') as FormControl;
+    return this.memberEditFormGroup.get('userName') as FormControl;
   }
 
   get knownAsFormControl() {
@@ -113,7 +145,7 @@ export class MemberEditComponent implements OnInit {
   }
 
   get descriptionFormControl() {
-    return this.memberEditFormGroup.get('description') as FormControl;
+    return this.memberEditFormGroup.get('introduction') as FormControl;
   }
 
   get lookingForFormControl() {
