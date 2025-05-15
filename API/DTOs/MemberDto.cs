@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string? UserName { get; set; }
         public string? Age { get; set; }
+        public DateOnly DateOfBirth { get; set; }
         public string? KnownAs { get; set; }
         public string? PhotoUrl { get; set; }
         public DateTime Created { get; set; }
