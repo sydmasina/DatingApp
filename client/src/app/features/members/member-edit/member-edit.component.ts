@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnInit, signal } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -12,7 +12,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
-import { User } from '../../../shared/models/user';
+import { ImageGalleryComponent } from '../../../shared/components/form-fields/image-gallery/image-gallery.component';
+import { Photo } from '../../../shared/models/Photo';
 import { AuthService } from '../../../shared/services/auth.service';
 import { StaticDataService } from '../../../shared/services/static-data.service';
 import { UserService } from '../../../shared/services/user.service';
@@ -28,14 +29,16 @@ import { UserService } from '../../../shared/services/user.service';
     FormInputFieldComponent,
     FormSelectFieldComponent,
     FormDateFieldComponent,
+    ImageGalleryComponent,
   ],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css',
 })
 export class MemberEditComponent implements OnInit {
   memberEditFormGroup!: FormGroup;
+  photosToUploadFormControl: FormControl = new FormControl({ photos: null });
   GenderOptions: string[] = ['male', 'female'];
-  currentUserData = signal<User | undefined>(undefined);
+  userPhotos: string[] = [];
 
   constructor(
     public staticData: StaticDataService,
@@ -48,6 +51,7 @@ export class MemberEditComponent implements OnInit {
       if (user) {
         this.memberEditFormGroup.patchValue(user);
         this._initSelectedCountry(user.country);
+        this._initUserPhotos(user.photos);
       }
     });
   }
@@ -81,12 +85,16 @@ export class MemberEditComponent implements OnInit {
 
   private _initSelectedCountry(countryName: string) {
     const selectedCountry = this.Countries.find(
-      (country) => (country.name = countryName)
+      (country) => country.name === countryName
     );
 
     if (selectedCountry) {
       this.countryFormControl.setValue(selectedCountry);
     }
+  }
+
+  private _initUserPhotos(photos: Photo[]) {
+    this.userPhotos = photos.map((photo) => photo.url);
   }
 
   private _initFormGroups() {
@@ -170,5 +178,9 @@ export class MemberEditComponent implements OnInit {
       !this.isFetchingCities &&
       this.Cities.length === 0
     );
+  }
+
+  get userData() {
+    return this.userService.loggedInUserData();
   }
 }
