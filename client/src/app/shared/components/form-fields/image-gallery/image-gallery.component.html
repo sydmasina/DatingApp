@@ -1,0 +1,38 @@
+<ng-container *ngIf="label != null">
+  <label for="usernameInput" class="form-label">
+    {{ label }} <ng-container *ngIf="isRequired()">*</ng-container>
+  </label>
+</ng-container>
+
+<div class="gallery-container">
+  <input
+    class="form-control custom-input"
+    type="file"
+    placeholder="Choose photos"
+    (change)="onFileSelected($event)"
+    accept="image/*"
+    multiple
+    [disabled]="images.length >= 9"
+  />
+
+  <p *ngIf="images.length >= 9" class="warning">
+    You can upload up to 9 images only.
+  </p>
+
+  <div class="image-grid">
+    <div *ngFor="let img of images(); let imageIndex = index">
+      <div class="image-item-wrapper">
+        <div class="image-item">
+          <img [src]="img" alt="Uploaded Image" />
+          <button
+            class="delete-icon animate"
+            type="button"
+            (click)="deleteImage(imageIndex)"
+          >
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
