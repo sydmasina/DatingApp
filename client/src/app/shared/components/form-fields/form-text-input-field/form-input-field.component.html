@@ -6,6 +6,7 @@
 
 <ng-container *ngIf="type === 'textarea'; else showDefault">
   <textarea
+    [formControl]="formControlInput()"
     class="form-control"
     [placeholder]="placeholder"
     id="floatingTextarea"
