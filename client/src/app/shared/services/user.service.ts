@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, Signal, signal } from '@angular/core';
-import { GetUsersEndpoint } from '../constants/api-enpoints/user';
-import { User } from '../models/user';
+import { UsersEndpoint } from '../constants/api-enpoints/user';
+import { UpdateUserDto, User } from '../models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -10,15 +10,15 @@ export class UserService {
   private readonly _isFetchingUserData = signal<boolean>(false);
   public readonly isFetchingUserData: Signal<boolean> =
     this._isFetchingUserData.asReadonly();
+  private readonly _isUpdatingUser = signal<boolean>(false);
+  public readonly isUpdatingUser: Signal<boolean> =
+    this._isUpdatingUser.asReadonly();
 
   //Initialize signals
   private readonly _users = signal<User[]>([]);
   public readonly users: Signal<User[]> = this._users.asReadonly();
   private readonly _user = signal<User | null>(null);
   public readonly user: Signal<User | null> = this._user.asReadonly();
-  private readonly _loggedInUserData = signal<User | null>(null);
-  public readonly loggedInUserData: Signal<User | null> =
-    this._loggedInUserData.asReadonly();
 
   constructor(private _httpClient: HttpClient) {}
 
@@ -29,7 +29,7 @@ export class UserService {
 
     this._isFetchingUserData.set(true);
 
-    return this._httpClient.get<User[]>(GetUsersEndpoint).subscribe({
+    return this._httpClient.get<User[]>(UsersEndpoint).subscribe({
       next: (response) => {
         this._users.set(response);
       },
@@ -48,7 +48,7 @@ export class UserService {
     this._isFetchingUserData.set(true);
 
     return this._httpClient
-      .get<User>(GetUsersEndpoint + '/' + username)
+      .get<User>(UsersEndpoint + '/' + username)
       .subscribe({
         next: (response) => {
           this._user.set(response);
@@ -60,21 +60,23 @@ export class UserService {
       });
   }
 
-  fetchCurrentUserData(username: string) {
-    if (this.isFetchingUserData()) {
+  submitUpdateUserData(username: string, updateUserDto: UpdateUserDto) {
+    if (this.isUpdatingUser()) {
       return;
     }
 
-    this._isFetchingUserData.set(true);
+    this._isUpdatingUser.set(true);
 
-    this._httpClient.get<User>(GetUsersEndpoint + '/' + username).subscribe({
-      next: (response) => {
-        this._loggedInUserData.set(response);
-      },
-      error: () => {},
-      complete: () => {
-        this._isFetchingUserData.set(false);
-      },
-    });
+    const params = new HttpParams().set('username', username);
+
+    this._httpClient
+      .post(UsersEndpoint + '/' + username, updateUserDto)
+      .subscribe({
+        next: (response) => {},
+        error: () => {},
+        complete: () => {
+          this._isUpdatingUser.set(false);
+        },
+      });
   }
 }

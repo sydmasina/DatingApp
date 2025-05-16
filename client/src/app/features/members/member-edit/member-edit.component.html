@@ -2,16 +2,8 @@
   <div class="container">
     <h1 class="text-center">Edit Profile</h1>
     <hr />
-    <form (submit)="submitMemberEdit()">
+    <form [formGroup]="userUpdateFormGroup" (ngSubmit)="submitUserUpdate()">
       <div class="row">
-        <div class="mb-3 col-md-6">
-          <app-form-input-field
-            [formControlInput]="userNameFormControl"
-            [label]="'Username'"
-            [isRequired]="true"
-            [placeholder]="'Enter user name'"
-          ></app-form-input-field>
-        </div>
         <div class="mb-3 col-md-6">
           <app-form-input-field
             [formControlInput]="knownAsFormControl"
@@ -20,9 +12,6 @@
             [placeholder]="'Enter known as'"
           ></app-form-input-field>
         </div>
-      </div>
-
-      <div class="row">
         <div class="mb-3 col-md-6">
           <app-form-select-field
             [formControlInput]="genderFormControl"
@@ -31,14 +20,6 @@
             label="Gender"
             placeholder="Select gender...."
           ></app-form-select-field>
-        </div>
-        <div class="mb-3 col-md-6">
-          <app-form-date-field
-            [formControlInput]="dateOfBirthFormControl"
-            [isRequired]="true"
-            label="Date of Birth"
-          >
-          </app-form-date-field>
         </div>
       </div>
 
@@ -84,6 +65,18 @@
               <p>Loading...</p>
             </div>
           </ng-template>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <app-form-date-field
+            [formControlInput]="dateOfBirthFormControl"
+            [isRequired]="true"
+            label="Date of Birth"
+          >
+            <div class="mb-3 col-md-6"></div>
+          </app-form-date-field>
         </div>
       </div>
 
@@ -134,7 +127,7 @@
           Cancel
         </button>
         <button
-          [disabled]="memberEditFormGroup.invalid"
+          [disabled]="userUpdateFormGroup.invalid"
           type="submit"
           class="btn btn-primary col-sm-3 col-md-2"
         >

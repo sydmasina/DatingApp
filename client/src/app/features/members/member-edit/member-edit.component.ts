@@ -14,6 +14,10 @@ import { FormSelectFieldComponent } from '../../../shared/components/form-fields
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { ImageGalleryComponent } from '../../../shared/components/form-fields/image-gallery/image-gallery.component';
 import { Photo } from '../../../shared/models/Photo';
+import {
+  UpdateUserDto,
+  UserUpdateFormValues,
+} from '../../../shared/models/user';
 import { AuthService } from '../../../shared/services/auth.service';
 import { StaticDataService } from '../../../shared/services/static-data.service';
 import { UserService } from '../../../shared/services/user.service';
@@ -35,7 +39,7 @@ import { UserService } from '../../../shared/services/user.service';
   styleUrl: './member-edit.component.css',
 })
 export class MemberEditComponent implements OnInit {
-  memberEditFormGroup!: FormGroup;
+  userUpdateFormGroup!: FormGroup;
   photosToUploadFormControl: FormControl = new FormControl({ photos: null });
   GenderOptions: string[] = ['male', 'female'];
   userPhotos: string[] = [];
@@ -47,9 +51,9 @@ export class MemberEditComponent implements OnInit {
     private userService: UserService
   ) {
     effect(() => {
-      const user = this.userService.loggedInUserData();
+      const user = this.userService.user();
       if (user) {
-        this.memberEditFormGroup.patchValue(user);
+        this.userUpdateFormGroup.patchValue(user);
         this._initSelectedCountry(user.country);
         this._initUserPhotos(user.photos);
       }
@@ -62,8 +66,6 @@ export class MemberEditComponent implements OnInit {
     this._initUserData();
   }
 
-  submitMemberEdit() {}
-
   handleCountryInputChange() {
     const countryId = this.countryFormControl.getRawValue()?.id;
 
@@ -75,12 +77,40 @@ export class MemberEditComponent implements OnInit {
     this.cityFormControl.setValue('');
   }
 
+  submitUserUpdate() {
+    if (this.userUpdateFormGroup.invalid) {
+      this.userUpdateFormGroup.markAllAsTouched();
+      return;
+    }
+
+    const user = this.userService.user();
+
+    if (user == null) {
+      return;
+    }
+
+    const updateUserDto: UpdateUserDto = this._transformUserUpdateFormData(
+      this.userUpdateFormGroup.value
+    );
+
+    this.userService.submitUpdateUserData(user.userName, updateUserDto);
+  }
+
+  private _transformUserUpdateFormData(
+    formValue: UserUpdateFormValues
+  ): UpdateUserDto {
+    return {
+      ...formValue,
+      country: formValue.country.name,
+    };
+  }
+
   private _initUserData() {
     const username = this.authService.currentUser()?.username;
     if (!username) {
       return;
     }
-    this.userService.fetchCurrentUserData(username);
+    this.userService.fetchUserByUsername(username);
   }
 
   private _initSelectedCountry(countryName: string) {
@@ -98,8 +128,7 @@ export class MemberEditComponent implements OnInit {
   }
 
   private _initFormGroups() {
-    this.memberEditFormGroup = this.formBuilder.group({
-      userName: ['', [Validators.required]],
+    this.userUpdateFormGroup = this.formBuilder.group({
       knownAs: ['', [Validators.required]],
       gender: ['', [Validators.required]],
       dateOfBirth: ['', [Validators.required]],
@@ -108,7 +137,6 @@ export class MemberEditComponent implements OnInit {
       introduction: ['', [Validators.required]],
       interests: ['', [Validators.required]],
       lookingFor: ['', [Validators.required]],
-      photos: ['', [Validators.required]],
     });
   }
 
@@ -128,44 +156,40 @@ export class MemberEditComponent implements OnInit {
     return this.staticData.cities();
   }
 
-  get userNameFormControl() {
-    return this.memberEditFormGroup.get('userName') as FormControl;
-  }
-
   get knownAsFormControl() {
-    return this.memberEditFormGroup.get('knownAs') as FormControl;
+    return this.userUpdateFormGroup.get('knownAs') as FormControl;
   }
 
   get genderFormControl() {
-    return this.memberEditFormGroup.get('gender') as FormControl;
+    return this.userUpdateFormGroup.get('gender') as FormControl;
   }
 
   get countryFormControl() {
-    return this.memberEditFormGroup.get('country') as FormControl;
+    return this.userUpdateFormGroup.get('country') as FormControl;
   }
 
   get cityFormControl() {
-    return this.memberEditFormGroup.get('city') as FormControl;
+    return this.userUpdateFormGroup.get('city') as FormControl;
   }
 
   get dateOfBirthFormControl() {
-    return this.memberEditFormGroup.get('dateOfBirth') as FormControl;
+    return this.userUpdateFormGroup.get('dateOfBirth') as FormControl;
   }
 
   get descriptionFormControl() {
-    return this.memberEditFormGroup.get('introduction') as FormControl;
+    return this.userUpdateFormGroup.get('introduction') as FormControl;
   }
 
   get lookingForFormControl() {
-    return this.memberEditFormGroup.get('lookingFor') as FormControl;
+    return this.userUpdateFormGroup.get('lookingFor') as FormControl;
   }
 
-  get photosFormControl() {
-    return this.memberEditFormGroup.get('photos') as FormControl;
-  }
+  // get photosFormControl() {
+  //   return this.userUpdateFormGroup.get('photos') as FormControl;
+  // }
 
   get interestsFormControl() {
-    return this.memberEditFormGroup.get('interests') as FormControl;
+    return this.userUpdateFormGroup.get('interests') as FormControl;
   }
 
   get disableCityInput() {
@@ -181,6 +205,6 @@ export class MemberEditComponent implements OnInit {
   }
 
   get userData() {
-    return this.userService.loggedInUserData();
+    return this.userService.user();
   }
 }
