@@ -1,6 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { UsersEndpoint } from '../constants/api-enpoints/user';
+import { ApiResponse, ResultCode } from '../models/api-response';
 import { UpdateUserDto, User } from '../models/user';
 
 @Injectable({
@@ -20,7 +23,11 @@ export class UserService {
   private readonly _user = signal<User | null>(null);
   public readonly user: Signal<User | null> = this._user.asReadonly();
 
-  constructor(private _httpClient: HttpClient) {}
+  constructor(
+    private _httpClient: HttpClient,
+    private toastr: ToastrService,
+    private router: Router
+  ) {}
 
   fetchUsers() {
     if (this.isFetchingUserData()) {
@@ -32,9 +39,10 @@ export class UserService {
     return this._httpClient.get<User[]>(UsersEndpoint).subscribe({
       next: (response) => {
         this._users.set(response);
+        this._isFetchingUserData.set(false);
       },
-      error: (error) => console.log(error),
-      complete: () => {
+      error: (error) => {
+        console.log(error);
         this._isFetchingUserData.set(false);
       },
     });
@@ -51,10 +59,10 @@ export class UserService {
       .get<User>(UsersEndpoint + '/' + username)
       .subscribe({
         next: (response) => {
+          this._isFetchingUserData.set(false);
           this._user.set(response);
         },
-        error: () => {},
-        complete: () => {
+        error: () => {
           this._isFetchingUserData.set(false);
         },
       });
@@ -67,14 +75,37 @@ export class UserService {
 
     this._isUpdatingUser.set(true);
 
-    const params = new HttpParams().set('username', username);
+    const toastOverride = {
+      positionClass: 'toast-bottom-right',
+      closeButton: true,
+    };
 
     this._httpClient
-      .post(UsersEndpoint + '/' + username, updateUserDto)
+      .post<ApiResponse<null>>(UsersEndpoint + '/' + username, updateUserDto)
       .subscribe({
-        next: (response) => {},
-        error: () => {},
-        complete: () => {
+        next: (response) => {
+          this._isUpdatingUser.set(false);
+
+          if (!response.success) {
+            this.toastr.error(response.message);
+            return;
+          }
+
+          switch (response.resultCode) {
+            case ResultCode.Updated:
+              this.toastr.success(response.message, 'Success', toastOverride);
+              this.router.navigate(['/']);
+              break;
+            case ResultCode.NoChanges:
+              this.toastr.info(response.message, undefined, toastOverride);
+              this.router.navigate(['/']);
+              break;
+            default:
+              this.toastr.warning('Unhandled result', undefined, toastOverride);
+          }
+        },
+        error: () => {
+          this.toastr.error('Something went wrong.', 'Oops...', toastOverride);
           this._isUpdatingUser.set(false);
         },
       });
