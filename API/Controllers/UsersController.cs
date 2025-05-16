@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Enums;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
@@ -54,10 +55,10 @@ namespace API.Controllers
 
             return updateResult switch
             {
-                UpdateResult.NotFound => NotFound(),
-                UpdateResult.NoChanges => Ok(new { message = "No changes were made." }),
-                UpdateResult.Updated => NoContent(),
-                _ => StatusCode(500)
+                UpdateResult.NotFound => NotFound(ApiResponse<string>.Fail("User not found.", UpdateResult.NotFound)),
+                UpdateResult.NoChanges => Ok(ApiResponse<string>.Succes(null, "No changes detected", UpdateResult.NoChanges)),
+                UpdateResult.Updated => Ok(ApiResponse<string>.Succes(null, "Profile successfully updated.", UpdateResult.Updated)),
+                _ => StatusCode(500, ApiResponse<string>.Fail("An unexpected error occurred."))
             };
         }
 
