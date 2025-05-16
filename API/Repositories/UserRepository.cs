@@ -1,10 +1,12 @@
 ﻿using API.Data;
 using API.DTOs;
+using API.Enums;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace API.Repositories
 {
@@ -34,9 +36,23 @@ namespace API.Repositories
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public void Update(AppUser user)
+        public async Task<UpdateResult> UpdateMemberAsync(string username, MemberUpdateDto userDto)
         {
-            context.Users.Update(user);
+            var user = await context.Users
+                .Include(x => x.Photos)
+                .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+
+            if (user == null) return UpdateResult.NotFound;
+
+            mapper.Map(userDto, user);
+
+            var isModified = context.Entry(user).Properties.Any(p => p.IsModified);
+
+            if (!isModified) return UpdateResult.NoChanges;
+
+            await context.SaveChangesAsync();
+
+            return UpdateResult.Updated;
         }
 
         public async Task<AppUser?> GetUserByUsernameAsync(string username)
