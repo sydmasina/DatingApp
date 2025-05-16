@@ -1,4 +1,5 @@
 ﻿using API.DTOs;
+using API.Enums;
 
 namespace API.Interfaces
 {
@@ -11,7 +12,7 @@ namespace API.Interfaces
         Task AddUserAsync(T entity);
         Task<IEnumerable<MemberDto>> GetMembersAsync();
         Task<MemberDto?> GetMemberAsync(string username);
-        void Update(T entity);
+        Task<UpdateResult> UpdateMemberAsync(string username, MemberUpdateDto userDto);
         void Delete(T entity);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using API.DTOs;
+using API.Enums;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
@@ -38,6 +39,26 @@ namespace API.Controllers
             if (user == null) return NotFound();
 
             return Ok(user);
+        }
+
+        [Authorize]
+        [HttpPost("{username}")]
+        public async Task<ActionResult> UpdateUser(string username, [FromBody] MemberUpdateDto memberUpdateData)
+        {
+            if (memberUpdateData == null || username == null)
+            {
+                return BadRequest();
+            }
+
+            UpdateResult updateResult = await userRepository.UpdateMemberAsync(username, memberUpdateData);
+
+            return updateResult switch
+            {
+                UpdateResult.NotFound => NotFound(),
+                UpdateResult.NoChanges => Ok(new { message = "No changes were made." }),
+                UpdateResult.Updated => NoContent(),
+                _ => StatusCode(500)
+            };
         }
 
         [AllowAnonymous]
