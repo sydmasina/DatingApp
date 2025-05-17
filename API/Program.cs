@@ -4,9 +4,27 @@ using API.Interfaces;
 using API.Middleware;
 using API.Models;
 using API.Repositories;
+using API.Services;
+using dotenv.net;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+
+// Configure appsettings, environment variables, user secrets, etc.
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true)
+    .AddEnvironmentVariables();
+
+// Bind settings
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings"));
+
+var settings = builder.Configuration.GetSection("CloudinarySettings");
+
+
+// Register singleton services
+builder.Services.AddSingleton<CloudinaryService>();
 
 // Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
@@ -15,6 +33,8 @@ builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddScoped<IUserRepository<AppUser>, UserRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
+builder.Services.AddScoped<PhotoService>();
+
 
 var app = builder.Build();
 
