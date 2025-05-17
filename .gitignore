@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # SQL Lite Db
 *.db*
+
+# Environment variables 
+.env

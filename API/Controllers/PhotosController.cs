@@ -1,0 +1,24 @@
+﻿using API.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    public class PhotosController : BaseApiController
+    {
+        private readonly PhotoService _photoService;
+
+        public PhotosController(PhotoService photoService)
+        {
+            _photoService = photoService;
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> GetPhotos(IFormFile file)
+        {
+            var result = await _photoService.UploadImageAsync(file);
+            return Ok(result);
+        }
+    }
+}
