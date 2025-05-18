@@ -20,5 +20,13 @@ namespace API.Controllers
             var result = await _photoService.UploadImageAsync(file);
             return Ok(result);
         }
+
+        [Authorize]
+        [HttpDelete]
+        public async Task<ActionResult> DeletePhoto([FromQuery] string publicId)
+        {
+            var result = await _photoService.DeleteImageAsync(publicId);
+            return Ok(result);
+        }
     }
 }
