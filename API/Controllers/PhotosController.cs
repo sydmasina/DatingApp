@@ -14,8 +14,8 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpGet]
-        public async Task<ActionResult> GetPhotos(IFormFile file)
+        [HttpPost]
+        public async Task<ActionResult> UploadPhotos(IFormFile file)
         {
             var result = await _photoService.UploadImageAsync(file);
             return Ok(result);
