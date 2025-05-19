@@ -2,7 +2,11 @@
   <div class="container">
     <h1 class="text-center">Edit Profile</h1>
     <hr />
-    <form [formGroup]="userUpdateFormGroup" (ngSubmit)="submitUserUpdate()">
+    <form
+      [formGroup]="userUpdateFormGroup"
+      (input)="onInputChange()"
+      (ngSubmit)="submitUserUpdate()"
+    >
       <div class="row">
         <div class="mb-3 col-md-6">
           <app-form-input-field

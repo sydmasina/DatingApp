@@ -15,4 +15,5 @@ export class FormInputFieldComponent {
   @Input() label: string | null = null;
   @Input() type: string = 'text';
   @Input() placeholder: string = 'Enter input';
+  @Input() rows: number = 6;
 }

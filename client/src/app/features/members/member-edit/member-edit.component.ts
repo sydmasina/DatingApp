@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, effect, HostListener, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { CanComponentDeactivate } from '../../../shared/_guards/unsaved-changes.guard';
 import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
@@ -38,11 +39,21 @@ import { UserService } from '../../../shared/services/user.service';
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css',
 })
-export class MemberEditComponent implements OnInit {
+export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   userUpdateFormGroup!: FormGroup;
   photosToUploadFormControl: FormControl = new FormControl({ photos: null });
   GenderOptions: string[] = ['male', 'female'];
   userPhotos: string[] = [];
+
+  isFormDirty = false;
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any): void {
+    if (this.isFormDirty) {
+      $event.preventDefault();
+      $event.returnValue = '';
+    }
+  }
 
   constructor(
     public staticData: StaticDataService,
@@ -64,6 +75,20 @@ export class MemberEditComponent implements OnInit {
     this._initFormGroups();
     this.staticData.GetCountries();
     this._initUserData();
+  }
+
+  canDeactivate(): boolean {
+    if (this.isFormDirty) {
+      return confirm(
+        'You have unsaved changes. Are you sure you want to leave?'
+      );
+    }
+    return true;
+  }
+
+  onInputChange(): void {
+    this.isFormDirty = true;
+    console.log('Input change!..');
   }
 
   handleCountryInputChange() {

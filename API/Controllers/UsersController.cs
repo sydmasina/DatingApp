@@ -46,7 +46,14 @@ namespace API.Controllers
         [HttpPost("{username}")]
         public async Task<ActionResult> UpdateUser(string username, [FromBody] MemberUpdateDto memberUpdateData)
         {
-            if (memberUpdateData == null || username == null)
+            var loggedInUsername = User.Identity?.Name;
+
+            if (username != loggedInUsername)
+            {
+                return Unauthorized();
+            }
+
+            if (memberUpdateData == null)
             {
                 return BadRequest();
             }
