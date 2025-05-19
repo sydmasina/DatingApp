@@ -28,6 +28,7 @@ export interface UpdateUserDto {
   lookingFor: string;
   city: string;
   country: string;
+  dateOfBirth: string;
 }
 
 export interface UserUpdateFormValues {
@@ -40,4 +41,5 @@ export interface UserUpdateFormValues {
   lookingFor: string;
   city: string;
   country: Country;
+  dateOfBirth: string;
 }
