@@ -20,6 +20,7 @@ A full-stack dating application built with ASP.NET Core and Angular. This projec
 - **Entity Framework Core**: Object-relational mapping (ORM).
 - **AutoMapper**: Object-object mapping.
 - **JWT Authentication**: Secure user authentication.
+- **Cloudinary SDK**: .Net Cloudinary SDK for storing and managing user photos.
 
 ### Frontend
 
