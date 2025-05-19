@@ -39,9 +39,7 @@ export class NavComponent {
 
     this.authService.login(this.loginModel).subscribe({
       next: () => {},
-      error: (error) => {
-        this.showToastr(error.error, 'Login Failed');
-      },
+      error: (error) => {},
       complete: () => this.router.navigateByUrl('/members'),
     });
   }
