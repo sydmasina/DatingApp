@@ -1,23 +1,41 @@
-﻿using API.Services;
+﻿using API.Interfaces;
+using API.Models;
+using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class PhotosController : BaseApiController
+    public class PhotosController(PhotoService photoService, IUserRepository<AppUser> userRepository) : BaseApiController
     {
-        private readonly PhotoService _photoService;
-
-        public PhotosController(PhotoService photoService)
-        {
-            _photoService = photoService;
-        }
 
         [Authorize]
         [HttpPost]
         public async Task<ActionResult> UploadPhotos(IFormFile file)
         {
-            var result = await _photoService.UploadImageAsync(file);
+            var username = User.Identity?.Name;
+
+            if (username == null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await photoService.UploadImageAsync(file);
+
+            if (result.Error != null)
+            {
+                return StatusCode(500);
+            }
+
+            var photo = new Photo
+            {
+                IsMain = false,
+                PublicId = result.PublicId,
+                Url = (result.Url).ToString()
+            };
+
+            await userRepository.AddUserPhotoAsync(username, photo);
+
             return Ok(result);
         }
 
@@ -25,7 +43,22 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeletePhoto([FromQuery] string publicId)
         {
-            var result = await _photoService.DeleteImageAsync(publicId);
+            var username = User.Identity?.Name;
+
+            if (username == null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await photoService.DeleteImageAsync(publicId);
+
+            if (result.Error != null)
+            {
+                return StatusCode(500);
+            }
+
+            await userRepository.DeleteUserPhotoAsync(username, publicId);
+
             return Ok(result);
         }
     }

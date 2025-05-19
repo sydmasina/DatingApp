@@ -81,5 +81,39 @@ namespace API.Repositories
                 .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
+
+        public async Task<UpdateResult> AddUserPhotoAsync(string username, Photo photo)
+        {
+            var user = await context.Users
+                .Include(x => x.Photos)
+                .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+
+            if (user == null) return UpdateResult.NotFound;
+
+            user.Photos.Add(photo);
+
+            var result = await context.SaveChangesAsync();
+
+            return UpdateResult.Updated;
+        }
+
+        public async Task<UpdateResult> DeleteUserPhotoAsync(string username, string publicId)
+        {
+            var user = await context.Users
+                .Include(x => x.Photos)
+                .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+
+            if (user == null) return UpdateResult.NotFound;
+
+            var photo = user.Photos.SingleOrDefault(x => x.PublicId == publicId);
+
+            if (photo == null) return UpdateResult.NotFound;
+
+            user.Photos.Remove(photo);
+
+            await context.SaveChangesAsync();
+
+            return UpdateResult.Updated;
+        }
     }
 }
