@@ -22,6 +22,7 @@ import {
 import { AuthService } from '../../../shared/services/auth.service';
 import { StaticDataService } from '../../../shared/services/static-data.service';
 import { UserService } from '../../../shared/services/user.service';
+import { formatToDateOnly } from '../../../shared/utils/helpers';
 
 @Component({
   selector: 'app-member-edit',
@@ -127,6 +128,7 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     return {
       ...formValue,
       country: formValue.country.name,
+      dateOfBirth: formatToDateOnly(formValue.dateOfBirth),
     };
   }
 
