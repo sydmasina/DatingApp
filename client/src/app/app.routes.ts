@@ -3,6 +3,7 @@ import { MemberDetailComponent } from './features/members/member-detail/member-d
 import { MemberEditComponent } from './features/members/member-edit/member-edit.component';
 import { MemberListComponent } from './features/members/member-list/member-list.component';
 import { authGuard } from './shared/_guards/auth.guard';
+import { UnsavedChangesGuard } from './shared/_guards/unsaved-changes.guard';
 import { NotFoundComponent } from './shared/components/errors/not-found/not-found.component';
 import { ServerErrorComponent } from './shared/components/errors/server-error/server-error.component';
 import { TestErrorsComponent } from './shared/components/errors/test-errors/test-errors.component';
@@ -18,7 +19,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'members', component: MemberListComponent },
-      { path: 'members/edit', component: MemberEditComponent },
+      {
+        path: 'members/edit',
+        component: MemberEditComponent,
+        canDeactivate: [UnsavedChangesGuard],
+      },
       { path: 'members/:username', component: MemberDetailComponent },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
