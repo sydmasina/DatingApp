@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, HostListener, OnInit } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  effect,
+  HostListener,
+  OnInit,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -9,6 +15,7 @@ import {
 } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CanComponentDeactivate } from '../../../shared/_guards/unsaved-changes.guard';
 import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
@@ -36,7 +43,9 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
     FormSelectFieldComponent,
     FormDateFieldComponent,
     ImageGalleryComponent,
+    NgxSpinnerModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css',
 })
@@ -61,7 +70,8 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     public staticData: StaticDataService,
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private spinner: NgxSpinnerService
   ) {
     effect(() => {
       const user = this.userService.user();
@@ -77,6 +87,7 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     this._initFormGroups();
     this.staticData.GetCountries();
     this._initUserData();
+    this.spinner.show();
   }
 
   canDeactivate(): boolean {
@@ -184,6 +195,10 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
       this.staticData.isFetchingCountryData() ||
       this.userService.isUpdatingUser()
     );
+  }
+
+  get isUpdatingUser() {
+    return this.userService.isUpdatingUser();
   }
 
   get isFetchingCities() {
