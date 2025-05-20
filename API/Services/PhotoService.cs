@@ -18,8 +18,6 @@ namespace API.Services
 
         public async Task<ImageUploadResult> UploadImageAsync(IFormFile file)
         {
-            if (file.Length == 0) return null;
-
             await using var stream = file.OpenReadStream();
 
             var uploadParams = new ImageUploadParams

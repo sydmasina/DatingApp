@@ -97,7 +97,7 @@ namespace API.Repositories
             return UpdateResult.Updated;
         }
 
-        public async Task<UpdateResult> DeleteUserPhotoAsync(string username, string publicId)
+        public async Task<UpdateResult> DeleteUserPhotoByDbIdAsync(string username, int dbId)
         {
             var user = await context.Users
                 .Include(x => x.Photos)
@@ -105,7 +105,7 @@ namespace API.Repositories
 
             if (user == null) return UpdateResult.NotFound;
 
-            var photo = user.Photos.SingleOrDefault(x => x.PublicId == publicId);
+            var photo = user.Photos.SingleOrDefault(x => x.Id == dbId);
 
             if (photo == null) return UpdateResult.NotFound;
 
