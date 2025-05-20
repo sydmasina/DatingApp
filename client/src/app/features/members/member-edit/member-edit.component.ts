@@ -180,7 +180,10 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   get isLoading() {
-    return this.staticData.isFetchingCountryData();
+    return (
+      this.staticData.isFetchingCountryData() ||
+      this.userService.isUpdatingUser()
+    );
   }
 
   get isFetchingCities() {
