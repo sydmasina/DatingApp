@@ -20,6 +20,8 @@
   </p>
 
   <div class="image-grid">
+    <!-- Images that have already been uploaded -->
+    @if(this.images().length > 0){
     <div *ngFor="let img of images(); let imageIndex = index">
       <div class="image-item-wrapper">
         <div class="image-item">
@@ -27,12 +29,30 @@
           <button
             class="delete-icon animate"
             type="button"
-            (click)="deleteImage(imageIndex)"
+            (click)="deleteExistingImage(imageIndex)"
           >
             <i class="fa fa-times" aria-hidden="true"></i>
           </button>
         </div>
       </div>
     </div>
+    }
+    <!-- New, yet to upload images -->
+    @if(this.selectedImagesLocalUrls.length > 0){
+    <div *ngFor="let img of selectedImagesLocalUrls; let imageIndex = index">
+      <div class="image-item-wrapper">
+        <div class="image-item">
+          <img [src]="img" alt="Uploaded Image" />
+          <button
+            class="delete-icon animate"
+            type="button"
+            (click)="deleteLocalImage(imageIndex)"
+          >
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    }
   </div>
 </div>
