@@ -1,1 +1,12 @@
-<p>member-list works!</p>
+<ng-container *ngIf="!isLoading; else showLoading">
+  <div class="row">
+    @for(user of users; track user.id){
+    <div class="col-6 col-md-5 col-lg-4 col-xl-3">
+      <app-member-card [user]="user"></app-member-card>
+    </div>
+    }
+  </div>
+</ng-container>
+<ng-template #showLoading>
+  <mat-spinner></mat-spinner>
+</ng-template>
