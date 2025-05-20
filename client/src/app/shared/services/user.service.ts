@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { UsersEndpoint } from '../constants/api-enpoints/user';
 import { PhotoToDelete } from '../models/Photo';
 import { UpdateUserDto, User } from '../models/user';
@@ -22,7 +23,11 @@ export class UserService {
   private readonly _user = signal<User | null>(null);
   public readonly user: Signal<User | null> = this._user.asReadonly();
 
-  constructor(private _httpClient: HttpClient, private router: Router) {}
+  constructor(
+    private _httpClient: HttpClient,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   fetchUsers() {
     if (this.isFetchingUserData()) {
@@ -84,7 +89,9 @@ export class UserService {
     this._httpClient.put(UsersEndpoint, finalPayload).subscribe({
       next: (response) => {
         this._isUpdatingUser.set(false);
-        this.router.navigate(['/']);
+        this.toastr.success('Profile updated successfully.', undefined, {
+          positionClass: 'toast-bottom-right',
+        });
       },
       error: () => {
         this._isUpdatingUser.set(false);

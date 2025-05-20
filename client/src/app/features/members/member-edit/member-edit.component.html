@@ -144,8 +144,14 @@
   </div>
 </ng-container>
 <ng-template #showLoading>
-  <div class="loading-spinner-container">
-    <mat-spinner></mat-spinner>
-    <h3 class="display-6">Processing...</h3>
-  </div>
+  <ngx-spinner
+    bdColor="rgba(0, 0, 0, 0.8)"
+    size="medium"
+    color="#fff"
+    type="line-spin-clockwise-fade"
+    [fullScreen]="true"
+    ><p style="color: white">
+      {{ isUpdatingUser ? "Processing" : "Loading" }}...
+    </p></ngx-spinner
+  >
 </ng-template>
