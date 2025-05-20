@@ -119,6 +119,8 @@
           label="Upload Photos"
           [isRequired]="true"
           [images]="userPhotos"
+          [selectedImagesToUpload]="imagesToUpload"
+          (deleteImageEvent$)="handleImageDeleteEvent($event)"
         ></app-image-gallery>
       </div>
       <hr />

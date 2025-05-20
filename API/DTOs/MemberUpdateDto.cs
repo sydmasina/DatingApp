@@ -8,7 +8,9 @@
         public string? Introduction { get; set; }
         public string? Interests { get; set; }
         public string? LookingFor { get; set; }
-        public required string City { get; set; }
-        public required string Country { get; set; }
+        public required string? City { get; set; }
+        public required string? Country { get; set; }
+        public List<IFormFile>? ImagesToUpload { get; set; }
+        public List<PhotoToDelete>? ImagesToDelete { get; set; }
     }
 }

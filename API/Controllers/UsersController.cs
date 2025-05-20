@@ -1,15 +1,16 @@
 ﻿using API.DTOs;
 using API.Enums;
-using API.Helpers;
 using API.Interfaces;
 using API.Models;
+using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class UsersController(IUserRepository<AppUser> userRepository, IMapper mapper) : BaseApiController
+    public class UsersController(IUserRepository<AppUser> userRepository,
+        PhotoService photoService, IMapper mapper) : BaseApiController
     {
         [Authorize]
         [HttpDelete("{id:int}")]
@@ -43,30 +44,55 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpPost("{username}")]
-        public async Task<ActionResult> UpdateUser(string username, [FromBody] MemberUpdateDto memberUpdateData)
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser([FromForm] MemberUpdateDto memberUpdateData)
         {
-            var loggedInUsername = User.Identity?.Name;
+            var username = User.Identity?.Name;
 
-            if (username != loggedInUsername)
-            {
-                return Unauthorized();
-            }
-
-            if (memberUpdateData == null)
+            if (memberUpdateData == null || username == null)
             {
                 return BadRequest();
             }
 
             UpdateResult updateResult = await userRepository.UpdateMemberAsync(username, memberUpdateData);
 
-            return updateResult switch
+            // Delete Images
+            if (memberUpdateData.ImagesToDelete != null && memberUpdateData.ImagesToDelete.Count > 0)
             {
-                UpdateResult.NotFound => NotFound(ApiResponse<string>.Fail("User not found.", UpdateResult.NotFound)),
-                UpdateResult.NoChanges => Ok(ApiResponse<string>.Succes(null, "No changes detected", UpdateResult.NoChanges)),
-                UpdateResult.Updated => Ok(ApiResponse<string>.Succes(null, "Profile successfully updated.", UpdateResult.Updated)),
-                _ => StatusCode(500, ApiResponse<string>.Fail("An unexpected error occurred."))
-            };
+                foreach (var imageToDelete in memberUpdateData.ImagesToDelete)
+                {
+                    if (!String.IsNullOrEmpty(imageToDelete.PublicId))
+                    {
+                        await photoService.DeleteImageAsync(imageToDelete.PublicId);
+                    };
+
+                    await userRepository.DeleteUserPhotoByDbIdAsync(username, imageToDelete.DbId);
+                }
+            }
+
+            // Upload Images
+            if (memberUpdateData.ImagesToUpload != null && memberUpdateData.ImagesToUpload.Count > 0)
+            {
+                foreach (var image in memberUpdateData.ImagesToUpload)
+                {
+                    if (image.Length == 0) continue;
+
+                    var result = await photoService.UploadImageAsync(image);
+
+                    if (result.Error != null) continue;
+
+                    var photo = new Photo
+                    {
+                        IsMain = false,
+                        PublicId = result.PublicId,
+                        Url = (result.Url).ToString()
+                    };
+
+                    await userRepository.AddUserPhotoAsync(username, photo);
+                }
+            }
+
+            return Ok();
         }
 
         [AllowAnonymous]

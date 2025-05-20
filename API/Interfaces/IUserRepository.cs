@@ -16,6 +16,6 @@ namespace API.Interfaces
         Task<UpdateResult> UpdateMemberAsync(string username, MemberUpdateDto userDto);
         void Delete(T entity);
         Task<UpdateResult> AddUserPhotoAsync(string username, Photo photo);
-        Task<UpdateResult> DeleteUserPhotoAsync(string username, string publicId);
+        Task<UpdateResult> DeleteUserPhotoByDbIdAsync(string username, int publicId);
     }
 }
