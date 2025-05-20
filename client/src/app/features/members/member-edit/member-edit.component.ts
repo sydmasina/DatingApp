@@ -14,7 +14,7 @@ import { FormDateFieldComponent } from '../../../shared/components/form-fields/f
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { ImageGalleryComponent } from '../../../shared/components/form-fields/image-gallery/image-gallery.component';
-import { Photo } from '../../../shared/models/Photo';
+import { Photo, PhotoToDelete } from '../../../shared/models/Photo';
 import {
   UpdateUserDto,
   UserUpdateFormValues,
@@ -42,9 +42,10 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
 })
 export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   userUpdateFormGroup!: FormGroup;
-  photosToUploadFormControl: FormControl = new FormControl({ photos: null });
   GenderOptions: string[] = ['male', 'female'];
   userPhotos: string[] = [];
+  imagesToDelete: PhotoToDelete[] = [];
+  imagesToUpload: File[] = [];
 
   isFormDirty = false;
 
@@ -89,7 +90,6 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
 
   onInputChange(): void {
     this.isFormDirty = true;
-    console.log('Input change!..');
   }
 
   handleCountryInputChange() {
@@ -103,12 +103,18 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     this.cityFormControl.setValue('');
   }
 
-  submitUserUpdate() {
-    if (this.userUpdateFormGroup.invalid) {
-      this.userUpdateFormGroup.markAllAsTouched();
+  handleImageDeleteEvent(index: number) {
+    if (this.userData == null || this.userData.photos.length === 0) {
       return;
     }
 
+    this.imagesToDelete.push({
+      PublicId: this.userData.photos[index].publicId,
+      DbId: this.userData.photos[index].id,
+    });
+  }
+
+  submitUserUpdate() {
     const user = this.userService.user();
 
     if (user == null) {
@@ -119,7 +125,13 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
       this.userUpdateFormGroup.value
     );
 
-    this.userService.submitUpdateUserData(user.userName, updateUserDto);
+    this.isFormDirty = false;
+
+    this.userService.submitUpdateUserData(
+      updateUserDto,
+      this.imagesToDelete,
+      this.imagesToUpload
+    );
   }
 
   private _transformUserUpdateFormData(
@@ -210,10 +222,6 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   get lookingForFormControl() {
     return this.userUpdateFormGroup.get('lookingFor') as FormControl;
   }
-
-  // get photosFormControl() {
-  //   return this.userUpdateFormGroup.get('photos') as FormControl;
-  // }
 
   get interestsFormControl() {
     return this.userUpdateFormGroup.get('interests') as FormControl;
