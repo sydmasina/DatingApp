@@ -3,7 +3,7 @@ import { Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UsersEndpoint } from '../constants/api-enpoints/user';
-import { ApiResponse, ResultCode } from '../models/api-response';
+import { PhotoToDelete } from '../models/Photo';
 import { UpdateUserDto, User } from '../models/user';
 
 @Injectable({
@@ -68,46 +68,74 @@ export class UserService {
       });
   }
 
-  submitUpdateUserData(username: string, updateUserDto: UpdateUserDto) {
+  submitUpdateUserData(
+    updateUserDto: UpdateUserDto,
+    imagesToDelete: PhotoToDelete[],
+    imagesToUpload: File[]
+  ) {
     if (this.isUpdatingUser()) {
       return;
     }
 
     this._isUpdatingUser.set(true);
 
-    const toastOverride = {
-      positionClass: 'toast-bottom-right',
-      closeButton: true,
-    };
+    let fieldsFormData = this.generateFormData(updateUserDto);
+    const finalPayload = this.appendPhotosChangesToFormData(
+      fieldsFormData,
+      imagesToUpload,
+      imagesToDelete
+    );
 
-    this._httpClient
-      .post<ApiResponse<null>>(UsersEndpoint + '/' + username, updateUserDto)
-      .subscribe({
-        next: (response) => {
-          this._isUpdatingUser.set(false);
+    this._httpClient.put(UsersEndpoint, finalPayload).subscribe({
+      next: (response) => {
+        this._isUpdatingUser.set(false);
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this._isUpdatingUser.set(false);
+      },
+    });
+  }
 
-          if (!response.success) {
-            this.toastr.error(response.message);
-            return;
-          }
+  generateFormData(data: { [key: string]: any }) {
+    const formData = new FormData();
 
-          switch (response.resultCode) {
-            case ResultCode.Updated:
-              this.toastr.success(response.message, 'Success', toastOverride);
-              this.router.navigate(['/']);
-              break;
-            case ResultCode.NoChanges:
-              this.toastr.info(response.message, undefined, toastOverride);
-              this.router.navigate(['/']);
-              break;
-            default:
-              this.toastr.warning('Unhandled result', undefined, toastOverride);
-          }
-        },
-        error: () => {
-          this.toastr.error('Something went wrong.', 'Oops...', toastOverride);
-          this._isUpdatingUser.set(false);
-        },
-      });
+    for (const key in data) {
+      if (
+        data.hasOwnProperty(key) &&
+        data[key] !== undefined &&
+        data[key] !== null
+      ) {
+        formData.append(key, data[key]);
+      }
+    }
+
+    return formData;
+  }
+
+  appendPhotosChangesToFormData(
+    formData: FormData,
+    imagesToAdd: File[],
+    imagesToDelete: PhotoToDelete[]
+  ) {
+    if (imagesToAdd.length > 0) {
+      for (let i = 0; i < imagesToAdd.length; i++) {
+        formData.append('imagesToUpload', imagesToAdd[i], imagesToAdd[i].name);
+      }
+    }
+
+    if (imagesToDelete.length > 0) {
+      for (let i = 0; i < imagesToDelete.length; i++) {
+        formData.append(
+          `imagesToDelete[${i}].DbId`,
+          imagesToDelete[i].DbId.toString()
+        );
+        formData.append(
+          `imagesToDelete[${i}].PublicId`,
+          (imagesToDelete[i].PublicId ?? '').toString()
+        );
+      }
+    }
+    return formData;
   }
 }
