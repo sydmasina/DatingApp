@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterOutlet } from '@angular/router';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 import { RegisterModule } from './features/register/register.module';
 import { AuthService } from './shared/services/auth.service';
 import { SharedModule } from './shared/shared.module';
@@ -17,6 +18,7 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
     RegisterModule,
     RouterOutlet,
+    NgxSpinnerComponent,
   ],
 })
 export class AppComponent implements OnInit {

@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isLoading; else showLoading">
+<ng-container *ngIf="!isLoading">
   <div class="container">
     <h1 class="text-center">Edit Profile</h1>
     <hr />
@@ -143,15 +143,3 @@
     </form>
   </div>
 </ng-container>
-<ng-template #showLoading>
-  <ngx-spinner
-    bdColor="rgba(0, 0, 0, 0.8)"
-    size="medium"
-    color="#fff"
-    type="line-spin-clockwise-fade"
-    [fullScreen]="true"
-    ><p style="color: white">
-      {{ isUpdatingUser ? "Processing" : "Loading" }}...
-    </p></ngx-spinner
-  >
-</ng-template>
