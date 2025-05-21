@@ -23,6 +23,7 @@ export class MemberListComponent {
   get users() {
     return this._userService.users();
   }
+
   get isLoading() {
     return this._userService.isFetchingUserData();
   }

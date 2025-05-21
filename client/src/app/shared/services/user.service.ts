@@ -49,6 +49,13 @@ export class UserService {
   }
 
   fetchUserByUsername(username: string) {
+    const user = this.users().find((x) => x.userName === username);
+
+    if (user != undefined) {
+      this._user.set(user);
+      return;
+    }
+
     if (this.isFetchingUserData()) {
       return;
     }

@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isLoading; else showLoading">
+<ng-container *ngIf="!isLoading">
   <div class="row">
     @for(user of users; track user.id){
     <div class="col-6 col-md-5 col-lg-4 col-xl-3">
@@ -7,6 +7,3 @@
     }
   </div>
 </ng-container>
-<ng-template #showLoading>
-  <mat-spinner></mat-spinner>
-</ng-template>

@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isLoading && user; else showLoading">
+<ng-container *ngIf="!isLoading && user">
   <div class="container">
     <div id="carouselExampleFade" class="carousel slide carousel-fade">
       <div class="carousel-inner">
@@ -89,9 +89,3 @@
     </div>
   </div>
 </ng-container>
-<ng-template #showLoading>
-  <div class="loading-spinner-container">
-    <mat-spinner></mat-spinner>
-    <h3 class="display-6">Processing...</h3>
-  </div>
-</ng-template>
