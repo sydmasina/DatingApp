@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  EventEmitter,
+  Input,
+  input,
+  Output,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -12,35 +20,58 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class ImageGalleryComponent {
   isRequired = input<boolean>(false);
   images = input<string[]>([]);
-  selectedImagesToUpload = input<File[]>([]);
+  selectedImagesToUpload: File[] = [];
+  imageCount = computed(
+    () => this.images().length + this.selectedImagesToUpload.length
+  );
   selectedImagesLocalUrls: string[] = [];
+  hasReachedMax: boolean = false;
 
   @Input() label: string | null = null;
+  @Input() multiple: boolean = true;
+  @Input() maxCount: number = 2;
+  @Input() allowWarning: boolean = false;
   @Output() deleteImageEvent$ = new EventEmitter<number>();
+  @Output() selectedImagesToUploadChange = new EventEmitter<File[]>();
+
+  constructor() {
+    effect(() => {
+      const imageCount = this.imageCount();
+      if (imageCount >= this.maxCount) {
+        this.hasReachedMax = true;
+      } else {
+        this.hasReachedMax = false;
+      }
+    });
+  }
 
   onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files) return;
+    const inputElement = event.target as HTMLInputElement;
+    if (!inputElement.files) return;
 
-    Array.from(input.files).forEach((element) => {
-      this.selectedImagesToUpload().push(element);
+    const currentImagesCount =
+      this.images().length + this.selectedImagesToUpload.length;
+    const availableSlots = this.maxCount - currentImagesCount;
+    if (availableSlots <= 0) return;
+
+    const newFiles = Array.from(inputElement.files).slice(0, availableSlots);
+
+    // Update signal
+    this.selectedImagesToUpload = this.selectedImagesToUpload.concat(newFiles);
+    this.selectedImagesToUploadChange.emit(this.selectedImagesToUpload);
+
+    // Load preview URLs
+    newFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          this.selectedImagesLocalUrls.push(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
     });
-    const availableSlots =
-      9 - this.images().length - this.selectedImagesToUpload().length;
 
-    this.selectedImagesToUpload()
-      .slice(0, availableSlots)
-      .forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          if (reader.result && typeof reader.result === 'string') {
-            this.selectedImagesLocalUrls.push(reader.result);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-
-    input.value = '';
+    inputElement.value = '';
   }
 
   deleteExistingImage(index: number): void {
@@ -49,7 +80,7 @@ export class ImageGalleryComponent {
   }
 
   deleteLocalImage(index: number): void {
-    this.selectedImagesToUpload().splice(index, 1);
+    this.selectedImagesToUpload.splice(index, 1);
     this.selectedImagesLocalUrls.splice(index, 1);
   }
 }

@@ -5,19 +5,20 @@
 </ng-container>
 
 <div class="gallery-container">
+  @if(!hasReachedMax){
   <input
     class="form-control custom-input"
     type="file"
     placeholder="Choose photos"
     (change)="onFileSelected($event)"
     accept="image/*"
-    multiple
-    [disabled]="images.length >= 9"
+    [multiple]="multiple"
   />
-
-  <p *ngIf="images.length >= 9" class="warning">
-    You can upload up to 9 images only.
+  } @if(allowWarning){
+  <p *ngIf="imageCount() >= maxCount" class="warning">
+    You can upload up to {{ maxCount }} image{{ maxCount > 1 ? "s" : "" }} only.
   </p>
+  }
 
   <div class="image-grid">
     <!-- Images that have already been uploaded -->
