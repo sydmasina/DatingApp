@@ -95,10 +95,7 @@ export class UserService {
           positionClass: 'toast-bottom-right',
         });
 
-        const username = this.user()?.userName;
-        if (username) {
-          this.fetchUserByUsername(username);
-        }
+        this.router.navigate(['/members']);
       },
       error: () => {
         this._isUpdatingUser.set(false);
