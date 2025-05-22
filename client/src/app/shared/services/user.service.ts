@@ -3,7 +3,7 @@ import { Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UsersEndpoint } from '../constants/api-enpoints/user';
-import { PhotoToDelete } from '../models/Photo';
+import { PhotoToDelete, PhotoToUpload } from '../models/Photo';
 import { UpdateUserDto, User } from '../models/user';
 
 @Injectable({
@@ -49,13 +49,6 @@ export class UserService {
   }
 
   fetchUserByUsername(username: string) {
-    const user = this.users().find((x) => x.userName === username);
-
-    if (user != undefined) {
-      this._user.set(user);
-      return;
-    }
-
     if (this.isFetchingUserData()) {
       return;
     }
@@ -78,7 +71,7 @@ export class UserService {
   submitUpdateUserData(
     updateUserDto: UpdateUserDto,
     imagesToDelete: PhotoToDelete[],
-    imagesToUpload: File[]
+    imagesToUpload: PhotoToUpload[]
   ) {
     if (this.isUpdatingUser()) {
       return;
@@ -124,12 +117,20 @@ export class UserService {
 
   appendPhotosChangesToFormData(
     formData: FormData,
-    imagesToAdd: File[],
+    imagesToAdd: PhotoToUpload[],
     imagesToDelete: PhotoToDelete[]
   ) {
     if (imagesToAdd.length > 0) {
       for (let i = 0; i < imagesToAdd.length; i++) {
-        formData.append('imagesToUpload', imagesToAdd[i], imagesToAdd[i].name);
+        formData.append(
+          `imagesToUpload[${i}].PhotoFile`,
+          imagesToAdd[i].photoFile,
+          imagesToAdd[i].photoFile.name
+        );
+        formData.append(
+          `imagesToUpload[${i}].IsMain`,
+          imagesToAdd[i].isMain.toString()
+        );
       }
     }
 

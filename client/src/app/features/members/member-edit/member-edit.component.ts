@@ -21,7 +21,11 @@ import { FormDateFieldComponent } from '../../../shared/components/form-fields/f
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { ImageGalleryComponent } from '../../../shared/components/form-fields/image-gallery/image-gallery.component';
-import { Photo, PhotoToDelete } from '../../../shared/models/Photo';
+import {
+  Photo,
+  PhotoToDelete,
+  PhotoToUpload,
+} from '../../../shared/models/Photo';
 import {
   UpdateUserDto,
   UserUpdateFormValues,
@@ -52,9 +56,11 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
 export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   userUpdateFormGroup!: FormGroup;
   GenderOptions: string[] = ['male', 'female'];
-  userPhotos: string[] = [];
+  additionalImages: string[] = [];
+  mainPhoto: string[] = [];
+  mainPhotoToUpload: File[] = [];
   imagesToDelete: PhotoToDelete[] = [];
-  imagesToUpload: File[] = [];
+  additionalImagesToUpload: File[] = [];
 
   isFormDirty = false;
 
@@ -125,9 +131,16 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     });
   }
 
+  handleMainImageChangeEvent(image: File[]) {
+    this.mainPhotoToUpload = image;
+  }
+
+  handleAdditionalImageChangeEvent(images: File[]) {
+    this.additionalImagesToUpload = images;
+  }
+
   submitUserUpdate() {
     const user = this.userService.user();
-
     if (user == null) {
       return;
     }
@@ -138,10 +151,11 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
 
     this.isFormDirty = false;
 
+    const imagesToUpload = this._transformImagesToUpload();
     this.userService.submitUpdateUserData(
       updateUserDto,
       this.imagesToDelete,
-      this.imagesToUpload
+      imagesToUpload
     );
   }
 
@@ -153,6 +167,28 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
       country: formValue.country.name,
       dateOfBirth: formatToDateOnly(formValue.dateOfBirth),
     };
+  }
+
+  private _transformImagesToUpload(): PhotoToUpload[] {
+    let imagesToUpload: PhotoToUpload[] = [];
+
+    if (this.mainPhotoToUpload.length > 0) {
+      imagesToUpload.push({
+        photoFile: this.mainPhotoToUpload[0],
+        isMain: true,
+      });
+    }
+
+    if (this.additionalImagesToUpload.length > 0) {
+      for (let i = 0; i < this.additionalImagesToUpload.length; i++) {
+        imagesToUpload.push({
+          photoFile: this.additionalImagesToUpload[i],
+          isMain: false,
+        });
+      }
+    }
+
+    return imagesToUpload;
   }
 
   private _initUserData() {
@@ -174,7 +210,14 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   private _initUserPhotos(photos: Photo[]) {
-    this.userPhotos = photos.map((photo) => photo.url);
+    this.additionalImages = photos
+      .filter((photo) => !photo.isMain)
+      .map((photo) => photo.url);
+
+    const mainPhoto = photos.find((photo) => photo.isMain);
+    if (mainPhoto) {
+      this.mainPhoto[0] = mainPhoto.url;
+    }
   }
 
   private _initFormGroups() {
