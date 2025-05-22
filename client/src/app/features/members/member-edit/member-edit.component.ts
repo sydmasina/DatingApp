@@ -16,6 +16,7 @@ import {
 } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { RouterLink } from '@angular/router';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CanComponentDeactivate } from '../../../shared/_guards/unsaved-changes.guard';
 import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
@@ -49,6 +50,7 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
     FormDateFieldComponent,
     ImageGalleryComponent,
     NgxSpinnerModule,
+    RouterLink,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './member-edit.component.html',
