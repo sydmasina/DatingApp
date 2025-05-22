@@ -75,15 +75,15 @@ namespace API.Controllers
             {
                 foreach (var image in memberUpdateData.ImagesToUpload)
                 {
-                    if (image.Length == 0) continue;
+                    if (image.PhotoFile.Length == 0) continue;
 
-                    var result = await photoService.UploadImageAsync(image);
+                    var result = await photoService.UploadImageAsync(image.PhotoFile);
 
                     if (result.Error != null) continue;
 
                     var photo = new Photo
                     {
-                        IsMain = false,
+                        IsMain = image.IsMain,
                         PublicId = result.PublicId,
                         Url = (result.Url).ToString()
                     };

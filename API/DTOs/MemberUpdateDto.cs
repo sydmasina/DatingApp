@@ -10,7 +10,7 @@
         public string? LookingFor { get; set; }
         public required string? City { get; set; }
         public required string? Country { get; set; }
-        public List<IFormFile>? ImagesToUpload { get; set; }
+        public List<PhotoToUpload>? ImagesToUpload { get; set; }
         public List<PhotoToDelete>? ImagesToDelete { get; set; }
     }
 }
