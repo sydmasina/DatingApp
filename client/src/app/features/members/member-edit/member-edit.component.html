@@ -113,14 +113,29 @@
           ></app-form-input-field>
         </div>
       </div>
-
-      <div class="row">
+      <hr />
+      <div class="row gap-1">
         <app-image-gallery
-          label="Upload Photos"
+          label="Upload Display Image"
           [isRequired]="true"
-          [images]="userPhotos"
-          [selectedImagesToUpload]="imagesToUpload"
+          [images]="mainPhoto"
+          [maxCount]="1"
+          [multiple]="false"
+          [allowWarning]="false"
           (deleteImageEvent$)="handleImageDeleteEvent($event)"
+          (selectedImagesToUploadChange)="handleMainImageChangeEvent($event)"
+        ></app-image-gallery>
+        <br />
+        <app-image-gallery
+          label="Upload Additional Photos"
+          [isRequired]="false"
+          [images]="additionalImages"
+          [maxCount]="8"
+          [allowWarning]="true"
+          (deleteImageEvent$)="handleImageDeleteEvent($event)"
+          (selectedImagesToUploadChange)="
+            handleAdditionalImageChangeEvent($event)
+          "
         ></app-image-gallery>
       </div>
       <hr />
