@@ -8,6 +8,8 @@
   transform: scale(1, 1);
   transition-duration: 500ms;
   transition-timing-function: ease-out;
+  height: 200px;
+  object-fit: contain;
 }
 
 .card-img-wrapper {
