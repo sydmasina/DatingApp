@@ -9,5 +9,7 @@ namespace API.DTOs
 
         [Required]
         public required string Token { get; set; }
+
+        public string? PhotoUrl { get; set; }
     }
 }
