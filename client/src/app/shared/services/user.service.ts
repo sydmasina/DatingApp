@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UsersEndpoint } from '../constants/api-enpoints/user';
 import { PhotoToDelete, PhotoToUpload } from '../models/Photo';
 import { UpdateUserDto, User } from '../models/user';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +27,8 @@ export class UserService {
   constructor(
     private _httpClient: HttpClient,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private authService: AuthService
   ) {}
 
   fetchUsers() {
@@ -92,6 +94,11 @@ export class UserService {
         this.toastr.success('Profile updated successfully.', undefined, {
           positionClass: 'toast-bottom-right',
         });
+
+        const username = this.user()?.userName;
+        if (username) {
+          this.fetchUserByUsername(username);
+        }
       },
       error: () => {
         this._isUpdatingUser.set(false);

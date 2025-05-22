@@ -7,6 +7,8 @@ import {
   Input,
   input,
   Output,
+  signal,
+  WritableSignal,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -19,46 +21,46 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class ImageGalleryComponent {
   isRequired = input<boolean>(false);
-  images = input<string[]>([]);
-  selectedImagesToUpload: File[] = [];
-  imageCount = computed(
-    () => this.images().length + this.selectedImagesToUpload.length
-  );
+  selectedImagesToUpload = signal<File[]>([]);
   selectedImagesLocalUrls: string[] = [];
   hasReachedMax: boolean = false;
 
+  @Input() images!: WritableSignal<string[]>;
   @Input() label: string | null = null;
   @Input() multiple: boolean = true;
   @Input() maxCount: number = 2;
   @Input() allowWarning: boolean = false;
   @Output() deleteImageEvent$ = new EventEmitter<number>();
   @Output() selectedImagesToUploadChange = new EventEmitter<File[]>();
+  imageCount = computed(
+    () => this.images().length + this.selectedImagesToUpload().length
+  );
 
   constructor() {
-    effect(() => {
-      const imageCount = this.imageCount();
-      if (imageCount >= this.maxCount) {
-        this.hasReachedMax = true;
-      } else {
-        this.hasReachedMax = false;
-      }
-    });
+    effect(
+      () => {
+        const totalImageCount = this.imageCount();
+        this.hasReachedMax = totalImageCount >= this.maxCount;
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   onFileSelected(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     if (!inputElement.files) return;
 
-    const currentImagesCount =
-      this.images().length + this.selectedImagesToUpload.length;
-    const availableSlots = this.maxCount - currentImagesCount;
+    const availableSlots = this.maxCount - this.imageCount();
     if (availableSlots <= 0) return;
 
     const newFiles = Array.from(inputElement.files).slice(0, availableSlots);
 
     // Update signal
-    this.selectedImagesToUpload = this.selectedImagesToUpload.concat(newFiles);
-    this.selectedImagesToUploadChange.emit(this.selectedImagesToUpload);
+    this.selectedImagesToUpload.update((existingImages) => [
+      ...existingImages,
+      ...newFiles,
+    ]);
+    this.selectedImagesToUploadChange.emit(this.selectedImagesToUpload());
 
     // Load preview URLs
     newFiles.forEach((file) => {
@@ -75,12 +77,18 @@ export class ImageGalleryComponent {
   }
 
   deleteExistingImage(index: number): void {
-    this.images().splice(index, 1);
+    const imagesData = [...this.images()];
+    imagesData.splice(index, 1);
+    this.images.set(imagesData);
     this.deleteImageEvent$.emit(index);
   }
 
   deleteLocalImage(index: number): void {
-    this.selectedImagesToUpload.splice(index, 1);
+    const selectedImages = [...this.selectedImagesToUpload()];
+    selectedImages.splice(index, 1);
+    this.selectedImagesToUpload.set(selectedImages);
+    this.selectedImagesToUploadChange.emit(this.selectedImagesToUpload());
+
     this.selectedImagesLocalUrls.splice(index, 1);
   }
 }

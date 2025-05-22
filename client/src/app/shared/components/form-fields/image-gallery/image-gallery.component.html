@@ -15,7 +15,7 @@
     [multiple]="multiple"
   />
   } @if(allowWarning){
-  <p *ngIf="imageCount() >= maxCount" class="warning">
+  <p *ngIf="hasReachedMax" class="warning">
     You can upload up to {{ maxCount }} image{{ maxCount > 1 ? "s" : "" }} only.
   </p>
   }

@@ -5,6 +5,7 @@ import {
   effect,
   HostListener,
   OnInit,
+  signal,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -56,8 +57,8 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
 export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   userUpdateFormGroup!: FormGroup;
   GenderOptions: string[] = ['male', 'female'];
-  additionalImages: string[] = [];
-  mainPhoto: string[] = [];
+  additionalImages = signal<string[]>([]);
+  mainPhoto = signal<string[]>([]);
   mainPhotoToUpload: File[] = [];
   imagesToDelete: PhotoToDelete[] = [];
   additionalImagesToUpload: File[] = [];
@@ -80,14 +81,18 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     private userService: UserService,
     private spinner: NgxSpinnerService
   ) {
-    effect(() => {
-      const user = this.userService.user();
-      if (user) {
-        this.userUpdateFormGroup.patchValue(user);
-        this._initSelectedCountry(user.country);
-        this._initUserPhotos(user.photos);
-      }
-    });
+    effect(
+      () => {
+        const user = this.userService.user();
+        console.log(user);
+        if (user) {
+          this.userUpdateFormGroup.patchValue(user);
+          this._initSelectedCountry(user.country);
+          this._initUserPhotos(user.photos);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   ngOnInit(): void {
@@ -141,12 +146,12 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
       PublicId: this.userData.photos[index].publicId,
       DbId: this.userData.photos[index].id,
     });
-    this.hasUploadedMainImage = false;
+    this.hasUploadedMainImage = this.mainPhotoToUpload.length !== 0;
   }
 
   handleMainImageChangeEvent(image: File[]) {
     this.mainPhotoToUpload = image;
-    this.hasUploadedMainImage = true;
+    this.hasUploadedMainImage = this.mainPhotoToUpload.length !== 0;
   }
 
   handleAdditionalImageChangeEvent(images: File[]) {
@@ -224,16 +229,19 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   private _initUserPhotos(photos: Photo[]) {
-    this.additionalImages = photos
+    const additionalPhotos = photos
       .filter((photo) => !photo.isMain)
       .map((photo) => photo.url);
+    this.additionalImages.set(additionalPhotos);
 
     const mainPhoto = photos.find((photo) => photo.isMain);
     if (!mainPhoto) {
       this.hasUploadedMainImage = false;
       return;
     }
-    this.mainPhoto[0] = mainPhoto.url;
+
+    this.hasUploadedMainImage = true;
+    this.mainPhoto.set([mainPhoto.url]);
   }
 
   private _initFormGroups() {
