@@ -63,6 +63,7 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   additionalImagesToUpload: File[] = [];
 
   isFormDirty = false;
+  hasUploadedMainImage: boolean = false;
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any): void {
@@ -131,8 +132,21 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     });
   }
 
+  handleMainImageDeleteEvent(index: number) {
+    if (this.userData == null || this.userData.photos.length === 0) {
+      return;
+    }
+
+    this.imagesToDelete.push({
+      PublicId: this.userData.photos[index].publicId,
+      DbId: this.userData.photos[index].id,
+    });
+    this.hasUploadedMainImage = false;
+  }
+
   handleMainImageChangeEvent(image: File[]) {
     this.mainPhotoToUpload = image;
+    this.hasUploadedMainImage = true;
   }
 
   handleAdditionalImageChangeEvent(images: File[]) {
@@ -215,9 +229,11 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
       .map((photo) => photo.url);
 
     const mainPhoto = photos.find((photo) => photo.isMain);
-    if (mainPhoto) {
-      this.mainPhoto[0] = mainPhoto.url;
+    if (!mainPhoto) {
+      this.hasUploadedMainImage = false;
+      return;
     }
+    this.mainPhoto[0] = mainPhoto.url;
   }
 
   private _initFormGroups() {
