@@ -19,6 +19,7 @@ import { AuthService } from '../../services/auth.service';
     TitleCasePipe,
   ],
   templateUrl: './nav.component.html',
+  styleUrl: './nav.component.css',
 })
 export class NavComponent {
   constructor(
@@ -54,5 +55,9 @@ export class NavComponent {
   logout() {
     this.authService.logout();
     this.router.navigateByUrl('/');
+  }
+
+  get loggedInUser() {
+    return this.authService.currentUser();
   }
 }

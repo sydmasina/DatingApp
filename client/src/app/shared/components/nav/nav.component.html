@@ -52,6 +52,16 @@
         </ul>
       </div>
 
+      <div class="m-2">
+        <ng-container *ngIf="loggedInUser?.photoUrl">
+          <img
+            src="{{ loggedInUser?.photoUrl || 'assets/images/user-icon.jpeg' }}"
+            class="image-thumb-nail"
+            alt="image-thumb"
+          />
+        </ng-container>
+      </div>
+
       } @if(!authService.currentUser()){
       <form
         #loginForm="ngForm"
