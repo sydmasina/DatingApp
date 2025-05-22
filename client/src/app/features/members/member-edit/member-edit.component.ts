@@ -5,6 +5,7 @@ import {
   effect,
   HostListener,
   OnInit,
+  signal,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -21,7 +22,11 @@ import { FormDateFieldComponent } from '../../../shared/components/form-fields/f
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { ImageGalleryComponent } from '../../../shared/components/form-fields/image-gallery/image-gallery.component';
-import { Photo, PhotoToDelete } from '../../../shared/models/Photo';
+import {
+  Photo,
+  PhotoToDelete,
+  PhotoToUpload,
+} from '../../../shared/models/Photo';
 import {
   UpdateUserDto,
   UserUpdateFormValues,
@@ -52,11 +57,14 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
 export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   userUpdateFormGroup!: FormGroup;
   GenderOptions: string[] = ['male', 'female'];
-  userPhotos: string[] = [];
+  additionalImages = signal<string[]>([]);
+  mainPhoto = signal<string[]>([]);
+  mainPhotoToUpload: File[] = [];
   imagesToDelete: PhotoToDelete[] = [];
-  imagesToUpload: File[] = [];
+  additionalImagesToUpload: File[] = [];
 
   isFormDirty = false;
+  hasUploadedMainImage: boolean = false;
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any): void {
@@ -73,14 +81,18 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     private userService: UserService,
     private spinner: NgxSpinnerService
   ) {
-    effect(() => {
-      const user = this.userService.user();
-      if (user) {
-        this.userUpdateFormGroup.patchValue(user);
-        this._initSelectedCountry(user.country);
-        this._initUserPhotos(user.photos);
-      }
-    });
+    effect(
+      () => {
+        const user = this.userService.user();
+        console.log(user);
+        if (user) {
+          this.userUpdateFormGroup.patchValue(user);
+          this._initSelectedCountry(user.country);
+          this._initUserPhotos(user.photos);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   ngOnInit(): void {
@@ -125,9 +137,29 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     });
   }
 
+  handleMainImageDeleteEvent(index: number) {
+    if (this.userData == null || this.userData.photos.length === 0) {
+      return;
+    }
+
+    this.imagesToDelete.push({
+      PublicId: this.userData.photos[index].publicId,
+      DbId: this.userData.photos[index].id,
+    });
+    this.hasUploadedMainImage = this.mainPhotoToUpload.length !== 0;
+  }
+
+  handleMainImageChangeEvent(image: File[]) {
+    this.mainPhotoToUpload = image;
+    this.hasUploadedMainImage = this.mainPhotoToUpload.length !== 0;
+  }
+
+  handleAdditionalImageChangeEvent(images: File[]) {
+    this.additionalImagesToUpload = images;
+  }
+
   submitUserUpdate() {
     const user = this.userService.user();
-
     if (user == null) {
       return;
     }
@@ -138,10 +170,11 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
 
     this.isFormDirty = false;
 
+    const imagesToUpload = this._transformImagesToUpload();
     this.userService.submitUpdateUserData(
       updateUserDto,
       this.imagesToDelete,
-      this.imagesToUpload
+      imagesToUpload
     );
   }
 
@@ -153,6 +186,28 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
       country: formValue.country.name,
       dateOfBirth: formatToDateOnly(formValue.dateOfBirth),
     };
+  }
+
+  private _transformImagesToUpload(): PhotoToUpload[] {
+    let imagesToUpload: PhotoToUpload[] = [];
+
+    if (this.mainPhotoToUpload.length > 0) {
+      imagesToUpload.push({
+        photoFile: this.mainPhotoToUpload[0],
+        isMain: true,
+      });
+    }
+
+    if (this.additionalImagesToUpload.length > 0) {
+      for (let i = 0; i < this.additionalImagesToUpload.length; i++) {
+        imagesToUpload.push({
+          photoFile: this.additionalImagesToUpload[i],
+          isMain: false,
+        });
+      }
+    }
+
+    return imagesToUpload;
   }
 
   private _initUserData() {
@@ -174,7 +229,19 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   private _initUserPhotos(photos: Photo[]) {
-    this.userPhotos = photos.map((photo) => photo.url);
+    const additionalPhotos = photos
+      .filter((photo) => !photo.isMain)
+      .map((photo) => photo.url);
+    this.additionalImages.set(additionalPhotos);
+
+    const mainPhoto = photos.find((photo) => photo.isMain);
+    if (!mainPhoto) {
+      this.hasUploadedMainImage = false;
+      return;
+    }
+
+    this.hasUploadedMainImage = true;
+    this.mainPhoto.set([mainPhoto.url]);
   }
 
   private _initFormGroups() {

@@ -1,15 +1,26 @@
 <ng-container *ngIf="!isLoading && user">
   <div class="container">
-    <div id="carouselExampleFade" class="carousel slide carousel-fade">
+    <div id="carouselExampleFade" class="carousel slide carousel-slide">
       <div class="carousel-inner">
-        <ng-container *ngFor="let photo of user.photos">
+        <ng-container *ngIf="user.photoUrl">
           <div class="carousel-item active">
             <img
-              src="{{ photo.url || 'assets/images/user-icon.jpeg' }}"
-              class="d-block w-100"
+              src="{{ user.photoUrl || 'assets/images/user-icon.jpeg' }}"
+              class="d-block w-100 card-img-top"
               [alt]="user.userName + 'image'"
             />
           </div>
+        </ng-container>
+        <ng-container *ngFor="let photo of user.photos">
+          <ng-container *ngIf="!photo.isMain">
+            <div class="carousel-item">
+              <img
+                src="{{ photo.url || 'assets/images/user-icon.jpeg' }}"
+                class="d-block w-100"
+                [alt]="user.userName + 'image'"
+              />
+            </div>
+          </ng-container>
         </ng-container>
       </div>
 

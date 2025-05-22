@@ -113,14 +113,29 @@
           ></app-form-input-field>
         </div>
       </div>
-
-      <div class="row">
+      <hr />
+      <div class="row gap-1">
         <app-image-gallery
-          label="Upload Photos"
+          label="Upload Main Image"
           [isRequired]="true"
-          [images]="userPhotos"
-          [selectedImagesToUpload]="imagesToUpload"
+          [images]="mainPhoto"
+          [maxCount]="1"
+          [multiple]="false"
+          [allowWarning]="false"
+          (deleteImageEvent$)="handleMainImageDeleteEvent($event)"
+          (selectedImagesToUploadChange)="handleMainImageChangeEvent($event)"
+        ></app-image-gallery>
+        <br />
+        <app-image-gallery
+          label="Upload Additional Photos"
+          [isRequired]="false"
+          [images]="additionalImages"
+          [maxCount]="4"
+          [allowWarning]="true"
           (deleteImageEvent$)="handleImageDeleteEvent($event)"
+          (selectedImagesToUploadChange)="
+            handleAdditionalImageChangeEvent($event)
+          "
         ></app-image-gallery>
       </div>
       <hr />
@@ -133,7 +148,7 @@
           Cancel
         </button>
         <button
-          [disabled]="userUpdateFormGroup.invalid"
+          [disabled]="userUpdateFormGroup.invalid || !hasUploadedMainImage"
           type="submit"
           class="btn btn-primary col-sm-3 col-md-2"
         >
