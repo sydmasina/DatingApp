@@ -45,4 +45,9 @@ export class AuthService {
     localStorage.removeItem('user');
     this.currentUser.set(null);
   }
+
+  isLoggedIn() {
+    const user = localStorage.getItem('user');
+    return user ? true : false;
+  }
 }

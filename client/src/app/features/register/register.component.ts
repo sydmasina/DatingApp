@@ -1,42 +1,71 @@
 import { CommonModule } from '@angular/common';
-import { Component, output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, output } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { FormInputFieldComponent } from '../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { Register } from '../../shared/models/register';
 import { AuthService } from '../../shared/services/auth.service';
+import { passwordMatchValidator } from '../../shared/utils/form-validator-functions';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormInputFieldComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   cancelRegister = output<boolean>();
-  registerModel: Register = {
-    username: '',
-    password: '',
-  };
+  registerFormGroup!: FormGroup;
 
   constructor(
     private authService: AuthService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private formBuilder: FormBuilder
   ) {}
 
+  ngOnInit(): void {
+    this._initFormGroup();
+  }
+
+  private _initFormGroup() {
+    this.registerFormGroup = this.formBuilder.group(
+      {
+        username: ['', [Validators.required]],
+        password: ['', [Validators.required]],
+        confirmPassword: ['', [Validators.required, passwordMatchValidator]],
+      },
+      { validators: passwordMatchValidator }
+    );
+  }
+
   register() {
-    if (
-      this.registerModel.username === '' ||
-      this.registerModel.password === ''
-    ) {
+    this.registerFormGroup.markAllAsTouched();
+
+    if (this.registerFormGroup.errors?.['passwordMismatch']) {
+      this.toastrService.error("Your passwords don't match.");
+      return;
+    }
+
+    if (this.registerFormGroup.invalid) {
       this.toastrService.error(
-        'Password and username is required!',
-        'Invalid input'
+        'Please provide username and password to proceed.'
       );
       return;
     }
 
-    this.authService.register(this.registerModel).subscribe({
+    const registerPayload: Register = {
+      username: this.usernameFormControl.value,
+      password: this.passwordFormControl.value,
+    };
+
+    this.authService.register(registerPayload).subscribe({
       next: (response) => {
         this.cancel();
       },
@@ -55,5 +84,17 @@ export class RegisterComponent {
 
   cancel() {
     this.cancelRegister.emit(false);
+  }
+
+  get usernameFormControl() {
+    return this.registerFormGroup.get('username') as FormControl;
+  }
+
+  get passwordFormControl() {
+    return this.registerFormGroup.get('password') as FormControl;
+  }
+
+  get confirmPasswordFormControl() {
+    return this.registerFormGroup.get('confirmPassword') as FormControl;
   }
 }

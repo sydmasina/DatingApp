@@ -6,6 +6,7 @@
       [formGroup]="userUpdateFormGroup"
       (input)="onInputChange()"
       (ngSubmit)="submitUserUpdate()"
+      autocomplete="off"
     >
       <div class="row">
         <div class="mb-3 col-md-6">
@@ -127,7 +128,7 @@
         ></app-image-gallery>
         <br />
         <app-image-gallery
-          label="Additional Photos"
+          label="Additional Images"
           [isRequired]="false"
           [images]="additionalImages"
           [maxCount]="4"
