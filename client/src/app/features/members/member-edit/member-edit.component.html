@@ -116,7 +116,7 @@
       <hr />
       <div class="row gap-1">
         <app-image-gallery
-          label="Upload Main Image"
+          label="Main Image"
           [isRequired]="true"
           [images]="mainPhoto"
           [maxCount]="1"
@@ -127,7 +127,7 @@
         ></app-image-gallery>
         <br />
         <app-image-gallery
-          label="Upload Additional Photos"
+          label="Additional Photos"
           [isRequired]="false"
           [images]="additionalImages"
           [maxCount]="4"
@@ -147,11 +147,7 @@
         >
           Cancel
         </button>
-        <button
-          [disabled]="userUpdateFormGroup.invalid || !hasUploadedMainImage"
-          type="submit"
-          class="btn btn-primary col-sm-3 col-md-2"
-        >
+        <button type="submit" class="btn btn-primary col-sm-3 col-md-2">
           Save
         </button>
       </div>

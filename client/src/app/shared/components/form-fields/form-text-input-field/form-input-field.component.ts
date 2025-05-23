@@ -16,4 +16,20 @@ export class FormInputFieldComponent {
   @Input() type: string = 'text';
   @Input() placeholder: string = 'Enter input';
   @Input() rows: number = 6;
+
+  getMessage(): string {
+    if (this.formControlInput().hasError('valid')) {
+      return `${this.label ?? 'Field'} is required`;
+    }
+
+    if (this.formControlInput().hasError('required')) {
+      return `${this.label ?? 'Field'} is required`;
+    }
+
+    return `${this.label ?? 'Field'} is required`;
+  }
+
+  get showError() {
+    return this.formControlInput().invalid && this.formControlInput().touched;
+  }
 }

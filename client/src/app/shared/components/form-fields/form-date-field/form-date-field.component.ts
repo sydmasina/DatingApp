@@ -36,4 +36,20 @@ export class FormDateFieldComponent {
   formControlInput = input.required<FormControl>();
   isRequired = input<boolean>(false);
   isDisabled = input<boolean>();
+
+  getMessage(): string {
+    if (this.formControlInput().hasError('valid')) {
+      return `${this.label ?? 'Field'} is required`;
+    }
+
+    if (this.formControlInput().hasError('required')) {
+      return `${this.label ?? 'Field'} is required`;
+    }
+
+    return `${this.label ?? 'Field'} is required`;
+  }
+
+  get showError() {
+    return this.formControlInput().invalid && this.formControlInput().touched;
+  }
 }
