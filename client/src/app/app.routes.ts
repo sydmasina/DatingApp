@@ -4,6 +4,7 @@ import { MemberEditComponent } from './features/members/member-edit/member-edit.
 import { MemberListComponent } from './features/members/member-list/member-list.component';
 import { MessagesComponent } from './features/messages/messages.component';
 import { authGuard } from './shared/_guards/auth.guard';
+import { redirectIfAuthenticatedGuard } from './shared/_guards/redirect-if-authenticated.guard';
 import { UnsavedChangesGuard } from './shared/_guards/unsaved-changes.guard';
 import { NotFoundComponent } from './shared/components/errors/not-found/not-found.component';
 import { ServerErrorComponent } from './shared/components/errors/server-error/server-error.component';
@@ -11,7 +12,11 @@ import { TestErrorsComponent } from './shared/components/errors/test-errors/test
 import { HomeComponent } from './shared/components/home/home.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  {
+    path: '',
+    component: HomeComponent,
+    canActivate: [redirectIfAuthenticatedGuard],
+  },
   {
     path: '',
     runGuardsAndResolvers: 'always',
@@ -30,5 +35,10 @@ export const routes: Routes = [
       { path: 'server-error', component: ServerErrorComponent },
     ],
   },
-  { path: '**', component: HomeComponent, pathMatch: 'full' },
+  {
+    path: '**',
+    component: HomeComponent,
+    pathMatch: 'full',
+    canActivate: [redirectIfAuthenticatedGuard],
+  },
 ];
