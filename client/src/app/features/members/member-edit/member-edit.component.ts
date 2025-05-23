@@ -89,7 +89,7 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
       () => {
         const user = this.userService.user();
         if (user) {
-          // this.userUpdateFormGroup.patchValue(user);
+          this.userUpdateFormGroup.patchValue(user);
           this._initSelectedCountry(user.country);
           this._initUserPhotos(user.photos);
         }
@@ -168,23 +168,23 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     console.log('isFormValid: ', isFormValid);
     if (!isFormValid) return;
 
-    // const user = this.userService.user();
-    // if (user == null) {
-    //   return;
-    // }
+    const user = this.userService.user();
+    if (user == null) {
+      return;
+    }
 
-    // const updateUserDto: UpdateUserDto = this._transformUserUpdateFormData(
-    //   this.userUpdateFormGroup.value
-    // );
+    const updateUserDto: UpdateUserDto = this._transformUserUpdateFormData(
+      this.userUpdateFormGroup.value
+    );
 
-    // this.isFormDirty = false;
+    this.isFormDirty = false;
 
-    // const imagesToUpload = this._transformImagesToUpload();
-    // this.userService.submitUpdateUserData(
-    //   updateUserDto,
-    //   this.imagesToDelete,
-    //   imagesToUpload
-    // );
+    const imagesToUpload = this._transformImagesToUpload();
+    this.userService.submitUpdateUserData(
+      updateUserDto,
+      this.imagesToDelete,
+      imagesToUpload
+    );
   }
 
   validateForm(): boolean {
