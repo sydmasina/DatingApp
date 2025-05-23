@@ -26,6 +26,10 @@ export class FormInputFieldComponent {
       return `${this.label ?? 'Field'} is required`;
     }
 
+    if (this.formControlInput().errors?.['passwordMismatch']) {
+      return `Passwords do not match`;
+    }
+
     return `${this.label ?? 'Field'} is required`;
   }
 
