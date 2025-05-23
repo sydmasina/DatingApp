@@ -91,4 +91,12 @@ export class ImageGalleryComponent {
 
     this.selectedImagesLocalUrls.splice(index, 1);
   }
+
+  getMessage(): string {
+    return `${this.label ?? 'Field'} is required`;
+  }
+
+  get showError() {
+    return this.isRequired() && this.imageCount() === 0;
+  }
 }

@@ -4,7 +4,7 @@
       {{ label }} <ng-container *ngIf="isRequired()">*</ng-container>
     </label>
   </ng-container>
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" [ngClass]="{ error: showError }">
     <input
       matInput
       [placeholder]="placeholderInput"
@@ -19,3 +19,8 @@
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 </fieldset>
+<ng-container *ngIf="showError">
+  <div>
+    <span class="error-message">{{ getMessage() }}</span>
+  </div>
+</ng-container>

@@ -12,6 +12,7 @@
     id="floatingTextarea"
     [required]="isRequired()"
     [rows]="rows"
+    [ngClass]="{ error: showError }"
   ></textarea>
 </ng-container>
 <ng-template #showDefault>
@@ -22,5 +23,11 @@
     class="form-control"
     id="usernameInput"
     [required]="isRequired()"
+    [ngClass]="{ error: showError }"
   />
 </ng-template>
+<ng-container *ngIf="showError">
+  <div>
+    <span class="error-message">{{ getMessage() }}</span>
+  </div>
+</ng-container>

@@ -18,6 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 import { CanComponentDeactivate } from '../../../shared/_guards/unsaved-changes.guard';
 import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
@@ -81,14 +82,14 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private toastr: ToastrService
   ) {
     effect(
       () => {
         const user = this.userService.user();
-        console.log(user);
         if (user) {
-          this.userUpdateFormGroup.patchValue(user);
+          // this.userUpdateFormGroup.patchValue(user);
           this._initSelectedCountry(user.country);
           this._initUserPhotos(user.photos);
         }
@@ -161,23 +162,55 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   }
 
   submitUserUpdate() {
-    const user = this.userService.user();
-    if (user == null) {
-      return;
+    this.userUpdateFormGroup.markAllAsTouched();
+
+    const isFormValid = this.validateForm();
+    console.log('isFormValid: ', isFormValid);
+    if (!isFormValid) return;
+
+    // const user = this.userService.user();
+    // if (user == null) {
+    //   return;
+    // }
+
+    // const updateUserDto: UpdateUserDto = this._transformUserUpdateFormData(
+    //   this.userUpdateFormGroup.value
+    // );
+
+    // this.isFormDirty = false;
+
+    // const imagesToUpload = this._transformImagesToUpload();
+    // this.userService.submitUpdateUserData(
+    //   updateUserDto,
+    //   this.imagesToDelete,
+    //   imagesToUpload
+    // );
+  }
+
+  validateForm(): boolean {
+    if (this.userUpdateFormGroup.invalid) {
+      this.toastr.error(
+        'Please fill in all required inputs to proceed',
+        'Missing fields',
+        {
+          positionClass: 'toast-bottom-right',
+        }
+      );
+      return false;
     }
 
-    const updateUserDto: UpdateUserDto = this._transformUserUpdateFormData(
-      this.userUpdateFormGroup.value
-    );
+    if (!this.hasUploadedMainImage) {
+      this.toastr.error(
+        'Please upload main image to proceed',
+        'Main image missing',
+        {
+          positionClass: 'toast-bottom-right',
+        }
+      );
+      return false;
+    }
 
-    this.isFormDirty = false;
-
-    const imagesToUpload = this._transformImagesToUpload();
-    this.userService.submitUpdateUserData(
-      updateUserDto,
-      this.imagesToDelete,
-      imagesToUpload
-    );
+    return true;
   }
 
   private _transformUserUpdateFormData(

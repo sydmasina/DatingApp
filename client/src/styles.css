@@ -16,3 +16,20 @@ body {
   align-items: center;
   height: 100vh;
 }
+
+.error {
+  border: 2px solid #f01e07 !important;
+  background-color: #fdecea;
+  color: #c0392b;
+}
+
+.error:focus {
+  border: 2px solid #f01e07 !important;
+  box-shadow: 0 0 5px 3px #e74c3c;
+}
+
+.error-message {
+  color: #ec402d;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
