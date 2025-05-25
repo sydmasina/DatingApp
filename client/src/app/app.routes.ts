@@ -3,6 +3,7 @@ import { MemberDetailComponent } from './features/members/member-detail/member-d
 import { MemberEditComponent } from './features/members/member-edit/member-edit.component';
 import { MemberListComponent } from './features/members/member-list/member-list.component';
 import { MessagesComponent } from './features/messages/messages.component';
+import { PrivacyPolicyComponent } from './features/privacy-policy/privacy-policy.component';
 import { authGuard } from './shared/_guards/auth.guard';
 import { redirectIfAuthenticatedGuard } from './shared/_guards/redirect-if-authenticated.guard';
 import { UnsavedChangesGuard } from './shared/_guards/unsaved-changes.guard';
@@ -35,6 +36,7 @@ export const routes: Routes = [
       { path: 'server-error', component: ServerErrorComponent },
     ],
   },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
   {
     path: '**',
     component: HomeComponent,
