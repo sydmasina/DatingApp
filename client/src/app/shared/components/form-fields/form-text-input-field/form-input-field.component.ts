@@ -26,6 +26,18 @@ export class FormInputFieldComponent {
       return `${this.label ?? 'Field'} is required`;
     }
 
+    if (this.formControlInput().hasError('minlength')) {
+      return `${this.label ?? 'Field'} must be at least ${
+        this.formControlInput().errors?.['minlength'].requiredLength
+      } characters`;
+    }
+
+    if (this.formControlInput().hasError('maxlength')) {
+      return `${this.label ?? 'Field'} must be not be more than ${
+        this.formControlInput().errors?.['maxlength'].requiredLength
+      } characters`;
+    }
+
     if (this.formControlInput().errors?.['passwordMismatch']) {
       return `Passwords do not match`;
     }
