@@ -14,3 +14,9 @@ export const max_city = 50;
 export const min_city = 4;
 export const max_country = 50;
 export const min_country = 4;
+
+const todayDate = new Date();
+export const max_dateOfBirth = new Date();
+max_dateOfBirth.setFullYear(todayDate.getFullYear() - 18);
+export const min_dateOfBirth = new Date();
+min_dateOfBirth.setFullYear(todayDate.getFullYear() - 110);
