@@ -1,15 +1,15 @@
 <ng-container *ngIf="label != null">
-  <label for="usernameInput" class="form-label">
+  <label [for]="uniqueId" class="form-label">
     {{ label }} <ng-container *ngIf="isRequired()">*</ng-container>
   </label>
 </ng-container>
 
 <ng-container *ngIf="type === 'textarea'; else showDefault">
   <textarea
+    [id]="uniqueId"
     [formControl]="formControlInput()"
     class="form-control"
     [placeholder]="placeholder"
-    id="floatingTextarea"
     [required]="isRequired()"
     [rows]="rows"
     [ngClass]="{ error: showError }"
@@ -17,11 +17,11 @@
 </ng-container>
 <ng-template #showDefault>
   <input
+    [id]="uniqueId"
     [formControl]="formControlInput()"
     [type]="type"
     [placeholder]="placeholder"
     class="form-control"
-    id="usernameInput"
     [required]="isRequired()"
     [ngClass]="{ error: showError }"
   />
