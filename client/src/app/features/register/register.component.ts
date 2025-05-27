@@ -13,14 +13,29 @@ import { FormDateFieldComponent } from '../../shared/components/form-fields/form
 import { FormSelectFieldComponent } from '../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { ImageGalleryComponent } from '../../shared/components/form-fields/image-gallery/image-gallery.component';
-import { PhotoToDelete, PhotoToUpload } from '../../shared/models/Photo';
 import {
-  Register,
-  RegisterDto,
-  RegisterFormValues,
-} from '../../shared/models/register';
+  max_city,
+  max_country,
+  max_gender,
+  max_interests,
+  max_introduction,
+  max_knownAs,
+  max_lookingFor,
+  max_username,
+  min_city,
+  min_country,
+  min_gender,
+  min_interests,
+  min_introduction,
+  min_knownAs,
+  min_lookingFor,
+  min_username,
+} from '../../shared/constants/user-form-constants';
+import { PhotoToDelete, PhotoToUpload } from '../../shared/models/Photo';
+import { RegisterDto, RegisterFormValues } from '../../shared/models/register';
 import { AuthService } from '../../shared/services/auth.service';
 import { StaticDataService } from '../../shared/services/static-data.service';
+import { UserService } from '../../shared/services/user.service';
 import { passwordMatchValidator } from '../../shared/utils/form-validator-functions';
 import { formatToDateOnly } from '../../shared/utils/helpers';
 
@@ -61,10 +76,10 @@ export class RegisterComponent implements OnInit, CanComponentDeactivate {
 
   constructor(
     private authService: AuthService,
-    private toastrService: ToastrService,
     private formBuilder: FormBuilder,
     public staticData: StaticDataService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -128,38 +143,17 @@ export class RegisterComponent implements OnInit, CanComponentDeactivate {
   register() {
     this.registerFormGroup.markAllAsTouched();
 
-    if (this.registerFormGroup.errors?.['passwordMismatch']) {
-      this.toastrService.error("Your passwords don't match.");
-      return;
-    }
+    const isFormValid = this.validateForm();
 
-    if (this.registerFormGroup.invalid) {
-      this.toastrService.error(
-        'Please provide username and password to proceed.'
-      );
-      return;
-    }
+    if (!isFormValid) return;
 
-    const registerPayload: Register = {
-      username: this.usernameFormControl.value,
-      password: this.passwordFormControl.value,
-    };
+    const registerDtoPayload: RegisterDto = this._transformRegisterFormData(
+      this.registerFormGroup.value
+    );
+    const imagesToUpload = this._transformImagesToUpload();
 
-    this.authService.register(registerPayload).subscribe({
-      next: (response) => {
-        this.cancel();
-      },
-      error: (error) => {
-        this.toastrService.error(
-          'An unexpected error occurred while submitting request',
-          'Request failed',
-          {
-            positionClass: 'toast-bottom-left',
-            closeButton: true,
-          }
-        );
-      },
-    });
+    this.isFormDirty = false;
+    this.authService.register(registerDtoPayload, imagesToUpload);
   }
 
   cancel() {
@@ -173,72 +167,65 @@ export class RegisterComponent implements OnInit, CanComponentDeactivate {
           '',
           [
             Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(8),
+            Validators.minLength(min_username),
+            Validators.maxLength(max_username),
           ],
         ],
-        dateOfBirth: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(8),
-          ],
-        ],
+        dateOfBirth: ['', [Validators.required]],
         knownAs: [
           '',
           [
             Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(50),
+            Validators.minLength(min_knownAs),
+            Validators.maxLength(max_knownAs),
           ],
         ],
         gender: [
           '',
           [
             Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(8),
+            Validators.minLength(min_gender),
+            Validators.maxLength(max_gender),
           ],
         ],
         introduction: [
           '',
           [
             Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(150),
+            Validators.minLength(min_introduction),
+            Validators.maxLength(max_introduction),
           ],
         ],
         interests: [
           '',
           [
             Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(100),
+            Validators.minLength(min_interests),
+            Validators.maxLength(max_interests),
           ],
         ],
         lookingFor: [
           '',
           [
             Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(50),
+            Validators.minLength(min_lookingFor),
+            Validators.maxLength(max_lookingFor),
           ],
         ],
         city: [
           '',
           [
             Validators.required,
-            Validators.minLength(3),
-            Validators.maxLength(50),
+            Validators.minLength(min_city),
+            Validators.maxLength(max_city),
           ],
         ],
         country: [
           '',
           [
             Validators.required,
-            Validators.minLength(3),
-            Validators.maxLength(50),
+            Validators.minLength(min_country),
+            Validators.maxLength(max_country),
           ],
         ],
         password: [
