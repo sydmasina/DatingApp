@@ -1,0 +1,16 @@
+export const max_username = 20;
+export const min_username = 4;
+export const max_knownAs = 50;
+export const min_knownAs = 2;
+export const max_gender = 8;
+export const min_gender = 4;
+export const max_introduction = 150;
+export const min_introduction = 4;
+export const max_interests = 100;
+export const min_interests = 4;
+export const max_lookingFor = 50;
+export const min_lookingFor = 4;
+export const max_city = 50;
+export const min_city = 4;
+export const max_country = 50;
+export const min_country = 4;

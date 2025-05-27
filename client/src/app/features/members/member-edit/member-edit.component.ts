@@ -24,6 +24,22 @@ import { FormSelectFieldComponent } from '../../../shared/components/form-fields
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { ImageGalleryComponent } from '../../../shared/components/form-fields/image-gallery/image-gallery.component';
 import {
+  max_city,
+  max_country,
+  max_gender,
+  max_interests,
+  max_introduction,
+  max_knownAs,
+  max_lookingFor,
+  min_city,
+  min_country,
+  min_gender,
+  min_interests,
+  min_introduction,
+  min_knownAs,
+  min_lookingFor,
+} from '../../../shared/constants/user-form-constants';
+import {
   Photo,
   PhotoToDelete,
   PhotoToUpload,
@@ -187,10 +203,7 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     if (this.userUpdateFormGroup.invalid) {
       this.toastr.error(
         'Please fill in all required inputs to proceed',
-        'Missing fields',
-        {
-          positionClass: 'toast-bottom-right',
-        }
+        'Missing fields'
       );
       return false;
     }
@@ -198,10 +211,7 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     if (!this.hasUploadedMainImage) {
       this.toastr.error(
         'Please upload main image to proceed',
-        'Main image missing',
-        {
-          positionClass: 'toast-bottom-right',
-        }
+        'Main image missing'
       );
       return false;
     }
@@ -277,14 +287,62 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
 
   private _initFormGroups() {
     this.userUpdateFormGroup = this.formBuilder.group({
-      knownAs: ['', [Validators.required]],
-      gender: ['', [Validators.required]],
-      dateOfBirth: ['', [Validators.required]],
-      country: ['', [Validators.required]],
-      city: ['', [Validators.required]],
-      introduction: ['', [Validators.required]],
-      interests: ['', [Validators.required]],
-      lookingFor: ['', [Validators.required]],
+      knownAs: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(min_knownAs),
+          Validators.maxLength(max_knownAs),
+        ],
+      ],
+      gender: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(min_gender),
+          Validators.maxLength(max_gender),
+        ],
+      ],
+      introduction: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(min_introduction),
+          Validators.maxLength(max_introduction),
+        ],
+      ],
+      interests: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(min_interests),
+          Validators.maxLength(max_interests),
+        ],
+      ],
+      lookingFor: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(min_lookingFor),
+          Validators.maxLength(max_lookingFor),
+        ],
+      ],
+      city: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(min_city),
+          Validators.maxLength(max_city),
+        ],
+      ],
+      country: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(min_country),
+          Validators.maxLength(max_country),
+        ],
+      ],
     });
   }
 
