@@ -16,7 +16,7 @@
         placeholder="Enter your username"
       ></app-form-input-field>
     </div>
-    <div class="col-md-6">
+    <div class="mb-3 mb-md-0 col-md-6">
       <app-form-input-field
         [formControlInput]="knownAsFormControl"
         [label]="'Known As'"
@@ -36,7 +36,7 @@
         placeholder="Enter your password"
       ></app-form-input-field>
     </div>
-    <div class="col-md-6">
+    <div class="mb-3 col-md-6">
       <app-form-input-field
         [formControlInput]="confirmPasswordFormControl"
         label="Confirm Password"
@@ -48,7 +48,7 @@
   </div>
 
   <div class="row">
-    <div class="mb-3 col-md-6">
+    <div class="col-md-6">
       <app-form-date-field
         [formControlInput]="dateOfBirthFormControl"
         [isRequired]="true"
@@ -57,7 +57,7 @@
       </app-form-date-field>
     </div>
 
-    <div class="col-md-6">
+    <div class="mb-3 mb-md-0 col-md-6">
       <app-form-select-field
         [formControlInput]="genderFormControl"
         [options]="GenderOptions"
@@ -82,7 +82,7 @@
       ></app-form-select-field>
     </div>
 
-    <div class="mb-3 col-md-6">
+    <div class="mb-3 mb-md-0 col-md-6">
       <ng-container *ngIf="!isFetchingCities; else showLoadingCities">
         <ng-container *ngIf="enableCityFreeTextInput; else showSelectField">
           <app-form-input-field
@@ -114,10 +114,6 @@
   </div>
 
   <div class="row">
-    <div class="mb-3 col-md-6"></div>
-  </div>
-
-  <div class="row">
     <div class="mb-3 col-12">
       <app-form-input-field
         [formControlInput]="descriptionFormControl"
@@ -136,7 +132,7 @@
         placeholder="Enter your interests.."
       ></app-form-input-field>
     </div>
-    <div class="mb-3 col-12">
+    <div class="mb-3 mb-md-0 col-12">
       <app-form-input-field
         [formControlInput]="lookingForFormControl"
         label="Looking For"
