@@ -2,6 +2,7 @@
 using API.DTOs;
 using API.Interfaces;
 using API.Models;
+using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
@@ -9,12 +10,15 @@ using System.Text;
 
 namespace API.Controllers
 {
-    public class AccountController(DataContext context, ITokenService tokenService, IUserRepository<AppUser> userRepository,
-        IMapper mapper)
+    public class AccountController(DataContext context,
+        ITokenService tokenService,
+        IUserRepository<AppUser> userRepository,
+        IMapper mapper,
+        PhotoService photoService)
         : BaseApiController
     {
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register([FromForm] RegisterDto registerDto)
         {
             try
             {
@@ -30,6 +34,28 @@ namespace API.Controllers
                 var user = mapper.Map<AppUser>(registerDto);
                 user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
                 user.PasswordSalt = hmac.Key;
+
+                // Upload Images
+                if (registerDto.ImagesToUpload != null && registerDto.ImagesToUpload.Count > 0)
+                {
+                    foreach (var image in registerDto.ImagesToUpload)
+                    {
+                        if (image.PhotoFile.Length == 0) continue;
+
+                        var result = await photoService.UploadImageAsync(image.PhotoFile);
+
+                        if (result.Error != null) continue;
+
+                        var photo = new Photo
+                        {
+                            IsMain = image.IsMain,
+                            PublicId = result.PublicId,
+                            Url = (result.Url).ToString()
+                        };
+
+                        user.Photos.Add(photo);
+                    }
+                }
 
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
