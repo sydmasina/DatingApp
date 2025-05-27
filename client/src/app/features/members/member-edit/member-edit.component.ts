@@ -17,7 +17,6 @@ import {
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { CanComponentDeactivate } from '../../../shared/_guards/unsaved-changes.guard';
 import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
@@ -50,7 +49,6 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
     FormSelectFieldComponent,
     FormDateFieldComponent,
     ImageGalleryComponent,
-    NgxSpinnerModule,
     RouterLink,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -82,7 +80,6 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
-    private spinner: NgxSpinnerService,
     private toastr: ToastrService
   ) {
     effect(
@@ -102,7 +99,6 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     this._initFormGroups();
     this.staticData.GetCountries();
     this._initUserData();
-    this.spinner.show();
   }
 
   canDeactivate(): boolean {
