@@ -6,32 +6,166 @@
 >
   <h2 class="text-center text-primary">Sign Up</h2>
   <hr />
-  <div class="mb-3 form-floating">
-    <app-form-input-field
-      [formControlInput]="usernameFormControl"
-      label="Username"
-      [isRequired]="true"
-      type="text"
-      placeholder="Enter your username"
-    ></app-form-input-field>
+  <div class="row">
+    <div class="mb-3 col-md-6">
+      <app-form-input-field
+        [formControlInput]="usernameFormControl"
+        label="Username"
+        [isRequired]="true"
+        type="text"
+        placeholder="Enter your username"
+      ></app-form-input-field>
+    </div>
+    <div class="col-md-6">
+      <app-form-input-field
+        [formControlInput]="knownAsFormControl"
+        [label]="'Known As'"
+        [isRequired]="true"
+        [placeholder]="'Enter known as'"
+      ></app-form-input-field>
+    </div>
   </div>
-  <div class="mb-3">
-    <app-form-input-field
-      [formControlInput]="passwordFormControl"
-      label="Password"
-      type="password"
-      [isRequired]="true"
-      placeholder="Enter your password"
-    ></app-form-input-field>
+
+  <div class="row">
+    <div class="mb-3 col-md-6">
+      <app-form-input-field
+        [formControlInput]="passwordFormControl"
+        label="Password"
+        type="password"
+        [isRequired]="true"
+        placeholder="Enter your password"
+      ></app-form-input-field>
+    </div>
+    <div class="col-md-6">
+      <app-form-input-field
+        [formControlInput]="confirmPasswordFormControl"
+        label="Confirm Password"
+        type="password"
+        [isRequired]="true"
+        placeholder="Confirm your password"
+      ></app-form-input-field>
+    </div>
   </div>
-  <div class="mb-5">
-    <app-form-input-field
-      [formControlInput]="confirmPasswordFormControl"
-      label="Confirm Password"
-      type="password"
+
+  <div class="row">
+    <div class="mb-3 col-md-6">
+      <app-form-date-field
+        [formControlInput]="dateOfBirthFormControl"
+        [isRequired]="true"
+        label="Date of Birth"
+      >
+      </app-form-date-field>
+    </div>
+
+    <div class="col-md-6">
+      <app-form-select-field
+        [formControlInput]="genderFormControl"
+        [options]="GenderOptions"
+        [isRequired]="true"
+        label="Gender"
+        placeholder="Select gender...."
+      ></app-form-select-field>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-3 col-md-6">
+      <app-form-select-field
+        [formControlInput]="countryFormControl"
+        [options]="Countries"
+        [isRequired]="true"
+        (inputChangeEvent)="handleCountryInputChange()"
+        label="Country"
+        placeholder="Select a country..."
+        optionIdentifier="name"
+        trackKey="id"
+      ></app-form-select-field>
+    </div>
+
+    <div class="mb-3 col-md-6">
+      <ng-container *ngIf="!isFetchingCities; else showLoadingCities">
+        <ng-container *ngIf="enableCityFreeTextInput; else showSelectField">
+          <app-form-input-field
+            [formControlInput]="cityFormControl"
+            label="City"
+            [isRequired]="true"
+            placeholder="Enter city name"
+          ></app-form-input-field>
+        </ng-container>
+        <ng-template #showSelectField>
+          <app-form-select-field
+            [formControlInput]="cityFormControl"
+            [options]="Cities"
+            [isDisabled]="this.countryFormControl.invalid"
+            [isRequired]="true"
+            label="City"
+            placeholder="Select a city..."
+            optionIdentifier="name"
+            trackKey="id"
+          ></app-form-select-field>
+        </ng-template>
+      </ng-container>
+      <ng-template #showLoadingCities>
+        <div class="cities-loader text-start">
+          <p>Loading...</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-3 col-md-6"></div>
+  </div>
+
+  <div class="row">
+    <div class="mb-3 col-12">
+      <app-form-input-field
+        [formControlInput]="descriptionFormControl"
+        label="Description"
+        [isRequired]="true"
+        type="textarea"
+        placeholder="Enter a description of who you are.."
+      ></app-form-input-field>
+    </div>
+    <div class="mb-3 col-12">
+      <app-form-input-field
+        [formControlInput]="interestsFormControl"
+        label="Interests"
+        type="textarea"
+        [isRequired]="true"
+        placeholder="Enter your interests.."
+      ></app-form-input-field>
+    </div>
+    <div class="mb-3 col-12">
+      <app-form-input-field
+        [formControlInput]="lookingForFormControl"
+        label="Looking For"
+        type="textarea"
+        [isRequired]="true"
+        placeholder="Describe the type of person you are looking for.."
+      ></app-form-input-field>
+    </div>
+  </div>
+  <hr />
+  <div class="row gap-1">
+    <app-image-gallery
+      label="Main Image"
       [isRequired]="true"
-      placeholder="Confirm your password"
-    ></app-form-input-field>
+      [images]="mainPhoto"
+      [maxCount]="1"
+      [multiple]="false"
+      [allowWarning]="false"
+      (selectedImagesToUploadChange)="handleMainImageChangeEvent($event)"
+    ></app-image-gallery>
+    <br />
+    <app-image-gallery
+      label="Additional Images"
+      [isRequired]="false"
+      [images]="additionalImages"
+      [maxCount]="4"
+      [allowWarning]="true"
+      (selectedImagesToUploadChange)="handleAdditionalImageChangeEvent($event)"
+    ></app-image-gallery>
   </div>
 
   <div class="row justify-content-evenly mt-2">
