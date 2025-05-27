@@ -5,7 +5,7 @@ namespace API.DTOs
     public class RegisterDto
     {
         [Required]
-        [StringLength(8, MinimumLength = 4)]
+        [StringLength(20, MinimumLength = 4)]
         public string Username { get; set; }
         [Required]
         public string Password { get; set; }
@@ -21,6 +21,6 @@ namespace API.DTOs
         public string City { get; set; }
         [Required]
         public string Country { get; set; }
-        public List<RegisterPhotoDto> Photos { get; set; } = [];
+        public List<PhotoToUpload>? ImagesToUpload { get; set; }
     }
 }

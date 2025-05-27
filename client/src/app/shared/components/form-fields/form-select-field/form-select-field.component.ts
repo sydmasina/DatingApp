@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -9,12 +16,14 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './form-select-field.component.html',
   styleUrl: './form-select-field.component.css',
 })
-export class FormSelectFieldComponent {
+export class FormSelectFieldComponent implements OnInit {
   @Input() label: string | null = null;
   @Input() placeholder: string = 'Enter input';
   @Input() optionIdentifier: string | null = null;
   @Input() trackKey: string | null = null;
   @Output() inputChangeEvent = new EventEmitter();
+  @Input() id?: string;
+  generatedId = '';
 
   //Signal input types
   formControlInput = input.required<FormControl>();
@@ -22,6 +31,9 @@ export class FormSelectFieldComponent {
   isDisabled = input<boolean>();
   options = input<any[]>([]);
 
+  ngOnInit(): void {
+    this._initInputUniqueId();
+  }
   trackByFn(index: number, option: any) {
     return this.trackKey ? option[this.trackKey] : index;
   }
@@ -40,6 +52,15 @@ export class FormSelectFieldComponent {
     }
 
     return `${this.label ?? 'Field'} is required`;
+  }
+
+  private _initInputUniqueId() {
+    this.generatedId =
+      this.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  get uniqueId() {
+    return this.generatedId;
   }
 
   get showError() {
