@@ -1,5 +1,7 @@
 ﻿using API.DTOs;
 using API.Enums;
+using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using API.Services;
@@ -97,9 +99,11 @@ namespace API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
-            var users = await userRepository.GetMembersAsync();
+            var users = await userRepository.GetMembersAsync(userParams);
+
+            Response.AddPaginationHeader(users);
 
             return Ok(users);
         }

@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Enums;
+using API.Helpers;
 using API.Models;
 
 namespace API.Interfaces
@@ -11,7 +12,7 @@ namespace API.Interfaces
         Task<IEnumerable<T>> GetAllUsersAsync();
         Task<bool> SaveAllAsync();
         Task AddUserAsync(T entity);
-        Task<IEnumerable<MemberDto>> GetMembersAsync();
+        Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
         Task<MemberDto?> GetMemberAsync(string username);
         Task<UpdateResult> UpdateMemberAsync(string username, MemberUpdateDto userDto);
         void Delete(T entity);
