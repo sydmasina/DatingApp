@@ -26,6 +26,7 @@ import { ImageGalleryComponent } from '../../../shared/components/form-fields/im
 import {
   max_city,
   max_country,
+  max_dateOfBirth,
   max_gender,
   max_interests,
   max_introduction,
@@ -33,6 +34,7 @@ import {
   max_lookingFor,
   min_city,
   min_country,
+  min_dateOfBirth,
   min_gender,
   min_interests,
   min_introduction,
@@ -79,7 +81,8 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
   mainPhotoToUpload: File[] = [];
   imagesToDelete: PhotoToDelete[] = [];
   additionalImagesToUpload: File[] = [];
-
+  Min_dateOfBirth = min_dateOfBirth;
+  Max_dateOfBirth = max_dateOfBirth;
   isFormDirty = false;
   hasUploadedMainImage: boolean = false;
 
@@ -343,6 +346,7 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
           Validators.maxLength(max_country),
         ],
       ],
+      dateOfBirth: ['', [Validators.required]],
     });
   }
 
