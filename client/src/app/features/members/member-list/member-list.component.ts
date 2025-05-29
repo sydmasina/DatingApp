@@ -3,6 +3,7 @@ import { Component, effect } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FormRangeSelectorComponent } from '../../../shared/components/form-fields/form-range-selector/form-range-selector.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { UserService } from '../../../shared/services/user.service';
 import { MemberCardComponent } from './member-card/member-card.component';
@@ -16,6 +17,7 @@ import { MemberCardComponent } from './member-card/member-card.component';
     MatPaginatorModule,
     MemberCardComponent,
     FormSelectFieldComponent,
+    FormRangeSelectorComponent,
   ],
   templateUrl: './member-list.component.html',
   styleUrl: './member-list.component.css',
@@ -26,6 +28,8 @@ export class MemberListComponent {
   pageSizeOptions: number[] = [5, 10, 25, 50];
   GenderOptions: string[] = ['all', 'male', 'female'];
   genderFormControl: FormControl = new FormControl('all');
+  minAgeFormControl: FormControl = new FormControl(18);
+  maxAgeFormControl: FormControl = new FormControl(30);
 
   constructor(private _userService: UserService) {
     effect(() => {
@@ -46,7 +50,9 @@ export class MemberListComponent {
     this._userService.fetchUsers(
       this.pageNumber,
       this.pageSize,
-      this.selectedGender
+      this.selectedGender,
+      this.minAgeFormControl.value,
+      this.maxAgeFormControl.value
     );
   }
 
@@ -57,6 +63,11 @@ export class MemberListComponent {
   }
 
   handlePreferredGenderSelectEvent() {
+    this.pageNumber = 1;
+    this._loadUsers();
+  }
+
+  handleAgeRangeChangeEvent() {
     this.pageNumber = 1;
     this._loadUsers();
   }

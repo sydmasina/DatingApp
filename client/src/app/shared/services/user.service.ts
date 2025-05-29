@@ -35,7 +35,15 @@ export class UserService {
     private toastr: ToastrService
   ) {}
 
-  fetchUsers(pageNumber?: number, pageSize?: number, gender?: string) {
+  fetchUsers(
+    pageNumber?: number,
+    pageSize?: number,
+    gender?: string,
+    minAge?: number,
+    maxAge?: number,
+    country?: string,
+    city?: string
+  ) {
     if (this.isFetchingUserData()) {
       return;
     }
@@ -48,6 +56,18 @@ export class UserService {
 
     if (gender) {
       params = params.append('gender', gender);
+    }
+    if (minAge) {
+      params = params.append('minAge', minAge);
+    }
+    if (maxAge) {
+      params = params.append('maxAge', maxAge);
+    }
+    if (country) {
+      params = params.append('country', country);
+    }
+    if (city) {
+      params = params.append('city', city);
     }
 
     this._isFetchingUserData.set(true);

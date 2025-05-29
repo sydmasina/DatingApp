@@ -78,6 +78,35 @@ namespace API.Repositories
                 query = query.Where(s => s.Gender == userParams.Gender);
             }
 
+            if (userParams.MaxAge != null)
+            {
+                var today = DateOnly.FromDateTime(DateTime.Today);
+                var minDob = today.AddYears((int)(-userParams.MaxAge - 1)).AddDays(1);
+                query = query.Where(s => s.DateOfBirth >= minDob);
+            }
+
+            if (userParams.MinAge != null)
+            {
+                var today = DateOnly.FromDateTime(DateTime.Today);
+                var maxDob = today.AddYears((int)-userParams.MinAge);
+                query = query.Where(s => s.DateOfBirth <= maxDob);
+            }
+
+            if (!String.IsNullOrEmpty(userParams.Country) && userParams.Country != "all")
+            {
+                query = query.Where(s => s.Country == userParams.Country);
+            }
+
+            if (!String.IsNullOrEmpty(userParams.City) && userParams.City != "all")
+            {
+                query = query.Where(s => s.City == userParams.City);
+            }
+
+            if (!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
+            {
+                query = query.Where(s => s.Gender == userParams.Gender);
+            }
+
             if (!String.IsNullOrEmpty(userParams.CurrentUsername))
             {
                 query = query.Where(s => s.UserName != userParams.CurrentUsername);

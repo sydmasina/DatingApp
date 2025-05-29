@@ -1,15 +1,29 @@
 <ng-container *ngIf="!isLoading && users && pagination">
-  <div class="d-flex align-items-center gap-2 mt-5">
-    <label class="pr-2" for="genderFilter">Show me: </label>
-    <app-form-select-field
-      [formControlInput]="genderFormControl"
-      [options]="GenderOptions"
-      placeholder="Select gender...."
-      (inputChangeEvent)="handlePreferredGenderSelectEvent()"
-      id="genderFilter"
-    ></app-form-select-field>
-  </div>
+  <div class="d-flex align-items-center gap-4 mt-5">
+    <div class="d-flex align-items-center gap-2">
+      <label class="pr-2" for="genderFilter">Preferred Gender: </label>
+      <app-form-select-field
+        [formControlInput]="genderFormControl"
+        [options]="GenderOptions"
+        placeholder="Select gender...."
+        (inputChangeEvent)="handlePreferredGenderSelectEvent()"
+        id="genderFilter"
+      ></app-form-select-field>
+    </div>
 
+    <div class="d-flex align-items-center gap-2">
+      <label class="pr-2" for="ageFilter">Age Range: </label>
+      <app-form-range-selector
+        [minFormControl]="minAgeFormControl"
+        [maxFormControl]="maxAgeFormControl"
+        [min]="18"
+        [max]="80"
+        (minInputChangeEvent)="handleAgeRangeChangeEvent()"
+        (maxInputChangeEvent)="handleAgeRangeChangeEvent()"
+      ></app-form-range-selector>
+    </div>
+  </div>
+  <hr />
   <div class="row mb-4">
     @for(user of users; track user.id){
     <div class="mt-4 col-6 col-md-5 col-lg-4 col-xl-3">
@@ -17,6 +31,7 @@
     </div>
     }
   </div>
+  <hr />
   <mat-paginator
     [length]="pagination.totalItems"
     [pageSizeOptions]="pageSizeOptions"
