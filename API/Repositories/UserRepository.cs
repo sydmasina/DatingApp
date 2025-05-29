@@ -73,6 +73,16 @@ namespace API.Repositories
             var query = context.Users
                   .ProjectTo<MemberDto>(mapper.ConfigurationProvider);
 
+            if (!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
+            {
+                query = query.Where(s => s.Gender == userParams.Gender);
+            }
+
+            if (!String.IsNullOrEmpty(userParams.CurrentUsername))
+            {
+                query = query.Where(s => s.UserName != userParams.CurrentUsername);
+            }
+
             return await PagedList<MemberDto>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
         }
 
