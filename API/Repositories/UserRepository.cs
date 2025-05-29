@@ -73,11 +73,6 @@ namespace API.Repositories
             var query = context.Users
                   .ProjectTo<MemberDto>(mapper.ConfigurationProvider);
 
-            if (!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
-            {
-                query = query.Where(s => s.Gender == userParams.Gender);
-            }
-
             var today = DateOnly.FromDateTime(DateTime.Today);
             var minDob = today.AddYears((int)(-userParams.MaxAge - 1)).AddDays(1);
             var maxDob = today.AddYears((int)-userParams.MinAge);
