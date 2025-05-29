@@ -35,7 +35,7 @@ export class UserService {
     private toastr: ToastrService
   ) {}
 
-  fetchUsers(pageNumber?: number, pageSize?: number) {
+  fetchUsers(pageNumber?: number, pageSize?: number, gender?: string) {
     if (this.isFetchingUserData()) {
       return;
     }
@@ -44,6 +44,10 @@ export class UserService {
     if (pageNumber && pageSize) {
       params = params.append('pageNumber', pageNumber);
       params = params.append('pageSize', pageSize);
+    }
+
+    if (gender) {
+      params = params.append('gender', gender);
     }
 
     this._isFetchingUserData.set(true);
