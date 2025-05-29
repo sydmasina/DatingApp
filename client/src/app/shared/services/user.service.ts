@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UsersEndpoint } from '../constants/api-enpoints/user';
+import { PaginatedResult } from '../models/pagination';
 import { PhotoToDelete, PhotoToUpload } from '../models/Photo';
 import { UpdateUserDto, User } from '../models/user';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,33 +21,50 @@ export class UserService {
   //Initialize signals
   private readonly _users = signal<User[]>([]);
   public readonly users: Signal<User[]> = this._users.asReadonly();
+  private readonly _paginatedUsers = signal<PaginatedResult<User[]> | null>(
+    null
+  );
+  public readonly paginatedUsers: Signal<PaginatedResult<User[]> | null> =
+    this._paginatedUsers.asReadonly();
   private readonly _user = signal<User | null>(null);
   public readonly user: Signal<User | null> = this._user.asReadonly();
 
   constructor(
     private _httpClient: HttpClient,
     private router: Router,
-    private toastr: ToastrService,
-    private authService: AuthService
+    private toastr: ToastrService
   ) {}
 
-  fetchUsers() {
+  fetchUsers(pageNumber?: number, pageSize?: number) {
     if (this.isFetchingUserData()) {
       return;
+    }
+    let params = new HttpParams();
+
+    if (pageNumber && pageSize) {
+      params = params.append('pageNumber', pageNumber);
+      params = params.append('pageSize', pageSize);
     }
 
     this._isFetchingUserData.set(true);
 
-    return this._httpClient.get<User[]>(UsersEndpoint).subscribe({
-      next: (response) => {
-        this._users.set(response);
-        this._isFetchingUserData.set(false);
-      },
-      error: (error) => {
-        console.log(error);
-        this._isFetchingUserData.set(false);
-      },
-    });
+    return this._httpClient
+      .get<User[]>(UsersEndpoint, {
+        observe: 'response',
+        params,
+      })
+      .subscribe({
+        next: (response) => {
+          this._paginatedUsers.set({
+            items: response.body as User[],
+            pagination: JSON.parse(response.headers.get('Pagination')!),
+          });
+          this._isFetchingUserData.set(false);
+        },
+        error: (error) => {
+          this._isFetchingUserData.set(false);
+        },
+      });
   }
 
   fetchUserByUsername(username: string) {
