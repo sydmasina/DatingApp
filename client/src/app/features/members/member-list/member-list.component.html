@@ -1,4 +1,15 @@
 <ng-container *ngIf="!isLoading && users && pagination">
+  <div class="d-flex align-items-center gap-2 mt-5">
+    <label class="pr-2" for="genderFilter">Show me: </label>
+    <app-form-select-field
+      [formControlInput]="genderFormControl"
+      [options]="GenderOptions"
+      placeholder="Select gender...."
+      (inputChangeEvent)="handlePreferredGenderSelectEvent()"
+      id="genderFilter"
+    ></app-form-select-field>
+  </div>
+
   <div class="row mb-4">
     @for(user of users; track user.id){
     <div class="mt-4 col-6 col-md-5 col-lg-4 col-xl-3">
