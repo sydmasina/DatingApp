@@ -1,9 +1,18 @@
-<ng-container *ngIf="!isLoading">
-  <div class="row">
+<ng-container *ngIf="!isLoading && users && pagination">
+  <div class="row mb-4">
     @for(user of users; track user.id){
     <div class="mt-4 col-6 col-md-5 col-lg-4 col-xl-3">
       <app-member-card [user]="user"></app-member-card>
     </div>
     }
   </div>
+  <mat-paginator
+    [length]="pagination.totalItems"
+    [pageSizeOptions]="pageSizeOptions"
+    [pageIndex]="pageNumber - 1"
+    [pageSize]="pageSize"
+    aria-label="Select page"
+    (page)="handlePageEvent($event)"
+  >
+  </mat-paginator>
 </ng-container>
