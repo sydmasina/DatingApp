@@ -1,0 +1,22 @@
+<fieldset [disabled]="isDisabled()">
+  <ng-container *ngIf="label != null">
+    <label [for]="uniqueId" class="form-label">
+      {{ label }} <ng-container *ngIf="isRequired()">*</ng-container>
+    </label>
+  </ng-container>
+
+  <mat-slider [id]="uniqueId" [min]="min" [max]="max" showTickMarks discrete>
+    <input
+      [formControl]="minFormControl()"
+      (change)="minInputChangeEvent.emit()"
+      [value]="18"
+      matSliderStartThumb
+    />
+    <input
+      [formControl]="maxFormControl()"
+      (change)="maxInputChangeEvent.emit()"
+      [value]="30"
+      matSliderEndThumb
+    />
+  </mat-slider>
+</fieldset>
