@@ -10,6 +10,7 @@
     [length]="pagination.totalItems"
     [pageSizeOptions]="pageSizeOptions"
     [pageIndex]="pageNumber - 1"
+    [pageSize]="pageSize"
     aria-label="Select page"
     (page)="handlePageEvent($event)"
   >
