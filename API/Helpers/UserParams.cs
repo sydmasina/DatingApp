@@ -9,8 +9,8 @@
 
         public string? Gender { get; set; }
         public string? CurrentUsername { get; set; }
-        public int? MinAge { get; set; }
-        public int? MaxAge { get; set; }
+        public int MinAge { get; set; } = 18;
+        public int MaxAge { get; set; } = 80;
         public string? Country { get; set; }
         public string? City { get; set; }
 

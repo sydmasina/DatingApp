@@ -73,24 +73,10 @@ namespace API.Repositories
             var query = context.Users
                   .ProjectTo<MemberDto>(mapper.ConfigurationProvider);
 
-            if (!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
-            {
-                query = query.Where(s => s.Gender == userParams.Gender);
-            }
-
-            if (userParams.MaxAge != null)
-            {
-                var today = DateOnly.FromDateTime(DateTime.Today);
-                var minDob = today.AddYears((int)(-userParams.MaxAge - 1)).AddDays(1);
-                query = query.Where(s => s.DateOfBirth >= minDob);
-            }
-
-            if (userParams.MinAge != null)
-            {
-                var today = DateOnly.FromDateTime(DateTime.Today);
-                var maxDob = today.AddYears((int)-userParams.MinAge);
-                query = query.Where(s => s.DateOfBirth <= maxDob);
-            }
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var minDob = today.AddYears((int)(-userParams.MaxAge - 1)).AddDays(1);
+            var maxDob = today.AddYears((int)-userParams.MinAge);
+            query = query.Where(s => s.DateOfBirth >= minDob && s.DateOfBirth <= maxDob);
 
             if (!String.IsNullOrEmpty(userParams.Country) && userParams.Country != "all")
             {

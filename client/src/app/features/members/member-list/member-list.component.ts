@@ -5,6 +5,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormRangeSelectorComponent } from '../../../shared/components/form-fields/form-range-selector/form-range-selector.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
+import { UserParams } from '../../../shared/models/user-params';
 import { UserService } from '../../../shared/services/user.service';
 import { MemberCardComponent } from './member-card/member-card.component';
 
@@ -30,6 +31,7 @@ export class MemberListComponent {
   genderFormControl: FormControl = new FormControl('all');
   minAgeFormControl: FormControl = new FormControl(18);
   maxAgeFormControl: FormControl = new FormControl(30);
+  userParams = new UserParams();
 
   constructor(private _userService: UserService) {
     effect(() => {
@@ -47,13 +49,12 @@ export class MemberListComponent {
   }
 
   private _loadUsers() {
-    this._userService.fetchUsers(
-      this.pageNumber,
-      this.pageSize,
-      this.selectedGender,
-      this.minAgeFormControl.value,
-      this.maxAgeFormControl.value
-    );
+    this.userParams.gender = this.selectedGender;
+    this.userParams.pageNumber = this.pageNumber;
+    this.userParams.pageSize = this.pageSize;
+    this.userParams.minAge = this.minAgeFormControl.value;
+    this.userParams.maxAge = this.maxAgeFormControl.value;
+    this._userService.fetchUsers(this.userParams);
   }
 
   handlePageEvent(e: PageEvent) {

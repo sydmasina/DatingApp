@@ -6,6 +6,7 @@ import { UsersEndpoint } from '../constants/api-enpoints/user';
 import { PaginatedResult } from '../models/pagination';
 import { PhotoToDelete, PhotoToUpload } from '../models/Photo';
 import { UpdateUserDto, User } from '../models/user';
+import { UserParams } from '../models/user-params';
 
 @Injectable({
   providedIn: 'root',
@@ -35,40 +36,13 @@ export class UserService {
     private toastr: ToastrService
   ) {}
 
-  fetchUsers(
-    pageNumber?: number,
-    pageSize?: number,
-    gender?: string,
-    minAge?: number,
-    maxAge?: number,
-    country?: string,
-    city?: string
-  ) {
+  fetchUsers(userParams: UserParams) {
     if (this.isFetchingUserData()) {
       return;
     }
     let params = new HttpParams();
 
-    if (pageNumber && pageSize) {
-      params = params.append('pageNumber', pageNumber);
-      params = params.append('pageSize', pageSize);
-    }
-
-    if (gender) {
-      params = params.append('gender', gender);
-    }
-    if (minAge) {
-      params = params.append('minAge', minAge);
-    }
-    if (maxAge) {
-      params = params.append('maxAge', maxAge);
-    }
-    if (country) {
-      params = params.append('country', country);
-    }
-    if (city) {
-      params = params.append('city', city);
-    }
+    params = this._setHeaderParams(params, userParams);
 
     this._isFetchingUserData.set(true);
 
@@ -89,6 +63,20 @@ export class UserService {
           this._isFetchingUserData.set(false);
         },
       });
+  }
+
+  private _setHeaderParams(
+    params: HttpParams,
+    userParams: UserParams
+  ): HttpParams {
+    params = params.append('pageNumber', userParams.pageNumber);
+    params = params.append('pageSize', userParams.pageSize);
+    params = params.append('gender', userParams.gender);
+    params = params.append('minAge', userParams.minAge);
+    params = params.append('maxAge', userParams.maxAge);
+    params = params.append('country', userParams.country);
+    params = params.append('city', userParams.city);
+    return params;
   }
 
   fetchUserByUsername(username: string) {
