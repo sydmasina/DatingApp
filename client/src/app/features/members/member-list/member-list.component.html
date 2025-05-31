@@ -24,27 +24,26 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="mb-3 col-md-6">
+  <div class="row mt-3">
+    <div class="col-2">
+      <label>Location: </label>
+    </div>
+    <div class="mb-3 col-md-5">
       <app-form-select-field
         [formControlInput]="countryFormControl"
         [options]="Countries"
-        [isRequired]="true"
         (inputChangeEvent)="handleCountryInputChange()"
-        label="Country"
         placeholder="Select a country..."
         optionIdentifier="name"
         trackKey="id"
       ></app-form-select-field>
     </div>
 
-    <div class="mb-3 col-md-6">
+    <div class="mb-3 col-md-5">
       <ng-container *ngIf="!isFetchingCities; else showLoadingCities">
         <ng-container *ngIf="enableCityFreeTextInput; else showSelectField">
           <app-form-input-field
             [formControlInput]="cityFormControl"
-            label="City"
-            [isRequired]="true"
             placeholder="Enter city name"
           ></app-form-input-field>
         </ng-container>
@@ -53,8 +52,6 @@
             [formControlInput]="cityFormControl"
             [options]="Cities"
             [isDisabled]="this.countryFormControl.invalid"
-            [isRequired]="true"
-            label="City"
             placeholder="Select a city..."
             optionIdentifier="name"
             trackKey="id"

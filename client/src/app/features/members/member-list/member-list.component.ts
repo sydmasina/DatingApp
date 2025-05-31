@@ -77,7 +77,9 @@ export class MemberListComponent {
     this.userParams.pageSize = this.pageSize;
     this.userParams.minAge = this.minAgeFormControl.value;
     this.userParams.maxAge = this.maxAgeFormControl.value;
-    this.userParams.country = this.countryFormControl.value.name;
+    this.userParams.country = this.countryFormControl.value.name ?? '';
+    this.userParams.city =
+      this.cityFormControl.value.name ?? this.cityFormControl.value ?? '';
     this._userService.fetchUsers(this.userParams);
   }
 
