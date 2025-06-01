@@ -13,6 +13,7 @@
     [required]="isRequired()"
     [rows]="rows"
     [ngClass]="{ error: showError }"
+    (change)="inputChangeEvent.emit()"
   ></textarea>
 </ng-container>
 <ng-template #showDefault>
@@ -24,6 +25,7 @@
     class="form-control"
     [required]="isRequired()"
     [ngClass]="{ error: showError }"
+    (change)="inputChangeEvent.emit()"
   />
 </ng-template>
 <ng-container *ngIf="showError">

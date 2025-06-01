@@ -98,6 +98,10 @@ export class MemberListComponent {
     this.pageNumber = 1;
     this._loadUsers();
   }
+  handleCityChangeEvent() {
+    this.pageNumber = 1;
+    this._loadUsers();
+  }
 
   handleCountryInputChange() {
     this.pageNumber = 1;

@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -17,6 +24,7 @@ export class FormInputFieldComponent implements OnInit {
   @Input() placeholder: string = 'Enter input';
   @Input() rows: number = 6;
   @Input() id?: string;
+  @Output() inputChangeEvent = new EventEmitter();
   generatedId = '';
 
   ngOnInit(): void {

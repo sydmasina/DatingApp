@@ -45,6 +45,7 @@
           <app-form-input-field
             [formControlInput]="cityFormControl"
             placeholder="Enter city name"
+            (inputChangeEvent)="handleCityChangeEvent()"
           ></app-form-input-field>
         </ng-container>
         <ng-template #showSelectField>
@@ -52,6 +53,7 @@
             [formControlInput]="cityFormControl"
             [options]="Cities"
             [isDisabled]="this.countryFormControl.invalid"
+            (inputChangeEvent)="handleCityChangeEvent()"
             placeholder="Select a city..."
             optionIdentifier="name"
             trackKey="id"
