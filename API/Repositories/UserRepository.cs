@@ -76,7 +76,14 @@ namespace API.Repositories
             var today = DateOnly.FromDateTime(DateTime.Today);
             var minDob = today.AddYears((int)(-userParams.MaxAge - 1)).AddDays(1);
             var maxDob = today.AddYears((int)-userParams.MinAge);
+
             query = query.Where(s => s.DateOfBirth >= minDob && s.DateOfBirth <= maxDob);
+
+            query = userParams.OrderBy switch
+            {
+                "created" => query.OrderByDescending(s => s.Created),
+                _ => query.OrderByDescending(s => s.LastActive)
+            };
 
             if (!String.IsNullOrEmpty(userParams.Country) && userParams.Country != "all")
             {

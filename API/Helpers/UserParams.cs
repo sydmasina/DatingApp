@@ -13,6 +13,7 @@
         public int MaxAge { get; set; } = 80;
         public string? Country { get; set; }
         public string? City { get; set; }
+        public string OrderBy { get; set; } = "lastActive";
 
         public int PageSize
         {
