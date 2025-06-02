@@ -1,13 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormRangeSelectorComponent } from '../../../shared/components/form-fields/form-range-selector/form-range-selector.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
 import { UserParams } from '../../../shared/models/user-params';
-import { AuthService } from '../../../shared/services/auth.service';
 import { StaticDataService } from '../../../shared/services/static-data.service';
 import { UserService } from '../../../shared/services/user.service';
 import { MemberCardComponent } from './member-card/member-card.component';
@@ -17,6 +21,7 @@ import { MemberCardComponent } from './member-card/member-card.component';
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
     MemberCardComponent,
@@ -32,17 +37,13 @@ export class MemberListComponent {
   pageSize = 5;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   GenderOptions: string[] = ['all', 'male', 'female'];
-  genderFormControl: FormControl = new FormControl('all');
-  minAgeFormControl: FormControl = new FormControl(18);
-  maxAgeFormControl: FormControl = new FormControl(30);
-  countryFormControl: FormControl = new FormControl('');
-  cityFormControl: FormControl = new FormControl('');
+  filterFormGroup!: FormGroup;
   userParams = new UserParams();
 
   constructor(
     private _userService: UserService,
     private staticData: StaticDataService,
-    private _authService: AuthService
+    private fb: FormBuilder
   ) {
     effect(() => {
       const pagination = this._userService.paginatedUsers()?.pagination;
@@ -53,26 +54,25 @@ export class MemberListComponent {
   }
 
   ngOnInit(): void {
+    this._initFormGroup();
     if (!this._userService.paginatedUsers()) {
-      this._loadUsers();
+      this._filterUsers();
     }
     this.staticData.GetCountries();
-    // this._initSelectedCountry();
   }
 
-  // private _initSelectedCountry() {
-  //   const countryName = this._authService.currentUser()
-  //   const selectedCountry = this.Countries.find(
-  //     (country) => country.name === countryName
-  //   );
+  private _initFormGroup() {
+    this.filterFormGroup = this.fb.group({
+      gender: ['all'],
+      minAge: [18],
+      maxAge: [30],
+      country: [''],
+      city: [''],
+    });
+  }
 
-  //   if (selectedCountry) {
-  //     this.countryFormControl.setValue(selectedCountry);
-  //   }
-  // }
-
-  private _loadUsers() {
-    this.userParams.gender = this.selectedGender;
+  private _filterUsers() {
+    this.userParams.gender = this.genderFormControl.value;
     this.userParams.pageNumber = this.pageNumber;
     this.userParams.pageSize = this.pageSize;
     this.userParams.minAge = this.minAgeFormControl.value;
@@ -83,30 +83,25 @@ export class MemberListComponent {
     this._userService.fetchUsers(this.userParams);
   }
 
+  submitFilters() {
+    this.pageNumber = 1;
+    this._filterUsers();
+  }
+
+  resetFilters() {
+    if (this.filterFormGroup.dirty) {
+      this._initFormGroup();
+      this._filterUsers();
+    }
+  }
+
   handlePageEvent(e: PageEvent) {
     this.pageSize = e.pageSize;
     this.pageNumber = e.pageIndex + 1;
-    this._loadUsers();
-  }
-
-  handlePreferredGenderSelectEvent() {
-    this.pageNumber = 1;
-    this._loadUsers();
-  }
-
-  handleAgeRangeChangeEvent() {
-    this.pageNumber = 1;
-    this._loadUsers();
-  }
-  handleCityChangeEvent() {
-    this.pageNumber = 1;
-    this._loadUsers();
+    this._filterUsers();
   }
 
   handleCountryInputChange() {
-    this.pageNumber = 1;
-    this._loadUsers();
-
     const countryId = this.countryFormControl.getRawValue()?.id;
     if (!countryId) {
       return;
@@ -115,8 +110,24 @@ export class MemberListComponent {
     this.cityFormControl.setValue('');
   }
 
-  get selectedGender() {
-    return this.genderFormControl.value;
+  get genderFormControl() {
+    return this.filterFormGroup.get('gender') as FormControl;
+  }
+
+  get minAgeFormControl() {
+    return this.filterFormGroup.get('minAge') as FormControl;
+  }
+
+  get maxAgeFormControl() {
+    return this.filterFormGroup.get('maxAge') as FormControl;
+  }
+
+  get countryFormControl() {
+    return this.filterFormGroup.get('country') as FormControl;
+  }
+
+  get cityFormControl() {
+    return this.filterFormGroup.get('city') as FormControl;
   }
 
   get users() {
