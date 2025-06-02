@@ -6,6 +6,3 @@ mat-paginator {
 ::ng-deep mat-select {
   color: #adafae !important;
 }
-app-form-range-selector {
-  width: 300px;
-}
