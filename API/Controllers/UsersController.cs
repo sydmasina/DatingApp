@@ -5,14 +5,13 @@ using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using API.Services;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     public class UsersController(IUserRepository<AppUser> userRepository,
-        PhotoService photoService, IMapper mapper) : BaseApiController
+        PhotoService photoService) : BaseApiController
     {
         [Authorize]
         [HttpDelete("{id:int}")]
@@ -49,7 +48,7 @@ namespace API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateUser([FromForm] MemberUpdateDto memberUpdateData)
         {
-            var username = User.Identity?.Name;
+            var username = User.GetUserName();
 
             if (memberUpdateData == null || username == null)
             {
@@ -101,7 +100,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
-            userParams.CurrentUsername = User.Identity?.Name;
+            userParams.CurrentUsername = User.GetUserName();
 
             var users = await userRepository.GetMembersAsync(userParams);
 
