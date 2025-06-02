@@ -15,9 +15,18 @@
       </button>
       <div class="collapse navbar-collapse" id="filterOptions">
         <form [formGroup]="filterFormGroup" (ngSubmit)="submitFilters()">
-          <div class="row mt-2">
-            <div class="col-md-4 d-flex align-items-center gap-4">
-              <label class="pr-2" for="genderFilter">Preferred Gender: </label>
+          <div class="row mt-3">
+            <div class="gap-1 col-md-2">
+              <label>Sort By:</label>
+              <app-form-select-field
+                [formControlInput]="sortByFormControl"
+                [options]="SortByOptions"
+                placeholder="Sort by..."
+                trackKey="id"
+              ></app-form-select-field>
+            </div>
+            <div class="col-md-4 gap-4">
+              <label for="genderFilter">Preferred Gender: </label>
               <app-form-select-field
                 [formControlInput]="genderFormControl"
                 [options]="GenderOptions"
@@ -26,10 +35,9 @@
               ></app-form-select-field>
             </div>
 
-            <div class="col-md-8 mt-2 mt-md-0 row gap-4">
-              <label class="pr-2 col-1" for="ageFilter">Age Range: </label>
+            <div class="col-md-4 mt-2 mt-md-0">
+              <label class="pr-2" for="ageFilter">Age Range: </label>
               <app-form-range-selector
-                class="col-10"
                 [minFormControl]="minAgeFormControl"
                 [maxFormControl]="maxAgeFormControl"
                 [min]="18"
@@ -38,47 +46,51 @@
             </div>
           </div>
 
-          <div class="row mt-3 gap-1 gap-md-4">
-            <div class="col-1">
+          <div class="row mb-4">
+            <div class="col-8">
               <label>Location: </label>
-            </div>
-            <div class="mb-3 col-md-5">
-              <app-form-select-field
-                [formControlInput]="countryFormControl"
-                [options]="Countries"
-                (inputChangeEvent)="handleCountryInputChange()"
-                placeholder="Select a country..."
-                optionIdentifier="name"
-                trackKey="id"
-              ></app-form-select-field>
-            </div>
 
-            <div class="mb-3 col-md-5">
-              <ng-container *ngIf="!isFetchingCities; else showLoadingCities">
-                <ng-container
-                  *ngIf="enableCityFreeTextInput; else showSelectField"
-                >
-                  <app-form-input-field
-                    [formControlInput]="cityFormControl"
-                    placeholder="Enter city name"
-                  ></app-form-input-field>
-                </ng-container>
-                <ng-template #showSelectField>
-                  <app-form-select-field
-                    [formControlInput]="cityFormControl"
-                    [options]="Cities"
-                    [isDisabled]="this.countryFormControl.invalid"
-                    placeholder="Select a city..."
-                    optionIdentifier="name"
-                    trackKey="id"
-                  ></app-form-select-field>
-                </ng-template>
-              </ng-container>
-              <ng-template #showLoadingCities>
-                <div class="cities-loader text-start">
-                  <p>Loading...</p>
+              <div class="row">
+                <app-form-select-field
+                  [formControlInput]="countryFormControl"
+                  [options]="Countries"
+                  (inputChangeEvent)="handleCountryInputChange()"
+                  placeholder="Select a country..."
+                  optionIdentifier="name"
+                  trackKey="id"
+                  class="col-6"
+                ></app-form-select-field>
+
+                <div class="col-6">
+                  <ng-container
+                    *ngIf="!isFetchingCities; else showLoadingCities"
+                  >
+                    <ng-container
+                      *ngIf="enableCityFreeTextInput; else showSelectField"
+                    >
+                      <app-form-input-field
+                        [formControlInput]="cityFormControl"
+                        placeholder="Enter city name"
+                      ></app-form-input-field>
+                    </ng-container>
+                    <ng-template #showSelectField>
+                      <app-form-select-field
+                        [formControlInput]="cityFormControl"
+                        [options]="Cities"
+                        [isDisabled]="this.countryFormControl.invalid"
+                        placeholder="Select a city..."
+                        optionIdentifier="name"
+                        trackKey="id"
+                      ></app-form-select-field>
+                    </ng-template>
+                  </ng-container>
+                  <ng-template #showLoadingCities>
+                    <div class="cities-loader text-start">
+                      <p>Loading...</p>
+                    </div>
+                  </ng-template>
                 </div>
-              </ng-template>
+              </div>
             </div>
           </div>
 
