@@ -76,6 +76,7 @@ export class UserService {
     params = params.append('maxAge', userParams.maxAge);
     params = params.append('country', userParams.country);
     params = params.append('city', userParams.city);
+    params = params.append('orderBy', userParams.orderBy);
     return params;
   }
 

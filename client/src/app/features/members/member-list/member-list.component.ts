@@ -37,6 +37,7 @@ export class MemberListComponent {
   pageSize = 5;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   GenderOptions: string[] = ['all', 'male', 'female'];
+  SortByOptions: string[] = ['created', 'lastActive'];
   filterFormGroup!: FormGroup;
   userParams = new UserParams();
 
@@ -68,6 +69,7 @@ export class MemberListComponent {
       maxAge: [30],
       country: [''],
       city: [''],
+      sortBy: ['lastActive'],
     });
   }
 
@@ -80,6 +82,7 @@ export class MemberListComponent {
     this.userParams.country = this.countryFormControl.value.name ?? '';
     this.userParams.city =
       this.cityFormControl.value.name ?? this.cityFormControl.value ?? '';
+    this.userParams.orderBy = this.sortByFormControl.value ?? '';
     this._userService.fetchUsers(this.userParams);
   }
 
@@ -128,6 +131,10 @@ export class MemberListComponent {
 
   get cityFormControl() {
     return this.filterFormGroup.get('city') as FormControl;
+  }
+
+  get sortByFormControl() {
+    return this.filterFormGroup.get('sortBy') as FormControl;
   }
 
   get users() {
