@@ -9,6 +9,7 @@ export interface User {
   photoUrl: string;
   created: string;
   lastActive: string;
+  lastSeen: string;
   gender: string;
   introduction: string;
   interests: string;

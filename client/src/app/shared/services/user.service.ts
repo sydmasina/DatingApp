@@ -20,8 +20,6 @@ export class UserService {
     this._isUpdatingUser.asReadonly();
 
   //Initialize signals
-  private readonly _users = signal<User[]>([]);
-  public readonly users: Signal<User[]> = this._users.asReadonly();
   private readonly _paginatedUsers = signal<PaginatedResult<User[]> | null>(
     null
   );
