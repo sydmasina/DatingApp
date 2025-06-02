@@ -1,4 +1,5 @@
-﻿using API.Interfaces;
+﻿using API.Extensions;
+using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -12,13 +13,11 @@ namespace API.Helpers
 
             if (context.HttpContext.User.Identity?.IsAuthenticated != true) return;
 
-            var username = context.HttpContext.User.Identity.Name;
-
-            if (username == null) return;
+            var userId = context.HttpContext.User.GetUserId();
 
             var repo = resultContext.HttpContext.RequestServices.GetRequiredService<IUserRepository<AppUser>>();
 
-            var user = await repo.GetUserByUsernameAsync(username);
+            var user = await repo.GetUserByIdAsync(userId);
 
             if (user == null) return;
 

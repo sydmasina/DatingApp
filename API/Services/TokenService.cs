@@ -1,9 +1,9 @@
 ﻿using API.Interfaces;
 using API.Models;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace API.Services
 {
@@ -19,7 +19,8 @@ namespace API.Services
 
             var claims = new List<Claim>
             {
-                new (ClaimTypes.Name, user.UserName)
+                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.UserName)
             };
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
