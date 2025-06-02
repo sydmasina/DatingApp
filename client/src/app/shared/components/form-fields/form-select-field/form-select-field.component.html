@@ -17,7 +17,10 @@
       *ngFor="let option of options(); trackBy: trackByFn"
       [ngValue]="option"
     >
-      {{ optionIdentifier == null ? option : option[optionIdentifier] }}
+      {{
+        (optionIdentifier == null ? option : option[optionIdentifier])
+          | titlecase
+      }}
     </option>
   </select>
 </fieldset>
