@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -27,6 +27,8 @@ export class UserService {
     this._paginatedUsers.asReadonly();
   private readonly _user = signal<User | null>(null);
   public readonly user: Signal<User | null> = this._user.asReadonly();
+  usersCache = new Map();
+  public userParams = signal<UserParams>(new UserParams());
 
   constructor(
     private _httpClient: HttpClient,
@@ -34,13 +36,22 @@ export class UserService {
     private toastr: ToastrService
   ) {}
 
-  fetchUsers(userParams: UserParams) {
+  fetchUsers() {
+    const response = this.usersCache.get(
+      Object.values(this.userParams()).join('-')
+    );
+
+    if (response) {
+      this._setPaginatedUsers(response);
+      return;
+    }
+
     if (this.isFetchingUserData()) {
       return;
     }
     let params = new HttpParams();
 
-    params = this._setHeaderParams(params, userParams);
+    params = this._setHeaderParams(params, this.userParams());
 
     this._isFetchingUserData.set(true);
 
@@ -51,16 +62,24 @@ export class UserService {
       })
       .subscribe({
         next: (response) => {
-          this._paginatedUsers.set({
-            items: response.body as User[],
-            pagination: JSON.parse(response.headers.get('Pagination')!),
-          });
+          this._setPaginatedUsers(response);
+          this.usersCache.set(
+            Object.values(this.userParams()).join('-'),
+            response
+          );
           this._isFetchingUserData.set(false);
         },
         error: (error) => {
           this._isFetchingUserData.set(false);
         },
       });
+  }
+
+  private _setPaginatedUsers(response: HttpResponse<User[]>) {
+    this._paginatedUsers.set({
+      items: response.body as User[],
+      pagination: JSON.parse(response.headers.get('Pagination')!),
+    });
   }
 
   private _setHeaderParams(
@@ -79,6 +98,15 @@ export class UserService {
   }
 
   fetchUserByUsername(username: string) {
+    const user = [...this.usersCache.values()]
+      .reduce((arr, elem) => arr.concat(elem.body), [])
+      .find((user: User) => user.userName === username);
+
+    if (user) {
+      this._user.set(user);
+      return;
+    }
+
     if (this.isFetchingUserData()) {
       return;
     }

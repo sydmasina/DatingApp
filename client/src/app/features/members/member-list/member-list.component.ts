@@ -11,7 +11,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormRangeSelectorComponent } from '../../../shared/components/form-fields/form-range-selector/form-range-selector.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
 import { FormInputFieldComponent } from '../../../shared/components/form-fields/form-text-input-field/form-input-field.component';
-import { UserParams } from '../../../shared/models/user-params';
 import { StaticDataService } from '../../../shared/services/static-data.service';
 import { UserService } from '../../../shared/services/user.service';
 import { MemberCardComponent } from './member-card/member-card.component';
@@ -39,7 +38,6 @@ export class MemberListComponent {
   GenderOptions: string[] = ['all', 'male', 'female'];
   SortByOptions: string[] = ['created', 'lastActive'];
   filterFormGroup!: FormGroup;
-  userParams = new UserParams();
 
   constructor(
     private _userService: UserService,
@@ -59,31 +57,35 @@ export class MemberListComponent {
     if (!this._userService.paginatedUsers()) {
       this._filterUsers();
     }
-    this.staticData.GetCountries();
+
+    if (!this.staticData.countries()) {
+      this.staticData.GetCountries();
+    }
   }
 
   private _initFormGroup() {
     this.filterFormGroup = this.fb.group({
-      gender: ['all'],
-      minAge: [18],
-      maxAge: [30],
-      country: [''],
-      city: [''],
-      sortBy: ['lastActive'],
+      gender: [this._userService.userParams().gender],
+      minAge: [this._userService.userParams().minAge],
+      maxAge: [this._userService.userParams().maxAge],
+      country: [this._userService.userParams().country],
+      city: [this._userService.userParams().city],
+      sortBy: [this._userService.userParams().orderBy],
     });
   }
 
   private _filterUsers() {
-    this.userParams.gender = this.genderFormControl.value;
-    this.userParams.pageNumber = this.pageNumber;
-    this.userParams.pageSize = this.pageSize;
-    this.userParams.minAge = this.minAgeFormControl.value;
-    this.userParams.maxAge = this.maxAgeFormControl.value;
-    this.userParams.country = this.countryFormControl.value.name ?? '';
-    this.userParams.city =
+    this._userService.userParams().gender = this.genderFormControl.value;
+    this._userService.userParams().pageNumber = this.pageNumber;
+    this._userService.userParams().pageSize = this.pageSize;
+    this._userService.userParams().minAge = this.minAgeFormControl.value;
+    this._userService.userParams().maxAge = this.maxAgeFormControl.value;
+    this._userService.userParams().country =
+      this.countryFormControl.value.name ?? '';
+    this._userService.userParams().city =
       this.cityFormControl.value.name ?? this.cityFormControl.value ?? '';
-    this.userParams.orderBy = this.sortByFormControl.value ?? '';
-    this._userService.fetchUsers(this.userParams);
+    this._userService.userParams().orderBy = this.sortByFormControl.value ?? '';
+    this._userService.fetchUsers();
   }
 
   submitFilters() {
@@ -158,6 +160,18 @@ export class MemberListComponent {
   }
   get isFetchingCities() {
     return this.staticData.isFetchingCityData();
+  }
+
+  get currentPage() {
+    return this._userService.paginatedUsers()?.pagination?.currentPage ?? 1;
+  }
+
+  get itemsPerPage() {
+    return this._userService.paginatedUsers()?.pagination?.itemsPerPage ?? 5;
+  }
+
+  get totalItems() {
+    return this._userService.paginatedUsers()?.pagination?.totalItems ?? 5;
   }
 
   get enableCityFreeTextInput() {
