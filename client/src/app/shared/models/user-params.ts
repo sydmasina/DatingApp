@@ -6,5 +6,5 @@ export class UserParams {
   pageSize: number = 5;
   country: string = '';
   city: string = '';
-  orderBy: string = '';
+  orderBy: string = 'lastActive';
 }

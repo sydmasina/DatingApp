@@ -126,10 +126,10 @@
   </div>
   <hr />
   <mat-paginator
-    [length]="pagination.totalItems"
+    [length]="totalItems"
     [pageSizeOptions]="pageSizeOptions"
-    [pageIndex]="pageNumber - 1"
-    [pageSize]="pageSize"
+    [pageIndex]="currentPage - 1"
+    [pageSize]="itemsPerPage"
     aria-label="Select page"
     (page)="handlePageEvent($event)"
   >

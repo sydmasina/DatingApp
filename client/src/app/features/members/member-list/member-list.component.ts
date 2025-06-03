@@ -59,17 +59,20 @@ export class MemberListComponent {
     if (!this._userService.paginatedUsers()) {
       this._filterUsers();
     }
-    this.staticData.GetCountries();
+
+    if (!this.staticData.countries()) {
+      this.staticData.GetCountries();
+    }
   }
 
   private _initFormGroup() {
     this.filterFormGroup = this.fb.group({
-      gender: ['all'],
-      minAge: [18],
-      maxAge: [30],
-      country: [''],
-      city: [''],
-      sortBy: ['lastActive'],
+      gender: [this._userService.userParams.gender],
+      minAge: [this._userService.userParams.minAge],
+      maxAge: [this._userService.userParams.maxAge],
+      country: [this._userService.userParams.country],
+      city: [this._userService.userParams.city],
+      sortBy: [this._userService.userParams.orderBy],
     });
   }
 
@@ -158,6 +161,18 @@ export class MemberListComponent {
   }
   get isFetchingCities() {
     return this.staticData.isFetchingCityData();
+  }
+
+  get currentPage() {
+    return this._userService.paginatedUsers()?.pagination?.currentPage ?? 1;
+  }
+
+  get itemsPerPage() {
+    return this._userService.paginatedUsers()?.pagination?.itemsPerPage ?? 5;
+  }
+
+  get totalItems() {
+    return this._userService.paginatedUsers()?.pagination?.totalItems ?? 5;
   }
 
   get enableCityFreeTextInput() {
