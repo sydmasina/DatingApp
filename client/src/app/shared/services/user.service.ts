@@ -28,7 +28,7 @@ export class UserService {
   private readonly _user = signal<User | null>(null);
   public readonly user: Signal<User | null> = this._user.asReadonly();
   usersCache = new Map();
-  userParams = new UserParams();
+  public userParams = signal<UserParams>(new UserParams());
 
   constructor(
     private _httpClient: HttpClient,
@@ -36,9 +36,10 @@ export class UserService {
     private toastr: ToastrService
   ) {}
 
-  fetchUsers(userParams: UserParams) {
-    const response = this.usersCache.get(Object.values(userParams).join('-'));
-    this.userParams = userParams;
+  fetchUsers() {
+    const response = this.usersCache.get(
+      Object.values(this.userParams()).join('-')
+    );
 
     if (response) {
       this._setPaginatedUsers(response);
@@ -50,7 +51,7 @@ export class UserService {
     }
     let params = new HttpParams();
 
-    params = this._setHeaderParams(params, userParams);
+    params = this._setHeaderParams(params, this.userParams());
 
     this._isFetchingUserData.set(true);
 
@@ -62,7 +63,10 @@ export class UserService {
       .subscribe({
         next: (response) => {
           this._setPaginatedUsers(response);
-          this.usersCache.set(Object.values(userParams).join('-'), response);
+          this.usersCache.set(
+            Object.values(this.userParams()).join('-'),
+            response
+          );
           this._isFetchingUserData.set(false);
         },
         error: (error) => {
