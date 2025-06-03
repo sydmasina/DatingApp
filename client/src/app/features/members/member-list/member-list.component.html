@@ -115,7 +115,7 @@
   <div class="row mb-4">
     <ng-container *ngIf="users.length > 0; else showNoUsersFound">
       @for(user of users; track user.id){
-      <div class="mt-4 col-6 col-md-5 col-lg-4 col-xl-3">
+      <div class="mt-4 col-sm-6 col-md-5 col-lg-4 col-xl-3">
         <app-member-card [user]="user"></app-member-card>
       </div>
       }
