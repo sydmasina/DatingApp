@@ -25,7 +25,7 @@
                 trackKey="id"
               ></app-form-select-field>
             </div>
-            <div class="col-md-4 gap-4">
+            <div class="col-md-3 gap-4 mt-2 mt-md-0">
               <label for="genderFilter">Preferred Gender: </label>
               <app-form-select-field
                 [formControlInput]="genderFormControl"
@@ -47,7 +47,7 @@
           </div>
 
           <div class="row mb-4">
-            <div class="col-8">
+            <div class="col-md-8">
               <label>Location: </label>
 
               <div class="row">
@@ -58,10 +58,10 @@
                   placeholder="Select a country..."
                   optionIdentifier="name"
                   trackKey="id"
-                  class="col-6"
+                  class="col-md-6"
                 ></app-form-select-field>
 
-                <div class="col-6">
+                <div class="col-md-6 mt-2 mt-md-0">
                   <ng-container
                     *ngIf="!isFetchingCities; else showLoadingCities"
                   >
@@ -98,11 +98,11 @@
             <button
               type="button"
               (click)="resetFilters()"
-              class="btn btn-warning col-4"
+              class="btn btn-warning col-sm-4"
             >
               Reset Filters
             </button>
-            <button type="submit" class="btn btn-primary col-4">
+            <button type="submit" class="btn btn-primary col-sm-4">
               Apply Filters
             </button>
           </div>
