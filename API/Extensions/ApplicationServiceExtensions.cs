@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.Helpers;
 using API.Interfaces;
+using API.Repositories;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ namespace API.Extensions
             services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ILikesRepository, LikesRepository>();
             services.AddScoped<LogUserActivity>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
