@@ -1,7 +1,8 @@
 ﻿using API.Data;
+using API.Data.Repositories;
 using API.Helpers;
 using API.Interfaces;
-using API.Repositories;
+using API.Models;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,11 @@ namespace API.Extensions
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ILikesRepository, LikesRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IUserRepository<AppUser>, UserRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<PhotoService>();
             services.AddScoped<LogUserActivity>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
