@@ -13,6 +13,8 @@ export class LikesService {
   private readonly _likedBy = signal<User[]>([]);
   public readonly likedBy: Signal<User[]> = this._likedBy.asReadonly();
 
+  public readonly likeIds = signal<number[]>([]);
+
   private readonly _likedByMe = signal<User[]>([]);
   public readonly likedByMe: Signal<User[]> = this._likedByMe.asReadonly();
 
@@ -29,6 +31,18 @@ export class LikesService {
     this._isFetchingLikedBy.asReadonly();
 
   constructor(private _httpClient: HttpClient) {}
+
+  toggleLike(targetId: number) {
+    return this._httpClient.post(`${LikesEndpoint}/${targetId}`, {});
+  }
+
+  getLikeIds() {
+    this._httpClient.get<number[]>(LikesEndpoint + '/list').subscribe({
+      next: (response) => {
+        this.likeIds.set(response);
+      },
+    });
+  }
 
   getMatches() {
     if (this.isFetchingMatches()) {

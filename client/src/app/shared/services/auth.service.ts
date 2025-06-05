@@ -10,6 +10,7 @@ import {
 import { LoggedInUser, Login } from '../models/login';
 import { PhotoToUpload } from '../models/Photo';
 import { RegisterDto } from '../models/register';
+import { LikesService } from './likes.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,15 +24,15 @@ export class AuthService {
   constructor(
     private _httpClient: HttpClient,
     private toastr: ToastrService,
-    private _router: Router
+    private _router: Router,
+    private _likesService: LikesService
   ) {}
 
   login(loginModel: Login) {
     return this._httpClient.post<LoggedInUser>(LoginEndpoint, loginModel).pipe(
       map((user) => {
         if (user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUser.set(user);
+          this.setCurrentUser(user);
         }
       })
     );
@@ -54,8 +55,7 @@ export class AuthService {
       .post<LoggedInUser>(RegisterEndpoint, finalPayload)
       .subscribe({
         next: (response) => {
-          localStorage.setItem('user', JSON.stringify(response));
-          this.currentUser.set(response);
+          this.setCurrentUser(response);
           this._isRegistering.set(false);
           this._router.navigate(['/members']);
         },
@@ -67,6 +67,12 @@ export class AuthService {
           this._isRegistering.set(false);
         },
       });
+  }
+
+  setCurrentUser(user: LoggedInUser) {
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUser.set(user);
+    this._likesService.getLikeIds();
   }
 
   generateFormData(data: { [key: string]: any }) {
