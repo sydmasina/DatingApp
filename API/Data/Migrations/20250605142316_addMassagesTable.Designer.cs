@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250605140255_addMassagesTable")]
+    [Migration("20250605142316_addMassagesTable")]
     partial class addMassagesTable
     {
         /// <inheritdoc />
