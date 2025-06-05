@@ -1,0 +1,12 @@
+<div class="row mt-4 mb-4 list-container">
+  <ng-container *ngIf="LikedBy.length > 0; else showNoUsersFound">
+    @for(user of LikedBy; track user.id){
+    <div class="mt-4 col-sm-6 col-md-5 col-lg-4 col-xl-3">
+      <app-member-card [user]="user"></app-member-card>
+    </div>
+    }
+  </ng-container>
+  <ng-template #showNoUsersFound>
+    <h3 class="text-center">No likes yet</h3>
+  </ng-template>
+</div>
