@@ -6,7 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Repositories
+namespace API.Data.Repositories
 {
     public class LikesRepository(DataContext context, IMapper mapper) : ILikesRepository
     {
