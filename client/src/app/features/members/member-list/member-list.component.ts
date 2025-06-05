@@ -58,7 +58,7 @@ export class MemberListComponent {
       this._filterUsers();
     }
 
-    if (!this.staticData.countries()) {
+    if (this.staticData.countries().length === 0) {
       this.staticData.GetCountries();
     }
   }
