@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +7,7 @@ import { PaginatedResult } from '../models/pagination';
 import { PhotoToDelete, PhotoToUpload } from '../models/Photo';
 import { UpdateUserDto, User } from '../models/user';
 import { UserParams } from '../models/user-params';
+import { setPaginatedResult, setPaginationParams } from '../utils/helpers';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +43,7 @@ export class UserService {
     );
 
     if (response) {
-      this._setPaginatedUsers(response);
+      setPaginatedResult(response, this._paginatedUsers);
       return;
     }
 
@@ -51,7 +52,8 @@ export class UserService {
     }
     let params = new HttpParams();
 
-    params = this._setHeaderParams(params, this.userParams());
+    params = this._setFilterParams(params, this.userParams());
+    params = setPaginationParams(params, this.userParams());
 
     this._isFetchingUserData.set(true);
 
@@ -62,7 +64,7 @@ export class UserService {
       })
       .subscribe({
         next: (response) => {
-          this._setPaginatedUsers(response);
+          setPaginatedResult(response, this._paginatedUsers);
           this.usersCache.set(
             Object.values(this.userParams()).join('-'),
             response
@@ -75,19 +77,10 @@ export class UserService {
       });
   }
 
-  private _setPaginatedUsers(response: HttpResponse<User[]>) {
-    this._paginatedUsers.set({
-      items: response.body as User[],
-      pagination: JSON.parse(response.headers.get('Pagination')!),
-    });
-  }
-
-  private _setHeaderParams(
+  private _setFilterParams(
     params: HttpParams,
     userParams: UserParams
   ): HttpParams {
-    params = params.append('pageNumber', userParams.pageNumber);
-    params = params.append('pageSize', userParams.pageSize);
     params = params.append('gender', userParams.gender);
     params = params.append('minAge', userParams.minAge);
     params = params.append('maxAge', userParams.maxAge);

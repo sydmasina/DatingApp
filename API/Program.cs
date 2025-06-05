@@ -1,9 +1,7 @@
 using API.Data;
 using API.Extensions;
-using API.Interfaces;
 using API.Middleware;
 using API.Models;
-using API.Repositories;
 using API.Services;
 using dotenv.net;
 using Microsoft.EntityFrameworkCore;
@@ -29,12 +27,6 @@ builder.Services.AddSingleton<CloudinaryService>();
 // Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
-
-builder.Services.AddScoped<IUserRepository<AppUser>, UserRepository>();
-builder.Services.AddScoped<ICountryRepository, CountryRepository>();
-builder.Services.AddScoped<ICityRepository, CityRepository>();
-builder.Services.AddScoped<PhotoService>();
-
 
 var app = builder.Build();
 

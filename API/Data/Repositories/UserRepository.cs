@@ -9,7 +9,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-namespace API.Repositories
+namespace API.Data.Repositories
 {
     public class UserRepository(DataContext context, IMapper mapper) : IUserRepository<AppUser>
     {
@@ -74,8 +74,8 @@ namespace API.Repositories
                   .ProjectTo<MemberDto>(mapper.ConfigurationProvider);
 
             var today = DateOnly.FromDateTime(DateTime.Today);
-            var minDob = today.AddYears((int)(-userParams.MaxAge - 1)).AddDays(1);
-            var maxDob = today.AddYears((int)-userParams.MinAge);
+            var minDob = today.AddYears(-userParams.MaxAge - 1).AddDays(1);
+            var maxDob = today.AddYears(-userParams.MinAge);
 
             query = query.Where(s => s.DateOfBirth >= minDob && s.DateOfBirth <= maxDob);
 
@@ -85,22 +85,22 @@ namespace API.Repositories
                 _ => query.OrderByDescending(s => s.LastActive)
             };
 
-            if (!String.IsNullOrEmpty(userParams.Country) && userParams.Country != "all")
+            if (!string.IsNullOrEmpty(userParams.Country) && userParams.Country != "all")
             {
                 query = query.Where(s => s.Country == userParams.Country);
             }
 
-            if (!String.IsNullOrEmpty(userParams.City) && userParams.City != "all")
+            if (!string.IsNullOrEmpty(userParams.City) && userParams.City != "all")
             {
                 query = query.Where(s => s.City == userParams.City);
             }
 
-            if (!String.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
+            if (!string.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "all")
             {
                 query = query.Where(s => s.Gender == userParams.Gender);
             }
 
-            if (!String.IsNullOrEmpty(userParams.CurrentUsername))
+            if (!string.IsNullOrEmpty(userParams.CurrentUsername))
             {
                 query = query.Where(s => s.UserName != userParams.CurrentUsername);
             }
