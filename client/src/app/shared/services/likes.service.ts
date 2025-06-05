@@ -13,12 +13,19 @@ export class LikesService {
   private readonly _likedBy = signal<User[]>([]);
   public readonly likedBy: Signal<User[]> = this._likedBy.asReadonly();
 
+  private readonly _likedByMe = signal<User[]>([]);
+  public readonly likedByMe: Signal<User[]> = this._likedByMe.asReadonly();
+
   private readonly _isFetchingMatches = signal<boolean>(false);
   public readonly isFetchingMatches: Signal<boolean> =
     this._isFetchingMatches.asReadonly();
 
   private readonly _isFetchingLikedBy = signal<boolean>(false);
   public readonly isFetchingLikedBy: Signal<boolean> =
+    this._isFetchingLikedBy.asReadonly();
+
+  private readonly _isFetchingLikedByMe = signal<boolean>(false);
+  public readonly isFetchingLikedByMe: Signal<boolean> =
     this._isFetchingLikedBy.asReadonly();
 
   constructor(private _httpClient: HttpClient) {}
@@ -54,6 +61,23 @@ export class LikesService {
         this._isFetchingLikedBy.set(false);
       },
       error: () => this._isFetchingLikedBy.set(false),
+    });
+  }
+
+  getLikedByMe() {
+    if (this.isFetchingLikedByMe()) {
+      return;
+    }
+
+    let params = new HttpParams();
+    params = params.append('predicate', 'liked');
+
+    this._httpClient.get<User[]>(LikesEndpoint, { params }).subscribe({
+      next: (response) => {
+        this._likedByMe.set(response);
+        this._isFetchingLikedByMe.set(false);
+      },
+      error: () => this._isFetchingLikedByMe.set(false),
     });
   }
 }

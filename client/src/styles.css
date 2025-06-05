@@ -42,3 +42,9 @@ body {
   height: 100%;
   width: 100%;
 }
+
+.list-container {
+  overflow: hidden;
+  max-width: 100%;
+  width: 100%;
+}
