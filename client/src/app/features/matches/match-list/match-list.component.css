@@ -1,0 +1,8 @@
+mat-paginator {
+  background-color: #060606;
+  color: #adafae !important;
+}
+
+::ng-deep mat-select {
+  color: #adafae !important;
+}

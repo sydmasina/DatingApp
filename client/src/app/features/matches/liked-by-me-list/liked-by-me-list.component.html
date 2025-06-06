@@ -1,5 +1,5 @@
 <div class="row mt-4 mb-4 list-container">
-  <ng-container *ngIf="likedByMe.length > 0; else showNoUsersFound">
+  <ng-container *ngIf="likedByMe; else showNoUsersFound">
     <h5 class="text-start">A list of people you liked.</h5>
     <hr />
     @for(user of likedByMe; track user.id){
@@ -7,6 +7,16 @@
       <app-member-card [user]="user"></app-member-card>
     </div>
     }
+    <hr class="my-3" />
+    <mat-paginator
+      [length]="totalItems"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="paginationParams.pageNumber - 1"
+      [pageSize]="paginationParams.pageSize"
+      aria-label="Select page"
+      (page)="handlePageEvent($event)"
+    >
+    </mat-paginator>
   </ng-container>
   <ng-template #showNoUsersFound>
     <h3 class="text-center">You have not liked anyone yet</h3>

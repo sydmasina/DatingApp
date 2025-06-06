@@ -1,7 +1,7 @@
 import { HttpParams, HttpResponse } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { PaginatedResult } from '../models/pagination';
-import { UserParams } from '../models/user-params';
+import { PaginationParams, UserParams } from '../models/user-params';
 
 export function formatToDateOnly(date: string): string {
   const dateToFormat = new Date(date);
@@ -28,7 +28,7 @@ export function setPaginatedResult<T>(
 
 export function setPaginationParams(
   params: HttpParams,
-  userParams: UserParams
+  userParams: UserParams | PaginationParams
 ): HttpParams {
   params = params.append('pageNumber', userParams.pageNumber);
   params = params.append('pageSize', userParams.pageSize);
