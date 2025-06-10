@@ -3,7 +3,8 @@ import { MatchesComponent } from './features/matches/matches.component';
 import { MemberDetailComponent } from './features/members/member-detail/member-detail.component';
 import { MemberEditComponent } from './features/members/member-edit/member-edit.component';
 import { MemberListComponent } from './features/members/member-list/member-list.component';
-import { MessagesComponent } from './features/messages/messages.component';
+import { MessageListComponent } from './features/messages/message-list/message-list.component';
+import { MessageThreadComponent } from './features/messages/message-thread/message-thread.component';
 import { PrivacyPolicyComponent } from './features/privacy-policy/privacy-policy.component';
 import { authGuard } from './shared/_guards/auth.guard';
 import { redirectIfAuthenticatedGuard } from './shared/_guards/redirect-if-authenticated.guard';
@@ -31,7 +32,8 @@ export const routes: Routes = [
         component: MemberEditComponent,
         canDeactivate: [UnsavedChangesGuard],
       },
-      { path: 'messages', component: MessagesComponent },
+      { path: 'messages', component: MessageListComponent },
+      { path: 'messages/:username', component: MessageThreadComponent },
       { path: 'matches', component: MatchesComponent },
       { path: 'errors', component: TestErrorsComponent },
       { path: 'not-found', component: NotFoundComponent },
