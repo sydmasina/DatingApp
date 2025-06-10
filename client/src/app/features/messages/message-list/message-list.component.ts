@@ -46,8 +46,8 @@ export class MessageListComponent implements OnInit {
 
   getRoute(message: Message) {
     if (this.container === MessageContainerType.Outbox)
-      return `/members/${message.recipientUsername}`;
-    else return `/members/${message.senderUsername}`;
+      return `/messages/${message.recipientUsername}`;
+    else return `/messages/${message.senderUsername}`;
   }
 
   get messages() {

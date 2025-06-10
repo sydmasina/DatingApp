@@ -37,10 +37,10 @@
         <th class="table-header" style="width: 20%"></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="align-middle">
       @for (message of messages; track message.id) {
       <tr [routerLink]="getRoute(message)">
-        <td class="px-2 pt-3">{{ message.content }}</td>
+        <td class="px-2">{{ message.content }}</td>
         <td>
           <div class="d-flex gap-1 align-items-center">
             <img
@@ -48,10 +48,12 @@
               [src]="message.senderPhotoUrl || './assets/images/user-icon.jpeg'"
               alt=""
             />
-            {{ message.senderUsername }}
+            <strong class="text-capitalize">{{
+              message.senderUsername
+            }}</strong>
           </div>
         </td>
-        <td class="px-2 pt-3 align-items-center">
+        <td class="px-2 align-items-center">
           {{ message.messageSent ? (message.messageSent | timeAgo) : "" }}
         </td>
         <td><button class="btn btn-danger">Delete</button></td>
