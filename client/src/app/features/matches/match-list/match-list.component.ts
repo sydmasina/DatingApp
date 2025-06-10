@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { PredicateTypes } from '../../../shared/constants/pagination';
@@ -9,7 +8,7 @@ import { MemberCardComponent } from '../../members/member-list/member-card/membe
 @Component({
   selector: 'app-match-list',
   standalone: true,
-  imports: [CommonModule, MemberCardComponent, MatPaginatorModule],
+  imports: [MemberCardComponent, MatPaginatorModule],
   templateUrl: './match-list.component.html',
   styleUrl: './match-list.component.css',
 })
