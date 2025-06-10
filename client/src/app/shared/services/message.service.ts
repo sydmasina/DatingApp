@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, Signal, signal } from '@angular/core';
 import { MessageEndpoint } from '../constants/api-enpoints/message';
+import { MessageContainerType } from '../constants/message';
 import { Message } from '../models/message';
 import { PaginatedResult } from '../models/pagination';
 import { PaginationParams } from '../models/user-params';
@@ -19,7 +20,10 @@ export class MessageService {
 
   constructor(private _httpClient: HttpClient) {}
 
-  getMessages(paginationParams: PaginationParams, container: string) {
+  getMessages(
+    paginationParams: PaginationParams,
+    container: MessageContainerType
+  ) {
     var params = new HttpParams();
     params = params.append('container', container);
     params = setPaginationParams(params, paginationParams);
