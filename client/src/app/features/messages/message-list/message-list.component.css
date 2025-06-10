@@ -6,3 +6,7 @@ mat-paginator {
 ::ng-deep mat-select {
   color: #adafae !important;
 }
+
+.table {
+  cursor: pointer;
+}
