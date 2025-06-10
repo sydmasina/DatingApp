@@ -39,4 +39,10 @@ export class MessageService {
         },
       });
   }
+
+  getMessageThread(username: string) {
+    return this._httpClient.get<Message[]>(
+      MessageEndpoint + '/thread/' + username
+    );
+  }
 }
