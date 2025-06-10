@@ -1,7 +1,5 @@
 <div class="row mt-4 mb-4 list-container">
   <ng-container *ngIf="matches; else showNoUsersFound">
-    <h5 class="text-start">A list of people you matched with.</h5>
-    <hr />
     @for(match of matches; track match.id){
     <div class="mt-4 col-sm-6 col-md-5 col-lg-4 col-xl-3">
       <app-member-card [user]="match"></app-member-card>
