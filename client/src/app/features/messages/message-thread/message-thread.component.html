@@ -1,0 +1,13 @@
+<div class="container mt-3">
+  @if(messageThread() && messageThread().length > 0){ @for (message of
+  messageThread(); track message.id) {
+  <p
+    [class]="message.senderUsername === currentUser ? 'text-end' : 'text-start'"
+  >
+    {{ message.content }}
+  </p>
+
+  } }@else {
+  <h4>No Messages yet</h4>
+  }
+</div>
