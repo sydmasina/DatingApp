@@ -1,0 +1,32 @@
+mat-paginator {
+  background-color: #060606;
+  color: #adafae !important;
+}
+
+::ng-deep mat-select {
+  color: #adafae !important;
+}
+
+.table {
+  cursor: pointer;
+  overflow: hidden;
+}
+::ng-deep .mat-drawer-content {
+  overflow: hidden !important;
+}
+.mat-drawer-container {
+  background-color: #060606;
+}
+.mat-drawer {
+  border-radius: 0 !important;
+  background-color: #060606;
+}
+.message-thread-container {
+  width: 50%;
+}
+
+@media screen and (max-width: 1000px) {
+  .message-thread-container {
+    width: 80%;
+  }
+}
