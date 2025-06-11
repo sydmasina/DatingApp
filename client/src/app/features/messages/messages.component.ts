@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { MessageContainerType } from '../../shared/constants/message';
 import { Message } from '../../shared/models/message';
@@ -27,6 +27,7 @@ import { MessageThreadComponent } from './message-thread/message-thread.componen
   styleUrl: './messages.component.css',
 })
 export class MessagesComponent implements OnInit {
+  @ViewChild('drawer') drawer!: MatDrawer;
   paginationParams: PaginationParams = { pageNumber: 1, pageSize: 5 };
   pageSizeOptions: number[] = [5, 10, 25, 50];
   container: MessageContainerType = MessageContainerType.Inbox;
@@ -41,6 +42,10 @@ export class MessagesComponent implements OnInit {
 
   loadMessages() {
     this._messageService.getMessages(this.paginationParams, this.container);
+
+    if (this.drawer.opened) {
+      this.drawer.close();
+    }
   }
 
   handlePageEvent(e: PageEvent) {
@@ -57,6 +62,11 @@ export class MessagesComponent implements OnInit {
 
   sentMessageThreadUsername(username: string) {
     this.messageThreadUsername = username;
+  }
+
+  handleDrawerClosed() {
+    console.log('Closed!...');
+    this.messageThreadUsername = null;
   }
 
   get messages() {
