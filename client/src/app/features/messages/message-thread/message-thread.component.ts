@@ -1,5 +1,6 @@
 import { TitleCasePipe } from '@angular/common';
 import { Component, input, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Message } from '../../../shared/models/message';
 import { AuthService } from '../../../shared/services/auth.service';
 import { MessageService } from '../../../shared/services/message.service';
@@ -17,7 +18,8 @@ export class MessageThreadComponent implements OnInit {
 
   constructor(
     private _messageService: MessageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private _router: Router
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +32,10 @@ export class MessageThreadComponent implements OnInit {
         this.messageThread.set(response);
       },
     });
+  }
+
+  onOpenProfile(username: string) {
+    this._router.navigate(['./members/' + username]);
   }
 
   get currentUser() {
