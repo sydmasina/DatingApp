@@ -33,6 +33,7 @@ export class MessagesComponent implements OnInit {
   container: MessageContainerType = MessageContainerType.Inbox;
   messageContainerType = MessageContainerType;
   messageThreadUsername: string | null = null;
+  messageThreadPhotoUrl: string | null = null;
 
   constructor(private _messageService: MessageService) {}
 
@@ -43,7 +44,7 @@ export class MessagesComponent implements OnInit {
   loadMessages() {
     this._messageService.getMessages(this.paginationParams, this.container);
 
-    if (this.drawer.opened) {
+    if (this.drawer && this.drawer.opened) {
       this.drawer.close();
     }
   }
@@ -60,8 +61,15 @@ export class MessagesComponent implements OnInit {
     else return `/messages/${message.senderUsername}`;
   }
 
-  sentMessageThreadUsername(username: string) {
-    this.messageThreadUsername = username;
+  sentMessageThreadUsername(message: Message) {
+    this.messageThreadUsername =
+      this.container === MessageContainerType.Outbox
+        ? message.recipientUsername
+        : message.senderUsername;
+    this.messageThreadPhotoUrl =
+      this.container === MessageContainerType.Outbox
+        ? message.recipientPhotoUrl
+        : message.senderPhotoUrl;
   }
 
   handleDrawerClosed() {
