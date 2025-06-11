@@ -45,3 +45,6 @@
 .image-thumb-nail:hover {
   cursor: pointer;
 }
+.send-button:hover {
+  cursor: pointer;
+}

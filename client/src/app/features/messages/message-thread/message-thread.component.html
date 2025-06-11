@@ -2,16 +2,12 @@
   @if(messageThread() && messageThread().length > 0){
   <div class="d-flex gap-1 align-items-center">
     <img
-      [src]="
-        messageThread()[0].recipientPhotoUrl || './assets/images/user-icon.jpeg'
-      "
+      [src]="userPhotoUrl() || './assets/images/user-icon.jpeg'"
       class="image-thumb-nail"
       alt="recipientPhotoUrl"
-      (click)="onOpenProfile(messageThread()[0].senderUsername)"
+      (click)="onOpenProfile()"
     />
-    <strong class="text-capitalize">{{
-      messageThread()[0].recipientUsername
-    }}</strong>
+    <strong>{{ username() | titlecase }}</strong>
   </div>
   <hr />
   <div class="thread-body">
@@ -25,10 +21,10 @@
     }@else {
     <div class="row justify-content-start align-items-end mb-3">
       <img
-        [src]="message.senderPhotoUrl || './assets/images/user-icon.jpeg'"
+        [src]="userPhotoUrl() || './assets/images/user-icon.jpeg'"
         class="chat-image-thumb-nail"
         alt="recipientPhotoUrl"
-        (click)="onOpenProfile(message.senderUsername)"
+        (click)="onOpenProfile()"
       />
       <div class="col-10 recipient-card">
         <p>{{ message.content }}</p>
@@ -41,12 +37,17 @@
     <input
       type="text"
       class="form-control"
-      [placeholder]="
-        'Message ' + (messageThread()[0].recipientUsername | titlecase)
-      "
+      [formControl]="newMessageControl"
+      [placeholder]="'Message ' + (username() | titlecase)"
       aria-describedby="basic-addon2"
     />
-    <span class="input-group-text" id="basic-addon2">Send</span>
+    <button
+      class="input-group-text send-button"
+      id="basic-addon2"
+      (click)="sendMessage()"
+    >
+      Send
+    </button>
   </div>
   }@else {
   <h4>Fetching messages...</h4>
