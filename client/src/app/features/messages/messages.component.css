@@ -30,3 +30,8 @@ mat-paginator {
     width: 80%;
   }
 }
+
+.container,
+mat-drawer-container {
+  height: 80vh !important;
+}

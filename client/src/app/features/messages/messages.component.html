@@ -44,13 +44,7 @@
           @for (message of messages; track message.id) {
           <tr
             (click)="drawer.toggle()"
-            (click)="
-              sentMessageThreadUsername(
-                container === messageContainerType.Outbox
-                  ? message.recipientUsername
-                  : message.senderUsername
-              )
-            "
+            (click)="sentMessageThreadUsername(message)"
           >
             <td class="px-2">{{ message.content }}</td>
             <td>
@@ -92,9 +86,10 @@
       position="end"
       (closedStart)="handleDrawerClosed()"
     >
-      @if(messageThreadUsername){
+      @if(messageThreadUsername && messageThreadPhotoUrl){
       <app-message-thread
         [username]="messageThreadUsername"
+        [userPhotoUrl]="messageThreadPhotoUrl"
       ></app-message-thread>
       }
     </mat-drawer>

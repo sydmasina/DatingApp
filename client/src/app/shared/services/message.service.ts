@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, Signal, signal } from '@angular/core';
 import { MessageEndpoint } from '../constants/api-enpoints/message';
 import { MessageContainerType } from '../constants/message';
-import { Message } from '../models/message';
+import { Message, SendMessageBody } from '../models/message';
 import { PaginatedResult } from '../models/pagination';
 import { PaginationParams } from '../models/user-params';
 import { setPaginatedResult, setPaginationParams } from '../utils/helpers';
@@ -44,5 +44,9 @@ export class MessageService {
     return this._httpClient.get<Message[]>(
       MessageEndpoint + '/thread/' + username
     );
+  }
+
+  sendMessage(messageBody: SendMessageBody) {
+    return this._httpClient.post<Message>(MessageEndpoint, messageBody);
   }
 }
