@@ -65,7 +65,6 @@ export class MessagesComponent implements OnInit {
   }
 
   handleDrawerClosed() {
-    console.log('Closed!...');
     this.messageThreadUsername = null;
   }
 
