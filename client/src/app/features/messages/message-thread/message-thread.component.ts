@@ -1,3 +1,4 @@
+import { TitleCasePipe } from '@angular/common';
 import { Component, input, OnInit, signal } from '@angular/core';
 import { Message } from '../../../shared/models/message';
 import { AuthService } from '../../../shared/services/auth.service';
@@ -6,7 +7,7 @@ import { MessageService } from '../../../shared/services/message.service';
 @Component({
   selector: 'app-message-thread',
   standalone: true,
-  imports: [],
+  imports: [TitleCasePipe],
   templateUrl: './message-thread.component.html',
   styleUrl: './message-thread.component.css',
 })
