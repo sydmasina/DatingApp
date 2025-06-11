@@ -1,0 +1,98 @@
+<div class="mt-4 mb-4 container">
+  <div class="d-flex">
+    <div class="btn-group">
+      <button
+        class="btn btn-primary"
+        btnRadio="Unread"
+        [(ngModel)]="container"
+        (click)="loadMessages()"
+      >
+        Unread
+      </button>
+      <button
+        class="btn btn-primary"
+        btnRadio="Inbox"
+        [(ngModel)]="container"
+        (click)="loadMessages()"
+      >
+        Inbox
+      </button>
+      <button
+        class="btn btn-primary"
+        btnRadio="Outbox"
+        [(ngModel)]="container"
+        (click)="loadMessages()"
+      >
+        Outbox
+      </button>
+    </div>
+  </div>
+  @if (messages && messages.length > 0) {
+
+  <mat-drawer-container class="example-container" autosize>
+    <mat-drawer-content>
+      <table class="table table-hover mt-3">
+        <thead>
+          <tr>
+            <th class="table-header" style="width: 35%">Message</th>
+            <th class="table-header" style="width: 20%">From / To</th>
+            <th class="table-header" style="width: 25%">Sent / Received</th>
+            <th class="table-header" style="width: 20%"></th>
+          </tr>
+        </thead>
+        <tbody class="align-middle">
+          @for (message of messages; track message.id) {
+          <tr
+            (click)="drawer.toggle()"
+            (click)="sentMessageThreadUsername(message.senderUsername)"
+          >
+            <td class="px-2">{{ message.content }}</td>
+            <td>
+              <div class="d-flex gap-1 align-items-center">
+                <img
+                  class="image-thumb-nail"
+                  [src]="
+                    message.senderPhotoUrl || './assets/images/user-icon.jpeg'
+                  "
+                  alt=""
+                />
+                <strong class="text-capitalize">{{
+                  message.senderUsername
+                }}</strong>
+              </div>
+            </td>
+            <td class="px-2 align-items-center">
+              {{ message.messageSent ? (message.messageSent | timeAgo) : "" }}
+            </td>
+            <td><button class="btn btn-danger">Delete</button></td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      <mat-paginator
+        [length]="totalItems"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageIndex]="paginationParams.pageNumber - 1"
+        [pageSize]="paginationParams.pageSize"
+        aria-label="Select page"
+        (page)="handlePageEvent($event)"
+      >
+      </mat-paginator>
+    </mat-drawer-content>
+    <mat-drawer
+      class="message-thread-container"
+      #drawer
+      mode="over"
+      position="end"
+    >
+      @if(messageThreadUsername){
+      <app-message-thread
+        [username]="messageThreadUsername"
+      ></app-message-thread>
+      }
+    </mat-drawer>
+  </mat-drawer-container>
+  }@else{
+  <p class="mt-3">No messages</p>
+  }
+</div>
