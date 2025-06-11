@@ -44,7 +44,13 @@
           @for (message of messages; track message.id) {
           <tr
             (click)="drawer.toggle()"
-            (click)="sentMessageThreadUsername(message.senderUsername)"
+            (click)="
+              sentMessageThreadUsername(
+                container === messageContainerType.Outbox
+                  ? message.recipientUsername
+                  : message.senderUsername
+              )
+            "
           >
             <td class="px-2">{{ message.content }}</td>
             <td>
@@ -84,6 +90,7 @@
       #drawer
       mode="over"
       position="end"
+      (closedStart)="handleDrawerClosed()"
     >
       @if(messageThreadUsername){
       <app-message-thread
