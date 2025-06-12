@@ -1,13 +1,9 @@
 <div class="thread-container">
   @if(messageThread() && messageThread().length > 0){
   <div class="d-flex gap-1 align-items-center">
-    <img
-      [src]="userPhotoUrl() || './assets/images/user-icon.jpeg'"
-      class="image-thumb-nail"
-      alt="recipientPhotoUrl"
-      (click)="onOpenProfile()"
-    />
-    <strong>{{ username() | titlecase }}</strong>
+    <strong class="heading-title" (click)="onOpenProfile()">{{
+      username() | titlecase
+    }}</strong>
   </div>
   <hr />
   <div class="thread-body">
@@ -21,7 +17,7 @@
     }@else {
     <div class="row justify-content-start align-items-end mb-3">
       <img
-        [src]="userPhotoUrl() || './assets/images/user-icon.jpeg'"
+        [src]="message.senderPhotoUrl || './assets/images/user-icon.jpeg'"
         class="chat-image-thumb-nail"
         alt="recipientPhotoUrl"
         (click)="onOpenProfile()"
