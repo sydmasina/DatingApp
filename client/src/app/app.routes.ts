@@ -27,12 +27,15 @@ export const routes: Routes = [
       { path: 'members', component: MemberListComponent },
       { path: 'members/:username', component: MemberDetailComponent },
       {
+        path: 'members/:username/:openMessages',
+        component: MemberDetailComponent,
+      },
+      {
         path: 'edit-profile',
         component: MemberEditComponent,
         canDeactivate: [UnsavedChangesGuard],
       },
       { path: 'messages', component: MessagesComponent },
-      { path: 'messages/:username', component: MessagesComponent },
       { path: 'matches', component: MatchesComponent },
       { path: 'errors', component: TestErrorsComponent },
       { path: 'not-found', component: NotFoundComponent },

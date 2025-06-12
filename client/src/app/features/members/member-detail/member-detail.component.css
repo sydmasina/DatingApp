@@ -23,9 +23,27 @@
 }
 
 .carousel-item img {
-  height: 80vh;
+  height: 45vh;
   object-fit: contain;
 }
 .carousel-inner {
-  height: 80vh;
+  height: 45vh;
+  padding-top: 30px;
+}
+.mat-drawer-container {
+  background-color: #060606;
+}
+.mat-drawer {
+  border-radius: 0 !important;
+  background-color: #060606;
+}
+
+mat-drawer-container {
+  height: 100% !important;
+  p.fs-6 {
+    color: gray;
+  }
+}
+.message-thread-container {
+  width: 50%;
 }

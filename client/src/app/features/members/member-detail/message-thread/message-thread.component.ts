@@ -1,10 +1,10 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, input, OnInit, signal } from '@angular/core';
+import { Component, input, OnInit, output, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Message, SendMessageBody } from '../../../shared/models/message';
-import { AuthService } from '../../../shared/services/auth.service';
-import { MessageService } from '../../../shared/services/message.service';
+import { Message, SendMessageBody } from '../../../../shared/models/message';
+import { AuthService } from '../../../../shared/services/auth.service';
+import { MessageService } from '../../../../shared/services/message.service';
 
 @Component({
   selector: 'app-message-thread',
@@ -16,6 +16,8 @@ import { MessageService } from '../../../shared/services/message.service';
 export class MessageThreadComponent implements OnInit {
   public readonly messageThread = signal<Message[]>([]);
   username = input.required<string>();
+  recipientPhotoUrl = input.required<string>();
+  closeMessageThread = output();
   newMessageControl = new FormControl('');
 
   constructor(
@@ -38,6 +40,10 @@ export class MessageThreadComponent implements OnInit {
 
   onOpenProfile() {
     this._router.navigate(['./members/' + this.username()]);
+  }
+
+  onCloseMessageThread() {
+    this.closeMessageThread.emit();
   }
 
   sendMessage() {
