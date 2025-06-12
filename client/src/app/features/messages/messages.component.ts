@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
+import { ActivatedRoute } from '@angular/router';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { MessageContainerType } from '../../shared/constants/message';
 import { Message } from '../../shared/models/message';
@@ -33,9 +34,11 @@ export class MessagesComponent implements OnInit {
   container: MessageContainerType = MessageContainerType.Inbox;
   messageContainerType = MessageContainerType;
   messageThreadUsername: string | null = null;
-  messageThreadPhotoUrl: string | null = null;
 
-  constructor(private _messageService: MessageService) {}
+  constructor(
+    private _messageService: MessageService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.loadMessages();
@@ -43,6 +46,13 @@ export class MessagesComponent implements OnInit {
 
   loadMessages() {
     this._messageService.getMessages(this.paginationParams, this.container);
+
+    const username = this.route.snapshot.paramMap.get('username');
+    if (this.drawer && username) {
+      this.messageThreadUsername = username;
+      this.drawer.open();
+      return;
+    }
 
     if (this.drawer && this.drawer.opened) {
       this.drawer.close();
@@ -66,10 +76,6 @@ export class MessagesComponent implements OnInit {
       this.container === MessageContainerType.Outbox
         ? message.recipientUsername
         : message.senderUsername;
-    this.messageThreadPhotoUrl =
-      this.container === MessageContainerType.Outbox
-        ? message.recipientPhotoUrl
-        : message.senderPhotoUrl;
   }
 
   handleDrawerClosed() {
