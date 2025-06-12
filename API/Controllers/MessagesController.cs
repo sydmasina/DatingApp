@@ -4,10 +4,12 @@ using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class MessagesController(IMessageRepository messageRepository,
         IUserRepository<AppUser> userRepository, IMapper mapper) : BaseApiController
     {
@@ -59,6 +61,29 @@ namespace API.Controllers
             var currentUsername = User.GetUserName();
 
             return Ok(await messageRepository.GetMessageThread(currentUsername, username));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteMessage(int id)
+        {
+            var username = User.GetUserName();
+
+            var message = await messageRepository.GetMessage(id);
+
+            if (message == null) return BadRequest("Cannot delete this message");
+
+            if (message.SenderUsername != username && message.RecipientUsername != username)
+                return Forbid();
+
+            if (message.SenderUsername == username) message.SenderDeleted = true;
+            if (message.RecipientUsername == username) message.RecipientDeleted = true;
+
+            if (message is { SenderDeleted: true, RecipientDeleted: true })
+                messageRepository.DeleteMessage(message);
+
+            if (await messageRepository.SaveAllAsync()) return Ok();
+
+            return BadRequest("Problem deleting the message");
         }
     }
 }
