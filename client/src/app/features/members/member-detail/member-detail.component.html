@@ -1,102 +1,130 @@
 <ng-container *ngIf="!isLoading && user">
-  <div class="container">
-    <div id="carouselExampleFade" class="carousel slide carousel-slide">
-      <div class="carousel-inner">
-        <ng-container *ngIf="user.photoUrl">
-          <div class="carousel-item active">
-            <img
-              src="{{ user.photoUrl || 'assets/images/user-icon.jpeg' }}"
-              class="d-block w-100 card-img-top"
-              [alt]="user.userName + 'image'"
-            />
+  <mat-drawer-container class="example-container" autosize>
+    <mat-drawer-content>
+      <!-- User details section -->
+      <div class="container">
+        <div id="carouselExampleFade" class="carousel slide carousel-slide">
+          <div class="carousel-inner">
+            <ng-container *ngIf="user.photoUrl">
+              <div class="carousel-item active">
+                <img
+                  src="{{ user.photoUrl || 'assets/images/user-icon.jpeg' }}"
+                  class="d-block w-100 card-img-top"
+                  [alt]="user.userName + 'image'"
+                />
+              </div>
+            </ng-container>
+            <ng-container *ngFor="let photo of user.photos">
+              <ng-container *ngIf="!photo.isMain">
+                <div class="carousel-item">
+                  <img
+                    src="{{ photo.url || 'assets/images/user-icon.jpeg' }}"
+                    class="d-block w-100"
+                    [alt]="user.userName + 'image'"
+                  />
+                </div>
+              </ng-container>
+            </ng-container>
           </div>
-        </ng-container>
-        <ng-container *ngFor="let photo of user.photos">
-          <ng-container *ngIf="!photo.isMain">
-            <div class="carousel-item">
-              <img
-                src="{{ photo.url || 'assets/images/user-icon.jpeg' }}"
-                class="d-block w-100"
-                [alt]="user.userName + 'image'"
-              />
-            </div>
+
+          <ng-container *ngIf="user.photos.length > 1">
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleFade"
+              data-bs-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleFade"
+              data-bs-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="visually-hidden">Next</span>
+            </button>
           </ng-container>
-        </ng-container>
+        </div>
+
+        <h1 class="fs-2 pb-0 mb-0 text-capitalize">
+          {{ user.userName }}, <strong>{{ user.age }}</strong>
+        </h1>
+
+        <h6 class="fs-6 text-muted mb-0 pb-0">
+          <i class="fa fa-map-marker" aria-hidden="true"></i>
+          <strong> Location:</strong> {{ user.country }},
+          {{ user.city }}
+        </h6>
+
+        @if(user.gender.toLowerCase() == 'male'){
+        <h6 class="fs-6 text-muted mb-0 pb-0">
+          <i class="fa fa-mars" aria-hidden="true"></i>
+          <strong> Gender:</strong> Male
+        </h6>
+        } @else if(user.gender.toLowerCase() == 'female' ){
+        <h6 class="fs-6 text-muted mb-0 pb-0">
+          <i class="fa fa-mars" aria-hidden="true"></i>
+          <strong> Gender:</strong> Female
+        </h6>
+        }
+
+        <h6 class="fs-6 text-muted mb-0 pb-0">
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
+          <strong> Last Seen:</strong> {{ user.lastSeen }}
+        </h6>
+
+        <h6 class="fs-6 text-muted mb-0 pb-0">
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
+          <strong> Joined:</strong> {{ user.created | date : "dd MMM yyyy" }}
+        </h6>
+
+        <div class="my-3">
+          <h6 class="fs-5">Introduction</h6>
+          <p class="fs-6">{{ user.introduction }}</p>
+
+          <h6 class="fs-5 mt-4">Interests</h6>
+          <p class="fs-6">{{ user.interests }}</p>
+
+          <h6 class="fs-5 mt-4">Looking for</h6>
+          <p class="fs-6">{{ user.lookingFor }}</p>
+        </div>
+
+        <div class="row justify-content-between pb-5">
+          <button class="btn btn-outline-success col-4">
+            <i class="fa fa-heart" aria-hidden="true"></i> Like
+          </button>
+
+          <button
+            (click)="drawer.toggle()"
+            class="btn btn-outline-primary col-4"
+          >
+            <i class="fa fa-envelope" aria-hidden="true"></i> Message
+          </button>
+        </div>
       </div>
-
-      <ng-container *ngIf="user.photos.length > 1">
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#carouselExampleFade"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#carouselExampleFade"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </ng-container>
-    </div>
-
-    <h1 class="fs-2 pb-0 mb-0 text-capitalize">
-      {{ user.userName }}, <strong>{{ user.age }}</strong>
-    </h1>
-
-    <h6 class="fs-6 text-muted mb-0 pb-0">
-      <i class="fa fa-map-marker" aria-hidden="true"></i>
-      <strong> Location:</strong> {{ user.country }},
-      {{ user.city }}
-    </h6>
-
-    @if(user.gender.toLowerCase() == 'male'){
-    <h6 class="fs-6 text-muted mb-0 pb-0">
-      <i class="fa fa-mars" aria-hidden="true"></i>
-      <strong> Gender:</strong> Male
-    </h6>
-    } @else if(user.gender.toLowerCase() == 'female' ){
-    <h6 class="fs-6 text-muted mb-0 pb-0">
-      <i class="fa fa-mars" aria-hidden="true"></i>
-      <strong> Gender:</strong> Female
-    </h6>
-    }
-
-    <h6 class="fs-6 text-muted mb-0 pb-0">
-      <i class="fa fa-clock-o" aria-hidden="true"></i>
-      <strong> Last Seen:</strong> {{ user.lastSeen }}
-    </h6>
-
-    <h6 class="fs-6 text-muted mb-0 pb-0">
-      <i class="fa fa-clock-o" aria-hidden="true"></i>
-      <strong> Joined:</strong> {{ user.created | date : "dd MMM yyyy" }}
-    </h6>
-
-    <div class="my-3">
-      <h6 class="fs-5">Introduction</h6>
-      <p class="fs-6">{{ user.introduction }}</p>
-
-      <h6 class="fs-5 mt-4">Interests</h6>
-      <p class="fs-6">{{ user.interests }}</p>
-
-      <h6 class="fs-5 mt-4">Looking for</h6>
-      <p class="fs-6">{{ user.lookingFor }}</p>
-    </div>
-
-    <div class="row justify-content-between pb-5">
-      <button class="btn btn-outline-success col-4">
-        <i class="fa fa-heart" aria-hidden="true"></i> Like
-      </button>
-
-      <button class="btn btn-outline-primary col-4">
-        <i class="fa fa-envelope" aria-hidden="true"></i> Message
-      </button>
-    </div>
-  </div>
+    </mat-drawer-content>
+    <!-- Message thread section -->
+    <mat-drawer
+      class="message-thread-container"
+      #drawer
+      mode="side"
+      position="end"
+      [opened]="openMessages"
+    >
+      <app-message-thread
+        [username]="user.userName"
+        [recipientPhotoUrl]="user.photoUrl"
+        (closeMessageThread)="handleCloseMessageThreadEvent()"
+      ></app-message-thread>
+    </mat-drawer>
+  </mat-drawer-container>
 </ng-container>
