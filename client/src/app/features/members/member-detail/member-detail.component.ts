@@ -1,8 +1,14 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
+import {
+  MatDrawer,
+  MatDrawerMode,
+  MatSidenavModule,
+} from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
+import { DrawerMobileBreakPoint } from '../../../shared/constants/mat-drawer';
 import { UserService } from '../../../shared/services/user.service';
 import { MessageThreadComponent } from './message-thread/message-thread.component';
 
@@ -21,15 +27,19 @@ import { MessageThreadComponent } from './message-thread/message-thread.componen
 export class MemberDetailComponent implements OnInit {
   @ViewChild('drawer') drawer!: MatDrawer;
   openMessages: boolean = false;
+  drawerMode: MatDrawerMode = 'side';
+  CUSTOM_BREAKPOINT = '(min-width: 991px)';
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    public userService: UserService
+    public userService: UserService,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
     this.initUserDetails();
+    this.setDrawerModeOnDifferentScreenSizes();
   }
 
   initUserDetails() {
@@ -52,6 +62,18 @@ export class MemberDetailComponent implements OnInit {
     if (this.drawer && this.drawer.opened) {
       this.drawer.close();
     }
+  }
+
+  setDrawerModeOnDifferentScreenSizes() {
+    this.breakpointObserver
+      .observe([DrawerMobileBreakPoint])
+      .subscribe((result) => {
+        if (result.breakpoints[DrawerMobileBreakPoint]) {
+          this.drawerMode = 'over';
+        } else {
+          this.drawerMode = 'side';
+        }
+      });
   }
 
   get user() {
