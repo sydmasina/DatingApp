@@ -32,6 +32,7 @@ export const routes: Routes = [
         canDeactivate: [UnsavedChangesGuard],
       },
       { path: 'messages', component: MessagesComponent },
+      { path: 'messages/:username', component: MessagesComponent },
       { path: 'matches', component: MatchesComponent },
       { path: 'errors', component: TestErrorsComponent },
       { path: 'not-found', component: NotFoundComponent },
