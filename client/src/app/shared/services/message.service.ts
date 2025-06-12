@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, Signal, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { MessageEndpoint } from '../constants/api-enpoints/message';
 import { MessageContainerType } from '../constants/message';
 import { Message, SendMessageBody } from '../models/message';
@@ -11,12 +11,9 @@ import { setPaginatedResult, setPaginationParams } from '../utils/helpers';
   providedIn: 'root',
 })
 export class MessageService {
-  private readonly _paginatedMessagesResult = signal<PaginatedResult<
+  public readonly paginatedMessagesResult = signal<PaginatedResult<
     Message[]
   > | null>(null);
-  public readonly paginatedMessagesResult: Signal<PaginatedResult<
-    Message[]
-  > | null> = this._paginatedMessagesResult.asReadonly();
 
   constructor(private _httpClient: HttpClient) {}
 
@@ -35,7 +32,7 @@ export class MessageService {
       })
       .subscribe({
         next: (response) => {
-          setPaginatedResult(response, this._paginatedMessagesResult);
+          setPaginatedResult(response, this.paginatedMessagesResult);
         },
       });
   }
@@ -48,5 +45,9 @@ export class MessageService {
 
   sendMessage(messageBody: SendMessageBody) {
     return this._httpClient.post<Message>(MessageEndpoint, messageBody);
+  }
+
+  deleteMessage(id: number) {
+    return this._httpClient.delete(`${MessageEndpoint}/${id}`);
   }
 }
