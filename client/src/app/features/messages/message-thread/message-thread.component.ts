@@ -16,7 +16,6 @@ import { MessageService } from '../../../shared/services/message.service';
 export class MessageThreadComponent implements OnInit {
   public readonly messageThread = signal<Message[]>([]);
   username = input.required<string>();
-  userPhotoUrl = input.required<string>();
   newMessageControl = new FormControl('');
 
   constructor(

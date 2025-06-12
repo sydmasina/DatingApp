@@ -86,10 +86,9 @@
       position="end"
       (closedStart)="handleDrawerClosed()"
     >
-      @if(messageThreadUsername && messageThreadPhotoUrl){
+      @if(messageThreadUsername){
       <app-message-thread
         [username]="messageThreadUsername"
-        [userPhotoUrl]="messageThreadPhotoUrl"
       ></app-message-thread>
       }
     </mat-drawer>
