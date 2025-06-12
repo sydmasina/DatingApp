@@ -47,3 +47,9 @@ mat-drawer-container {
 .message-thread-container {
   width: 50%;
 }
+
+@media screen and (max-width: 991px) {
+  .message-thread-container {
+    width: 100%;
+  }
+}
