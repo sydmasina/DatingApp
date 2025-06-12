@@ -52,6 +52,7 @@
       [formControl]="newMessageControl"
       [placeholder]="'Message ' + (username() | titlecase)"
       aria-describedby="basic-addon2"
+      (keydown.enter)="sendMessage()"
     />
     <button
       class="input-group-text send-button"

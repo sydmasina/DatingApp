@@ -38,14 +38,19 @@
       </tr>
     </thead>
     <tbody class="align-middle">
-      @for (message of messages; track message.id) {
-      <tr (click)="redirectToMessageThread(message)">
+      @for (message of messages; track message.id; let messageIndex = $index) {
+      <tr [routerLink]="getRedirectRoute(message)">
         <td class="px-2">{{ message.content }}</td>
         <td>
           <div class="d-flex gap-1 align-items-center">
             <img
               class="image-thumb-nail"
-              [src]="message.senderPhotoUrl || './assets/images/user-icon.jpeg'"
+              [src]="
+                isOutbox
+                  ? message.recipientPhotoUrl ||
+                    './assets/images/user-icon.jpeg'
+                  : message.senderPhotoUrl || './assets/images/user-icon.jpeg'
+              "
               alt=""
             />
             <strong class="text-capitalize">{{
@@ -56,7 +61,14 @@
         <td class="px-2 align-items-center">
           {{ message.messageSent ? (message.messageSent | timeAgo) : "" }}
         </td>
-        <td><button class="btn btn-danger">Delete</button></td>
+        <td (click)="$event.stopPropagation()">
+          <button
+            (click)="onDeleteMessage(message.id, messageIndex)"
+            class="btn btn-danger"
+          >
+            Delete
+          </button>
+        </td>
       </tr>
       }
     </tbody>
