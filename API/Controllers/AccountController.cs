@@ -6,7 +6,6 @@ using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace API.Controllers
 {
@@ -32,9 +31,6 @@ namespace API.Controllers
                 using var hmac = new HMACSHA512();
 
                 var user = mapper.Map<AppUser>(registerDto);
-                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
-                user.PasswordSalt = hmac.Key;
-
                 // Upload Images
                 if (registerDto.ImagesToUpload != null && registerDto.ImagesToUpload.Count > 0)
                 {
@@ -85,18 +81,6 @@ namespace API.Controllers
                 if (user == null)
                 {
                     return Unauthorized("User not found.");
-                }
-
-                using var hmac = new HMACSHA512(user.PasswordSalt);
-
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
-
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != user.PasswordHash[i])
-                    {
-                        return Unauthorized("Invalid password.");
-                    }
                 }
 
                 return new UserDto
