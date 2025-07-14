@@ -22,8 +22,6 @@ namespace API.Helpers
             if (user == null) return;
 
             user.LastActive = DateTime.UtcNow;
-
-            await repo.SaveAllAsync();
         }
     }
 }
