@@ -21,9 +21,7 @@ namespace API.Controllers
 
             if (user == null) return NotFound();
 
-            userRepository.Delete(user);
-
-            bool hasDeletedSomething = await userRepository.SaveAllAsync();
+            bool hasDeletedSomething = userRepository.Delete(user);
 
             if (!hasDeletedSomething)
             {

@@ -1,76 +1,64 @@
-﻿using API.Data;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Enums;
 using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace API.Data.Repositories
 {
-    public class UserRepository(DataContext context, IMapper mapper) : IUserRepository<AppUser>
+    public class UserRepository(UserManager<AppUser> userManager, IMapper mapper) : IUserRepository<AppUser>
     {
-        public Task AddUserAsync(AppUser entity)
+        public bool Delete(AppUser user)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(AppUser user)
-        {
-            context.Users.Remove(user);
+            return userManager.DeleteAsync(user).Result.Succeeded;
         }
 
         public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
         {
-            return await context.Users
+            return await userManager.Users
                 .Include(x => x.Photos)
                 .ToListAsync();
         }
 
         public async Task<AppUser?> GetUserByIdAsync(int id)
         {
-            return await context.Users
+            return await userManager.Users
                 .Include(x => x.Photos)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<UpdateResult> UpdateMemberAsync(string username, MemberUpdateDto userDto)
         {
-            var user = await context.Users
+            var user = await userManager.Users
                 .Include(x => x.Photos)
-                .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+                .SingleOrDefaultAsync(x => x.NormalizedUserName == username.ToUpper());
 
             if (user == null) return UpdateResult.NotFound;
 
             mapper.Map(userDto, user);
 
-            var isModified = context.Entry(user).Properties.Any(p => p.IsModified);
+            var isModified = userManager.UpdateAsync(user).Result.Succeeded;
 
             if (!isModified) return UpdateResult.NoChanges;
-
-            await context.SaveChangesAsync();
 
             return UpdateResult.Updated;
         }
 
         public async Task<AppUser?> GetUserByUsernameAsync(string username)
         {
-            return await context.Users
+            return await userManager.Users
                 .Include(x => x.Photos)
-                .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
-        }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await context.SaveChangesAsync() > 0;
+                .SingleOrDefaultAsync(x => x.NormalizedUserName == username.ToUpper());
         }
 
         public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
-            var query = context.Users
+            var query = userManager.Users
                   .ProjectTo<MemberDto>(mapper.ConfigurationProvider);
 
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -110,7 +98,7 @@ namespace API.Data.Repositories
 
         public async Task<MemberDto?> GetMemberAsync(string username)
         {
-            return await context.Users
+            return await userManager.Users
                 .Where(x => x.UserName == username)
                 .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
@@ -118,24 +106,24 @@ namespace API.Data.Repositories
 
         public async Task<UpdateResult> AddUserPhotoAsync(string username, Photo photo)
         {
-            var user = await context.Users
+            var user = await userManager.Users
                 .Include(x => x.Photos)
-                .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+                .SingleOrDefaultAsync(x => x.NormalizedUserName == username.ToUpper());
 
             if (user == null) return UpdateResult.NotFound;
 
             user.Photos.Add(photo);
 
-            var result = await context.SaveChangesAsync();
+            await userManager.UpdateAsync(user);
 
             return UpdateResult.Updated;
         }
 
         public async Task<UpdateResult> DeleteUserPhotoByDbIdAsync(string username, int dbId)
         {
-            var user = await context.Users
+            var user = await userManager.Users
                 .Include(x => x.Photos)
-                .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+                .SingleOrDefaultAsync(x => x.NormalizedUserName == username.ToUpper());
 
             if (user == null) return UpdateResult.NotFound;
 
@@ -145,7 +133,7 @@ namespace API.Data.Repositories
 
             user.Photos.Remove(photo);
 
-            await context.SaveChangesAsync();
+            await userManager.UpdateAsync(user);
 
             return UpdateResult.Updated;
         }

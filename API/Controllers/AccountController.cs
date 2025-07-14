@@ -1,15 +1,14 @@
-﻿using API.Data;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Interfaces;
 using API.Models;
 using API.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
 
 namespace API.Controllers
 {
-    public class AccountController(DataContext context,
+    public class AccountController(UserManager<AppUser> userManager,
         ITokenService tokenService,
         IUserRepository<AppUser> userRepository,
         IMapper mapper,
@@ -28,9 +27,14 @@ namespace API.Controllers
                     return BadRequest("Username already exists.");
                 }
 
-                using var hmac = new HMACSHA512();
-
                 var user = mapper.Map<AppUser>(registerDto);
+                if (user.UserName == null)
+                {
+                    return BadRequest("Username is required");
+                }
+
+                user.UserName = registerDto.Username.ToLower();
+
                 // Upload Images
                 if (registerDto.ImagesToUpload != null && registerDto.ImagesToUpload.Count > 0)
                 {
@@ -38,23 +42,24 @@ namespace API.Controllers
                     {
                         if (image.PhotoFile.Length == 0) continue;
 
-                        var result = await photoService.UploadImageAsync(image.PhotoFile);
+                        var photoServiceResult = await photoService.UploadImageAsync(image.PhotoFile);
 
-                        if (result.Error != null) continue;
+                        if (photoServiceResult.Error != null) continue;
 
                         var photo = new Photo
                         {
                             IsMain = image.IsMain,
-                            PublicId = result.PublicId,
-                            Url = (result.Url).ToString()
+                            PublicId = photoServiceResult.PublicId,
+                            Url = (photoServiceResult.Url).ToString()
                         };
 
                         user.Photos.Add(photo);
                     }
                 }
 
-                context.Users.Add(user);
-                await context.SaveChangesAsync();
+                var createUserResult = await userManager.CreateAsync(user, registerDto.Password);
+
+                if (!createUserResult.Succeeded) return BadRequest(createUserResult.Errors);
 
                 return new UserDto
                 {
@@ -78,7 +83,7 @@ namespace API.Controllers
             {
                 var user = await userRepository.GetUserByUsernameAsync(loginDto.Username);
 
-                if (user == null)
+                if (user == null || user.UserName == null)
                 {
                     return Unauthorized("User not found.");
                 }

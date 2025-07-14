@@ -1,15 +1,15 @@
 ﻿using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 using System.Text.Json;
 
 namespace API.Data
 {
     public class Seeder
     {
-        public static async Task SeedUsers(DataContext context)
+        public static async Task SeedUsers(UserManager<AppUser> userManager)
         {
-            if (await context.Users.AnyAsync()) return;
+            if (await userManager.Users.AnyAsync()) return;
 
             var userData = await File.ReadAllTextAsync("Data/UserSeedData.json");
 
@@ -21,14 +21,8 @@ namespace API.Data
 
             foreach (var user in users)
             {
-                using var hmac = new HMACSHA512();
-
-                user.UserName = user.UserName.ToLower();
-
-                context.Users.Add(user);
+                await userManager.CreateAsync(user, "Popin@123");
             }
-
-            await context.SaveChangesAsync();
         }
     }
 }
