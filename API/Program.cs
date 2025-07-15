@@ -4,6 +4,7 @@ using API.Middleware;
 using API.Models;
 using API.Services;
 using dotenv.net;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,8 +59,9 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
-    await Seeder.SeedUsers(context);
+    await Seeder.SeedUsers(userManager);
 }
 catch (Exception ex)
 {

@@ -18,9 +18,7 @@ namespace API.Helpers
             CreateMap<RegisterDto, AppUser>();
             CreateMap<Country, CountryDto>();
             CreateMap<MemberUpdateDto, AppUser>()
-                .ForMember(d => d.UserName, o => o.Ignore())
-                .ForMember(d => d.PasswordHash, o => o.Ignore())
-                .ForMember(d => d.PasswordSalt, o => o.Ignore());
+                .ForMember(d => d.UserName, o => o.Ignore());
             CreateMap<Message, MessageDto>()
                 .ForMember(d => d.SenderPhotoUrl,
                     o => o.MapFrom(s => s.Sender.Photos.FirstOrDefault(x => x.IsMain)!.Url))
