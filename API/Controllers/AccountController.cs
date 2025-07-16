@@ -88,6 +88,10 @@ namespace API.Controllers
                     return Unauthorized("User not found.");
                 }
 
+                var isValidPassword = await userManager.CheckPasswordAsync(user, loginDto.Password);
+
+                if (!isValidPassword) return Unauthorized("Email or Password invalid");
+
                 return new UserDto
                 {
                     Username = user.UserName,
