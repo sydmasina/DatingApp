@@ -10,10 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class UsersController(IUserRepository<AppUser> userRepository,
         PhotoService photoService) : BaseApiController
     {
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
@@ -31,7 +32,6 @@ namespace API.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
@@ -42,7 +42,6 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        [Authorize]
         [HttpPut]
         public async Task<ActionResult> UpdateUser([FromForm] MemberUpdateDto memberUpdateData)
         {
@@ -94,7 +93,6 @@ namespace API.Controllers
             return Ok();
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
