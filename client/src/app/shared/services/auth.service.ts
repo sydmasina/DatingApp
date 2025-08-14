@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Signal, signal } from '@angular/core';
+import { computed, Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs';
 import {
   LoginEndpoint,
   RegisterEndpoint,
 } from '../constants/api-enpoints/auth';
-import { LoggedInUser, Login } from '../models/login';
+import { DecryptedToken, LoggedInUser, Login } from '../models/login';
 import { PhotoToUpload } from '../models/Photo';
 import { RegisterDto } from '../models/register';
 import { LikesService } from './likes.service';
@@ -20,6 +21,14 @@ export class AuthService {
   private readonly _isRegistering = signal<boolean>(false);
   public readonly isRegistering: Signal<boolean> =
     this._isRegistering.asReadonly();
+  roles = computed<string[] | null>(() => {
+    const user = this.currentUser();
+    if (user && user.token) {
+      const role = jwtDecode<DecryptedToken>(user.token).role;
+      return Array.isArray(role) ? role : [role];
+    }
+    return null;
+  });
 
   constructor(
     private _httpClient: HttpClient,
