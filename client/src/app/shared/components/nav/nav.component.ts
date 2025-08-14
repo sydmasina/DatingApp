@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ToastrService } from 'ngx-toastr';
+import { HasRoleDirective } from '../../_directives/has-role.directive';
 import { Login } from '../../models/login';
 import { AuthService } from '../../services/auth.service';
 
@@ -17,6 +18,7 @@ import { AuthService } from '../../services/auth.service';
     RouterLink,
     RouterLinkActive,
     TitleCasePipe,
+    HasRoleDirective,
   ],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css',
@@ -31,6 +33,7 @@ export class NavComponent {
     username: '',
     password: '',
   };
+  adminRoles: string[] = ['Admin', 'Moderator'];
 
   login() {
     if (this.loginModel.username === '' || this.loginModel.password === '') {

@@ -32,6 +32,12 @@
             >Messages</a
           >
         </li>
+
+        <li *appHasRole="adminRoles" class="nav-item">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active"
+            >Admin</a
+          >
+        </li>
         <li class="nav-item">
           <a routerLink="/privacy-policy" class="nav-link">Privacy</a>
         </li>
