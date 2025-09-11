@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { provideToastr } from 'ngx-toastr';
 import { routes } from './app.routes';
@@ -26,6 +27,7 @@ export const appConfig: ApplicationConfig = {
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }),
-    importProvidersFrom(NgxSpinnerModule),
+    BsModalService,
+    importProvidersFrom(NgxSpinnerModule, ModalModule.forRoot()),
   ],
 };

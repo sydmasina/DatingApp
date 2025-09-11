@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { MatchesComponent } from './features/matches/matches.component';
 import { MemberDetailComponent } from './features/members/member-detail/member-detail.component';
 import { MemberEditComponent } from './features/members/member-edit/member-edit.component';
 import { MemberListComponent } from './features/members/member-list/member-list.component';
 import { MessagesComponent } from './features/messages/messages.component';
 import { PrivacyPolicyComponent } from './features/privacy-policy/privacy-policy.component';
+import { adminGuard } from './shared/_guards/admin.guard';
 import { authGuard } from './shared/_guards/auth.guard';
 import { redirectIfAuthenticatedGuard } from './shared/_guards/redirect-if-authenticated.guard';
 import { UnsavedChangesGuard } from './shared/_guards/unsaved-changes.guard';
@@ -40,6 +42,11 @@ export const routes: Routes = [
       { path: 'errors', component: TestErrorsComponent },
       { path: 'not-found', component: NotFoundComponent },
       { path: 'server-error', component: ServerErrorComponent },
+      {
+        path: 'admin',
+        component: AdminPanelComponent,
+        canActivate: [adminGuard],
+      },
     ],
   },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },

@@ -1,32 +1,45 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs';
 import {
   LoginEndpoint,
   RegisterEndpoint,
 } from '../constants/api-enpoints/auth';
-import { LoggedInUser, Login } from '../models/login';
+import { DecryptedToken, LoggedInUser, Login } from '../models/login';
 import { PhotoToUpload } from '../models/Photo';
 import { RegisterDto } from '../models/register';
 import { LikesService } from './likes.service';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  //Inject services here
+  private _httpClient = inject(HttpClient);
+  private toastr = inject(ToastrService);
+  private _router = inject(Router);
+  private _likesService = inject(LikesService);
+  private presenceService = inject(PresenceService);
+
+  //Define signals here
   currentUser = signal<LoggedInUser | null>(null);
   private readonly _isRegistering = signal<boolean>(false);
   public readonly isRegistering: Signal<boolean> =
     this._isRegistering.asReadonly();
+  roles = computed<string[] | null>(() => {
+    const user = this.currentUser();
+    if (user && user.token) {
+      const role = jwtDecode<DecryptedToken>(user.token).role;
+      return Array.isArray(role) ? role : [role];
+    }
+    return null;
+  });
 
-  constructor(
-    private _httpClient: HttpClient,
-    private toastr: ToastrService,
-    private _router: Router,
-    private _likesService: LikesService
-  ) {}
+  constructor() {}
 
   login(loginModel: Login) {
     return this._httpClient.post<LoggedInUser>(LoginEndpoint, loginModel).pipe(
@@ -73,6 +86,7 @@ export class AuthService {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUser.set(user);
     this._likesService.getLikeIds();
+    this.presenceService.createHubConnection(user);
   }
 
   generateFormData(data: { [key: string]: any }) {
@@ -115,6 +129,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('user');
     this.currentUser.set(null);
+    this.presenceService.stopHubConnection();
   }
 
   isLoggedIn() {

@@ -64,7 +64,7 @@ namespace API.Controllers
                 return new UserDto
                 {
                     Username = user.UserName,
-                    Token = tokenService.CreateToken(user),
+                    Token = await tokenService.CreateToken(user),
                     PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
                     Gender = user.Gender,
                     KnownAs = user.KnownAs
@@ -88,10 +88,14 @@ namespace API.Controllers
                     return Unauthorized("User not found.");
                 }
 
+                var isValidPassword = await userManager.CheckPasswordAsync(user, loginDto.Password);
+
+                if (!isValidPassword) return Unauthorized("Email or Password invalid");
+
                 return new UserDto
                 {
                     Username = user.UserName,
-                    Token = tokenService.CreateToken(user),
+                    Token = await tokenService.CreateToken(user),
                     PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain == true)?.Url,
                     Gender = user.Gender,
                     KnownAs = user.KnownAs

@@ -3,6 +3,7 @@ using API.Extensions;
 using API.Middleware;
 using API.Models;
 using API.Services;
+using API.SignalR;
 using dotenv.net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 // Enable CORS
 app.UseCors(x => x.AllowAnyHeader()
                   .AllowAnyMethod()
+                  .AllowCredentials()
                   .WithOrigins("http://localhost:4200", "https://localhost:4200"));
 
 // Configure the HTTP request pipeline.
@@ -53,6 +55,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -60,8 +63,9 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
     await context.Database.MigrateAsync();
-    await Seeder.SeedUsers(userManager);
+    await Seeder.SeedUsers(userManager, roleManager);
 }
 catch (Exception ex)
 {

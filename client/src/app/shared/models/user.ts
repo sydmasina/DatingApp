@@ -17,6 +17,7 @@ export interface User {
   city: string;
   country: string;
   photos: Photo[];
+  roles: string[];
 }
 
 export interface UpdateUserDto {
