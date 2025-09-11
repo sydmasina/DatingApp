@@ -29,6 +29,7 @@ namespace API.Extensions
             services.AddScoped<PhotoService>();
             services.AddScoped<LogUserActivity>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddSignalR();
 
             return services;
         }
