@@ -1,6 +1,6 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   MatDrawer,
@@ -9,6 +9,7 @@ import {
 } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { DrawerMobileBreakPoint } from '../../../shared/constants/mat-drawer';
+import { PresenceService } from '../../../shared/services/presence.service';
 import { UserService } from '../../../shared/services/user.service';
 import { MessageThreadComponent } from './message-thread/message-thread.component';
 
@@ -25,17 +26,15 @@ import { MessageThreadComponent } from './message-thread/message-thread.componen
   styleUrl: './member-detail.component.css',
 })
 export class MemberDetailComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private location = inject(Location);
+  private userService = inject(UserService);
+  private breakpointObserver = inject(BreakpointObserver);
+  presenceService = inject(PresenceService);
   @ViewChild('drawer') drawer!: MatDrawer;
   openMessages: boolean = false;
   drawerMode: MatDrawerMode = 'side';
   CUSTOM_BREAKPOINT = '(min-width: 991px)';
-
-  constructor(
-    private route: ActivatedRoute,
-    private location: Location,
-    public userService: UserService,
-    private breakpointObserver: BreakpointObserver
-  ) {}
 
   ngOnInit(): void {
     this.initUserDetails();
@@ -82,5 +81,11 @@ export class MemberDetailComponent implements OnInit {
 
   get isLoading() {
     return this.userService.isFetchingUserData();
+  }
+
+  get isOnline() {
+    return this.presenceService
+      .onlineUsers()
+      .includes(this.user?.userName ?? '');
   }
 }
