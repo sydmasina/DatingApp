@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   HubConnection,
   HubConnectionBuilder,
@@ -15,6 +15,7 @@ export class PresenceService {
   hubUrl = environment.hubsUrl;
   private hubConnection?: HubConnection;
   private toastr = inject(ToastrService);
+  onlineUsers = signal<string[]>([]);
 
   createHubConnection(user: LoggedInUser) {
     this.hubConnection = new HubConnectionBuilder()
@@ -30,12 +31,10 @@ export class PresenceService {
       }
     });
 
-    this.hubConnection.on('UserIsOnline', (username) => {
-      this.toastr.info(username + ' has connected!');
-    });
+    this.hubConnection.on('GetOnlineUsers', (onlineUsers) => {
+      if (onlineUsers == null) return;
 
-    this.hubConnection.on('UserIsOffline', (username) => {
-      this.toastr.warning(username + ' has disconnected!');
+      this.onlineUsers.set(onlineUsers);
     });
   }
 

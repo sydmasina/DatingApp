@@ -59,6 +59,17 @@
           {{ user.userName }}, <strong>{{ user.age }}</strong>
         </h1>
 
+        @if(isOnline){
+        <h6 class="fs-6 text-success mb-0 pb-0">
+          <i class="fa fa-user-circle" aria-hidden="true"></i> Online now
+        </h6>
+        } @else{
+        <h6 class="fs-6 text-muted mb-0 pb-0">
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
+          <strong> Last Seen:</strong> {{ user.lastSeen }}
+        </h6>
+        }
+
         <h6 class="fs-6 text-muted mb-0 pb-0">
           <i class="fa fa-map-marker" aria-hidden="true"></i>
           <strong> Location:</strong> {{ user.country }},
@@ -76,11 +87,6 @@
           <strong> Gender:</strong> Female
         </h6>
         }
-
-        <h6 class="fs-6 text-muted mb-0 pb-0">
-          <i class="fa fa-clock-o" aria-hidden="true"></i>
-          <strong> Last Seen:</strong> {{ user.lastSeen }}
-        </h6>
 
         <h6 class="fs-6 text-muted mb-0 pb-0">
           <i class="fa fa-clock-o" aria-hidden="true"></i>
