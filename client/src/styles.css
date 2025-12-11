@@ -3,10 +3,26 @@
 html,
 body {
   height: 100%;
+  font-family: Quicksand, sans-serif !important;
 }
+.mat-display-large,
+.mat-typography .mat-display-large,
+.mat-typography h1 {
+  font-family: Quicksand, sans-serif !important;
+}
+.mat-headline-medium,
+.mat-typography .mat-headline-medium,
+.mat-typography h5 {
+  font-family: Quicksand, sans-serif !important;
+}
+.mat-headline-small,
+.mat-typography .mat-headline-small,
+.mat-typography h6 {
+  font-family: Quicksand, sans-serif !important;
+}
+
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   scrollbar-color: black rgb(32, 31, 32) !important;
   scrollbar-width: thin !important;
 }
