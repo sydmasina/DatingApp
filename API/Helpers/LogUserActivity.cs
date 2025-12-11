@@ -1,6 +1,7 @@
 ﻿using API.Extensions;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace API.Helpers
@@ -22,6 +23,10 @@ namespace API.Helpers
             if (user == null) return;
 
             user.LastActive = DateTime.UtcNow;
+
+            var userManager = resultContext.HttpContext.RequestServices.GetRequiredService<UserManager<AppUser>>();
+
+            await userManager.UpdateAsync(user);
         }
     }
 }
