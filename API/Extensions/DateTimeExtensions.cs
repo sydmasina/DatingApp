@@ -4,7 +4,7 @@
     {
         public static int CalculateAge(this DateOnly dob)
         {
-            var today = DateOnly.FromDateTime(DateTime.Now);
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
             var age = today.Year - dob.Year;
 
@@ -14,7 +14,7 @@
         }
         public static string CalculateLastSeen(this DateTime dateTime)
         {
-            TimeSpan timeSpan = DateTime.Now - dateTime;
+            TimeSpan timeSpan = DateTime.UtcNow - dateTime;
 
             if (timeSpan.TotalSeconds < 60)
                 return $"{timeSpan.Seconds} seconds ago";
