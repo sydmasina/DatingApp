@@ -22,10 +22,10 @@
   </div>
   <hr />
 
-  <div class="thread-body">
-    @if(messageThread() && messageThread().length > 0){ @for (message of
-    messageThread(); track message.id) { @if(message.senderUsername ===
-    currentUser){
+  <div #threadBodyu class="thread-body">
+    @if(messageService.messageThread() && messageService.messageThread().length
+    > 0){ @for (message of messageService.messageThread(); track message.id) {
+    @if(message.senderUsername === currentUser){
     <div class="row justify-content-end mb-3">
       <div class="col-10 sender-card">
         <p>{{ message.content }}</p>

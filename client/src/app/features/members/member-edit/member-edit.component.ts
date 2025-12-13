@@ -180,7 +180,6 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     this.userUpdateFormGroup.markAllAsTouched();
 
     const isFormValid = this.validateForm();
-    console.log('isFormValid: ', isFormValid);
     if (!isFormValid) return;
 
     const user = this.userService.user();
