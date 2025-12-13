@@ -92,7 +92,6 @@ export class MessageService {
         'SendMessage',
         messageBody
       );
-      console.log(result);
     }
   }
 
