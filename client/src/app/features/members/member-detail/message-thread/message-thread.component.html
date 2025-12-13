@@ -22,7 +22,7 @@
   </div>
   <hr />
 
-  <div class="thread-body">
+  <div #threadBodyu class="thread-body">
     @if(messageService.messageThread() && messageService.messageThread().length
     > 0){ @for (message of messageService.messageThread(); track message.id) {
     @if(message.senderUsername === currentUser){
