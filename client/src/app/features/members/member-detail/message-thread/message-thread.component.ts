@@ -1,8 +1,15 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  output,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Message, SendMessageBody } from '../../../../shared/models/message';
+import { SendMessageBody } from '../../../../shared/models/message';
 import { AuthService } from '../../../../shared/services/auth.service';
 import { MessageService } from '../../../../shared/services/message.service';
 
@@ -13,29 +20,27 @@ import { MessageService } from '../../../../shared/services/message.service';
   templateUrl: './message-thread.component.html',
   styleUrl: './message-thread.component.css',
 })
-export class MessageThreadComponent implements OnInit {
-  public readonly messageThread = signal<Message[]>([]);
+export class MessageThreadComponent implements OnInit, OnDestroy {
+  private authService = inject(AuthService);
+  public messageService = inject(MessageService);
+  private _router = inject(Router);
   username = input.required<string>();
   recipientPhotoUrl = input.required<string>();
   closeMessageThread = output();
   newMessageControl = new FormControl('');
 
-  constructor(
-    private _messageService: MessageService,
-    private authService: AuthService,
-    private _router: Router
-  ) {}
-
   ngOnInit(): void {
     this.getMessageThread();
   }
 
+  ngOnDestroy(): void {
+    this.messageService.stopHubConnection();
+  }
+
   getMessageThread() {
-    this._messageService.getMessageThread(this.username()).subscribe({
-      next: (response) => {
-        this.messageThread.set(response);
-      },
-    });
+    const currentUserUser = this.authService.currentUser();
+    if (!currentUserUser) return;
+    this.messageService.createHubConnection(currentUserUser, this.username());
   }
 
   onOpenProfile() {
@@ -43,6 +48,7 @@ export class MessageThreadComponent implements OnInit {
   }
 
   onCloseMessageThread() {
+    this.messageService.stopHubConnection();
     this.closeMessageThread.emit();
   }
 
@@ -56,14 +62,7 @@ export class MessageThreadComponent implements OnInit {
       content: this.newMessageControl.value ?? '',
     };
 
-    this._messageService.sendMessage(messagePayload).subscribe({
-      next: (response) => {
-        this.messageThread.update((messageThread) => [
-          ...messageThread,
-          response,
-        ]);
-      },
-    });
+    this.messageService.sendMessage(messagePayload);
 
     this.newMessageControl.setValue('');
   }
