@@ -15,11 +15,12 @@ import { Router } from '@angular/router';
 import { SendMessageBody } from '../../../../shared/models/message';
 import { AuthService } from '../../../../shared/services/auth.service';
 import { MessageService } from '../../../../shared/services/message.service';
+import { TimeAgoPipe } from '../../../../shared/utils/time-ago.pipe';
 
 @Component({
   selector: 'app-message-thread',
   standalone: true,
-  imports: [TitleCasePipe, FormsModule, ReactiveFormsModule],
+  imports: [TitleCasePipe, FormsModule, ReactiveFormsModule, TimeAgoPipe],
   templateUrl: './message-thread.component.html',
   styleUrl: './message-thread.component.css',
 })
