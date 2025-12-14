@@ -88,10 +88,7 @@ export class MessageService {
 
   async sendMessage(messageBody: SendMessageBody) {
     if (this.hubConnection?.state === HubConnectionState.Connected) {
-      const result = await this.hubConnection.invoke(
-        'SendMessage',
-        messageBody
-      );
+      this.hubConnection.invoke('SendMessage', messageBody);
     }
   }
 

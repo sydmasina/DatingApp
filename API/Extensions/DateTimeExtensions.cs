@@ -17,17 +17,17 @@
             TimeSpan timeSpan = DateTime.UtcNow - dateTime;
 
             if (timeSpan.TotalSeconds < 60)
-                return $"{timeSpan.Seconds} seconds ago";
+                return $"{timeSpan.Seconds} second{(timeSpan.TotalSeconds >= 2 ? "s" : "")} ago";
             if (timeSpan.TotalMinutes < 60)
-                return $"{timeSpan.Minutes} minutes ago";
+                return $"{timeSpan.Minutes} minute{(timeSpan.Minutes >= 2 ? "s": "")} ago";
             if (timeSpan.TotalHours < 24)
-                return $"{timeSpan.Hours} hours ago";
+                return $"{timeSpan.Hours} hour{(timeSpan.Hours >= 2 ? "s": "")} ago";
             if (timeSpan.TotalDays < 30)
-                return $"{timeSpan.Days} days ago";
+                return $"{timeSpan.Days} day{(timeSpan.TotalDays >= 2 ? "s" : "")} ago";
             if (timeSpan.TotalDays < 365)
-                return $"{timeSpan.Days / 30} months ago";
+                return $"{timeSpan.Days / 30} month{(timeSpan.Days/30 >= 2 ? "s" : "")} ago";
 
-            return $"{timeSpan.Days / 365} years ago";
+            return $"{timeSpan.Days / 365} year{(timeSpan.Days / 365 >= 2 ? "s" : "")} ago";
         }
     }
 }
