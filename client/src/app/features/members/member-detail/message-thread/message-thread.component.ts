@@ -2,6 +2,7 @@ import { TitleCasePipe } from '@angular/common';
 import {
   AfterViewChecked,
   Component,
+  computed,
   ElementRef,
   inject,
   input,
@@ -12,30 +13,42 @@ import {
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DoubleCheckComponent } from '../../../../shared/icons/double-check/double-check.component';
 import { SendMessageBody } from '../../../../shared/models/message';
 import { AuthService } from '../../../../shared/services/auth.service';
 import { MessageService } from '../../../../shared/services/message.service';
+import { PresenceService } from '../../../../shared/services/presence.service';
 import { TimeAgoPipe } from '../../../../shared/utils/time-ago.pipe';
 
 @Component({
   selector: 'app-message-thread',
   standalone: true,
-  imports: [TitleCasePipe, FormsModule, ReactiveFormsModule, TimeAgoPipe],
+  imports: [
+    TitleCasePipe,
+    FormsModule,
+    ReactiveFormsModule,
+    TimeAgoPipe,
+    DoubleCheckComponent,
+  ],
   templateUrl: './message-thread.component.html',
   styleUrl: './message-thread.component.css',
 })
 export class MessageThreadComponent
   implements OnInit, OnDestroy, AfterViewChecked
 {
-  private authService = inject(AuthService);
+  private _authService = inject(AuthService);
+  private _presenceService = inject(PresenceService);
   public messageService = inject(MessageService);
   private _router = inject(Router);
-  @ViewChild('threadBodyu') private threadBody!: ElementRef;
+  @ViewChild('threadBody') private threadBody!: ElementRef;
 
   username = input.required<string>();
   recipientPhotoUrl = input.required<string>();
   closeMessageThread = output();
   newMessageControl = new FormControl('');
+  isOnline = computed(() =>
+    this._presenceService.onlineUsers().includes(this.username())
+  );
 
   ngOnInit(): void {
     this.getMessageThread();
@@ -58,7 +71,7 @@ export class MessageThreadComponent
   }
 
   getMessageThread() {
-    const currentUserUser = this.authService.currentUser();
+    const currentUserUser = this._authService.currentUser();
     if (!currentUserUser) return;
     this.messageService.createHubConnection(currentUserUser, this.username());
   }
@@ -88,6 +101,6 @@ export class MessageThreadComponent
   }
 
   get currentUser() {
-    return this.authService.currentUser()?.username;
+    return this._authService.currentUser()?.username;
   }
 }
