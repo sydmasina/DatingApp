@@ -10,7 +10,7 @@
 }
 
 .sender-card {
-  padding: 10px 10px;
+  padding: 8px;
   width: auto;
   min-width: 25%;
   max-width: 80%;
@@ -22,13 +22,20 @@
 }
 .message-state {
   font-size: 10px;
+  padding: 0;
+  line-height: 12px;
+}
+
+.online-icon {
+  color: rgb(1, 189, 42);
+  font-size: 9px;
 }
 
 .recipient-card {
   width: auto;
   min-width: 25%;
   max-width: 80%;
-  padding: 10px 10px;
+  padding: 8px;
   background-color: azure;
   border-radius: 8px 8px 8px 0;
   color: black;
