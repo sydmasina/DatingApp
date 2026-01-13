@@ -12,22 +12,19 @@ namespace API.SignalR
         {
             if (Context.User == null) throw new HubException("Cannot get current user claim");
 
-            await tracker.UserConnected(Context.User.GetUserName(), Context.ConnectionId);
-            await Clients.Others.SendAsync("UserIsOnline", Context.User?.GetUserName());
+            var isOnline = await tracker.UserConnected(Context.User.GetUserName(), Context.ConnectionId);
+            if (isOnline) await Clients.Others.SendAsync("UserIsOnline", Context.User?.GetUserName());
 
             var currentOnlineUsers = await tracker.GetOnlineUsers();
-            await Clients.All.SendAsync("GetOnlineUsers", currentOnlineUsers);
+            await Clients.Caller.SendAsync("GetOnlineUsers", currentOnlineUsers);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             if (Context.User == null) throw new HubException("Cannot get current user claim");
 
-            await tracker.UserDisconnected(Context.User.GetUserName(), Context.ConnectionId);
-            await Clients.Others.SendAsync("UserIsOffline", Context.User?.GetUserName());
-
-            var currentOnlineUsers = await tracker.GetOnlineUsers();
-            await Clients.All.SendAsync("GetOnlineUsers", currentOnlineUsers);
+            var isOffline = await tracker.UserDisconnected(Context.User.GetUserName(), Context.ConnectionId);
+            if(isOffline) await Clients.Others.SendAsync("UserIsOffline", Context.User?.GetUserName());
 
             await base.OnDisconnectedAsync(exception);
 
