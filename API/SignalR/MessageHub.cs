@@ -13,7 +13,7 @@ namespace API.SignalR
 {
     public class MessageHub(IMessageRepository messageRepository, 
         IUserRepository<AppUser> userRepository,
-        IMapper mapper): Hub
+        IMapper mapper, IHubContext<PresenceHub> presenceHub): Hub
     {
         public override async Task OnConnectedAsync()
         {
@@ -72,8 +72,17 @@ namespace API.SignalR
             {
                 message.DateRead = DateTime.UtcNow;
             }
+            else
+            {
+                var connections = await PresenceTracker.GetConnectionsForUser(recipient.UserName);
+                if(connections != null && connections.Count > 0)
+                {
+                    await presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived", 
+                         new {username = sender.UserName, knownAs = sender.KnownAs});
+                }
+            }
 
-            messageRepository.AddMessage(message);
+                messageRepository.AddMessage(message);
 
             if (await messageRepository.SaveAllAsync())
             {
