@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     public class AccountController(UserManager<AppUser> userManager,
         ITokenService tokenService,
-        IUserRepository<AppUser> userRepository,
+        IUnitOfWork unitOfWork,
         IMapper mapper,
         PhotoService photoService)
         : BaseApiController
@@ -81,7 +81,7 @@ namespace API.Controllers
         {
             try
             {
-                var user = await userRepository.GetUserByUsernameAsync(loginDto.Username);
+                var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(loginDto.Username);
 
                 if (user == null || user.UserName == null)
                 {
@@ -109,7 +109,7 @@ namespace API.Controllers
 
         private async Task<bool> IsUsernameTaken(string username)
         {
-            return await userRepository.GetUserByUsernameAsync(username) != null;
+            return await unitOfWork.UserRepository.GetUserByUsernameAsync(username) != null;
         }
     }
 }

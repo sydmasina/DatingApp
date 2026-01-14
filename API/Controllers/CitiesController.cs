@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class CitiesController(ICityRepository cityRepository) : BaseApiController
+    public class CitiesController(IUnitOfWork unitOfWork) : BaseApiController
     {
         [HttpGet("{countryId:int}")]
         public async Task<IEnumerable<City>> GetCityByCountryIdAsync(int countryId)
         {
-            return await cityRepository.GetCityByCountryId(countryId);
+            return await unitOfWork.CityRepository.GetCityByCountryId(countryId);
         }
     }
 }
