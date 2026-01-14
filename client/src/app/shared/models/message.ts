@@ -15,3 +15,8 @@ export interface SendMessageBody {
   recipientUsername: string;
   content: string;
 }
+
+export interface NewMessageNotification {
+  username: string;
+  knownAs: string;
+}
