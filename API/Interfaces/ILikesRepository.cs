@@ -11,6 +11,5 @@ namespace API.Interfaces
         Task<IEnumerable<int>> GetCurrentLikeIds(int currentId);
         void DeleteLike(UserLike like);
         void AddLike(UserLike like);
-        Task<bool> SaveChanges();
     }
 }

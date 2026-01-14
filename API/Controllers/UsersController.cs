@@ -11,18 +11,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Authorize]
-    public class UsersController(IUserRepository<AppUser> userRepository,
+    public class UsersController(IUnitOfWork unitOfWork,
         PhotoService photoService) : BaseApiController
     {
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            var user = await userRepository.GetUserByIdAsync(id);
+            var user = await unitOfWork.UserRepository.GetUserByIdAsync(id);
 
             if (user == null) return NotFound();
 
-            bool hasDeletedSomething = userRepository.Delete(user);
+            bool hasDeletedSomething = unitOfWork.UserRepository.Delete(user);
 
             if (!hasDeletedSomething)
             {
@@ -35,7 +35,7 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
-            var user = await userRepository.GetMemberAsync(username);
+            var user = await unitOfWork.UserRepository.GetMemberAsync(username);
 
             if (user == null) return NotFound();
 
@@ -52,7 +52,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            UpdateResult updateResult = await userRepository.UpdateMemberAsync(username, memberUpdateData);
+            UpdateResult updateResult = await unitOfWork.UserRepository.UpdateMemberAsync(username, memberUpdateData);
 
             // Delete Images
             if (memberUpdateData.ImagesToDelete != null && memberUpdateData.ImagesToDelete.Count > 0)
@@ -64,7 +64,7 @@ namespace API.Controllers
                         await photoService.DeleteImageAsync(imageToDelete.PublicId);
                     };
 
-                    await userRepository.DeleteUserPhotoByDbIdAsync(username, imageToDelete.DbId);
+                    await unitOfWork.UserRepository.DeleteUserPhotoByDbIdAsync(username, imageToDelete.DbId);
                 }
             }
 
@@ -86,7 +86,7 @@ namespace API.Controllers
                         Url = (result.Url).ToString()
                     };
 
-                    await userRepository.AddUserPhotoAsync(username, photo);
+                    await unitOfWork.UserRepository.AddUserPhotoAsync(username, photo);
                 }
             }
 
@@ -98,7 +98,7 @@ namespace API.Controllers
         {
             userParams.CurrentUsername = User.GetUserName();
 
-            var users = await userRepository.GetMembersAsync(userParams);
+            var users = await unitOfWork.UserRepository.GetMembersAsync(userParams);
 
             Response.AddPaginationHeader(users);
 

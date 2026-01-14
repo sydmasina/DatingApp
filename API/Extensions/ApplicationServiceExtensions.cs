@@ -27,6 +27,7 @@ namespace API.Extensions
             services.AddScoped<IUserRepository<AppUser>, UserRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<PhotoService>();
             services.AddScoped<LogUserActivity>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
