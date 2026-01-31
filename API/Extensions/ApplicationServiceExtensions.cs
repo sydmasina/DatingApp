@@ -19,7 +19,7 @@ namespace API.Extensions
             services.AddControllers();
             services.AddOpenApi();
             services.AddSwaggerGen();
-            services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
+            services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ILikesRepository, LikesRepository>();
