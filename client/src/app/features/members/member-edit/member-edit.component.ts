@@ -4,6 +4,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   effect,
   HostListener,
+  inject,
   OnInit,
   signal,
 } from '@angular/core';
@@ -18,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 import { CanComponentDeactivate } from '../../../shared/_guards/unsaved-changes.guard';
 import { FormDateFieldComponent } from '../../../shared/components/form-fields/form-date-field/form-date-field.component';
 import { FormSelectFieldComponent } from '../../../shared/components/form-fields/form-select-field/form-select-field.component';
@@ -51,6 +53,7 @@ import {
   UserUpdateFormValues,
 } from '../../../shared/models/user';
 import { AuthService } from '../../../shared/services/auth.service';
+import { PromptService } from '../../../shared/services/prompt.service';
 import { StaticDataService } from '../../../shared/services/static-data.service';
 import { UserService } from '../../../shared/services/user.service';
 import { formatToDateOnly } from '../../../shared/utils/helpers';
@@ -74,6 +77,7 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
   styleUrl: './member-edit.component.css',
 })
 export class MemberEditComponent implements OnInit, CanComponentDeactivate {
+  private _promptService = inject(PromptService);
   userUpdateFormGroup!: FormGroup;
   GenderOptions: string[] = ['male', 'female'];
   additionalImages = signal<string[]>([]);
@@ -120,11 +124,9 @@ export class MemberEditComponent implements OnInit, CanComponentDeactivate {
     this._initUserData();
   }
 
-  canDeactivate(): boolean {
+  canDeactivate(): boolean | Observable<boolean> {
     if (this.isFormDirty) {
-      return confirm(
-        'You have unsaved changes. Are you sure you want to leave?'
-      );
+      return this._promptService.confirm() ?? false;
     }
     return true;
   }
