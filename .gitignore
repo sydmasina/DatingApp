@@ -367,3 +367,6 @@ FodyWeavers.xsd
 
 # Environment variables 
 .env
+
+#Settings Json
+.vscode/settings.json
