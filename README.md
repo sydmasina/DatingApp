@@ -1,7 +1,7 @@
 
 # DatingApp
 
-DatingApp is a full-stack web application built using ASP.NET Core for the backend and Angular for the frontend. It serves as a hands-on project to demonstrate the implementation of a RESTful API, client-server communication, and full-stack development principles.
+DatingApp is a full-stack web application built using ASP.NET Core for the backend and Angular for the frontend. It serves as a hands-on project to demonstrate the implementation of a RESTful API, client-server communication, and full-stack development principles. [Site link](https://syd-dating-app.azurewebsites.net/)
 
 ## Features
 
