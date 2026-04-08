@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -62,7 +62,6 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
   selector: 'app-member-edit',
   standalone: true,
   imports: [
-    CommonModule,
     MatProgressSpinnerModule,
     MatSelectModule,
     ReactiveFormsModule,
@@ -70,8 +69,8 @@ import { formatToDateOnly } from '../../../shared/utils/helpers';
     FormSelectFieldComponent,
     FormDateFieldComponent,
     ImageGalleryComponent,
-    RouterLink,
-  ],
+    RouterLink
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css',

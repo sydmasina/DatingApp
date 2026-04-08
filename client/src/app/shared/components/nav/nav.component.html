@@ -2,103 +2,103 @@
   <div class="container">
     <a class="navbar-brand" routerLink="/" routerLinkActive="active"
       >DatingApp</a
-    >
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarCollapse"
-      aria-controls="navbarCollapse"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      @if(authService.currentUser()){
-      <ul class="navbar-nav me-auto mb-2 mb-md-0">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/members" routerLinkActive="active"
-            >Explore</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/matches" routerLinkActive="active"
-            >Matches</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/messages" routerLinkActive="active"
-            >Messages</a
-          >
-        </li>
-
-        <li *appHasRole="adminRoles" class="nav-item">
-          <a class="nav-link" routerLink="/admin" routerLinkActive="active"
-            >Admin</a
-          >
-        </li>
-        <li class="nav-item">
-          <a routerLink="/privacy-policy" class="nav-link">Privacy</a>
-        </li>
-      </ul>
-
-      <div class="dropdown" dropdown #dropdown="bs-dropdown" [autoClose]="true">
-        <a dropdownToggle class="dropdown-toggle nav-link">
-          Welcome {{ authService.currentUser()?.username | titlecase }}
-        </a>
-        <ul
-          role="menu"
-          *dropdownMenu
-          class="dropdown-menu"
-          role="menu"
-          aria-labelledby="button-triggers-manual"
-        >
-          <li role="menuitem">
-            <a class="dropdown-item" routerLink="edit-profile">Edit Profile</a>
-          </li>
-          <div class="dropdown-divider"></div>
-          <li role="menuitem">
-            <a class="dropdown-item" routerLink="#" (click)="logout()"
-              >Logout</a
-            >
-          </li>
-        </ul>
-      </div>
-
-      <div class="m-2">
-        <ng-container *ngIf="loggedInUser?.photoUrl">
-          <img
-            src="{{ loggedInUser?.photoUrl || 'assets/images/user-icon.jpeg' }}"
-            class="image-thumb-nail"
-            alt="image-thumb"
-          />
-        </ng-container>
-      </div>
-
-      } @if(!authService.currentUser()){
-      <form
-        #loginForm="ngForm"
-        (ngSubmit)="login()"
-        autocomplete="off"
-        class="d-flex"
       >
-        <input
-          name="username"
-          [(ngModel)]="loginModel.username"
-          class="form-control me-2"
-          placeholder="username"
-        />
-        <input
-          name="password"
-          [(ngModel)]="loginModel.password"
-          class="form-control me-2"
-          placeholder="password"
-          type="password"
-        />
-        <button class="btn btn-primary" type="submit">Login</button>
-      </form>
-      }
-    </div>
-  </div>
-</nav>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        @if(authService.currentUser()){
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/members" routerLinkActive="active"
+                >Explore</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/matches" routerLinkActive="active"
+                  >Matches</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/messages" routerLinkActive="active"
+                    >Messages</a
+                    >
+                  </li>
+
+                  <li *appHasRole="adminRoles" class="nav-item">
+                    <a class="nav-link" routerLink="/admin" routerLinkActive="active"
+                      >Admin</a
+                      >
+                    </li>
+                    <li class="nav-item">
+                      <a routerLink="/privacy-policy" class="nav-link">Privacy</a>
+                    </li>
+                  </ul>
+
+                  <div class="dropdown" dropdown #dropdown="bs-dropdown" [autoClose]="true">
+                    <a dropdownToggle class="dropdown-toggle nav-link">
+                      Welcome {{ authService.currentUser()?.username | titlecase }}
+                    </a>
+                    <ul
+                      role="menu"
+                      *dropdownMenu
+                      class="dropdown-menu"
+                      role="menu"
+                      aria-labelledby="button-triggers-manual"
+                      >
+                      <li role="menuitem">
+                        <a class="dropdown-item" routerLink="edit-profile">Edit Profile</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li role="menuitem">
+                        <a class="dropdown-item" routerLink="#" (click)="logout()"
+                          >Logout</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="m-2">
+                      @if (loggedInUser?.photoUrl) {
+                        <img
+                          src="{{ loggedInUser?.photoUrl || 'assets/images/user-icon.jpeg' }}"
+                          class="image-thumb-nail"
+                          alt="image-thumb"
+                          />
+                        }
+                      </div>
+
+                      } @if(!authService.currentUser()){
+                      <form
+                        #loginForm="ngForm"
+                        (ngSubmit)="login()"
+                        autocomplete="off"
+                        class="d-flex"
+                        >
+                        <input
+                          name="username"
+                          [(ngModel)]="loginModel.username"
+                          class="form-control me-2"
+                          placeholder="username"
+                          />
+                          <input
+                            name="password"
+                            [(ngModel)]="loginModel.password"
+                            class="form-control me-2"
+                            placeholder="password"
+                            type="password"
+                            />
+                            <button class="btn btn-primary" type="submit">Login</button>
+                          </form>
+                        }
+                      </div>
+                    </div>
+                  </nav>

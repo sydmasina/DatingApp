@@ -1,31 +1,34 @@
 <fieldset [disabled]="isDisabled()">
-  <ng-container *ngIf="label != null">
+  @if (label != null) {
     <label [for]="uniqueId" class="form-label">
-      {{ label }} <ng-container *ngIf="isRequired()">*</ng-container>
-    </label>
-  </ng-container>
+      {{ label }} @if (isRequired()) {
+      *
+    }
+  </label>
+}
 
-  <select
-    [formControl]="formControlInput()"
-    class="form-select"
-    [id]="uniqueId"
-    (change)="onInputChange()"
-    [ngClass]="{ error: showError }"
+<select
+  [formControl]="formControlInput()"
+  class="form-select"
+  [id]="uniqueId"
+  (change)="onInputChange()"
+  [ngClass]="{ error: showError }"
   >
-    <option ngValue="" disabled selected>{{ placeholder }}</option>
+  <option ngValue="" disabled selected>{{ placeholder }}</option>
+  @for (option of options(); track trackByFn($index, option)) {
     <option
-      *ngFor="let option of options(); trackBy: trackByFn"
       [ngValue]="option"
-    >
+      >
       {{
-        (optionIdentifier == null ? option : option[optionIdentifier])
-          | titlecase
+      (optionIdentifier == null ? option : option[optionIdentifier])
+      | titlecase
       }}
     </option>
-  </select>
+  }
+</select>
 </fieldset>
-<ng-container *ngIf="showError">
+@if (showError) {
   <div>
     <span class="error-message">{{ getMessage() }}</span>
   </div>
-</ng-container>
+}

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
@@ -9,10 +9,9 @@ import { RegisterComponent } from '../../../features/register/register.component
   standalone: true,
   imports: [
     RegisterComponent,
-    CommonModule,
     MatProgressSpinnerModule,
-    RouterLink,
-  ],
+    RouterLink
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })

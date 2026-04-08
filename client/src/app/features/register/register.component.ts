@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, HostListener, OnInit, output, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -46,12 +46,11 @@ import { formatToDateOnly } from '../../shared/utils/helpers';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CommonModule,
     FormInputFieldComponent,
     FormSelectFieldComponent,
     FormDateFieldComponent,
-    ImageGalleryComponent,
-  ],
+    ImageGalleryComponent
+],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })

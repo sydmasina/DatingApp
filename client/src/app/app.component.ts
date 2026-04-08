@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterOutlet } from '@angular/router';
@@ -13,13 +13,12 @@ import { SharedModule } from './shared/shared.module';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   imports: [
-    CommonModule,
     MatProgressSpinnerModule,
     SharedModule,
     RegisterModule,
     RouterOutlet,
-    NgxSpinnerComponent,
-  ],
+    NgxSpinnerComponent
+],
 })
 export class AppComponent implements OnInit {
   title = 'DatingApp';

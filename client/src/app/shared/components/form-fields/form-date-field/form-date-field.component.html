@@ -1,27 +1,29 @@
 <fieldset [disabled]="isDisabled()">
-  <ng-container *ngIf="label != null">
+  @if (label != null) {
     <label [for]="uniqueId" class="form-label">
-      {{ label }} <ng-container *ngIf="isRequired()">*</ng-container>
-    </label>
-  </ng-container>
-  <mat-form-field class="w-100" [ngClass]="{ error: showError }">
-    <input
-      matInput
-      [id]="uniqueId"
-      [placeholder]="placeholderInput"
-      [min]="minDate"
-      [max]="maxDate"
-      [matDatepicker]="picker"
-      [formControl]="formControlInput()"
-      readonly
-      (click)="picker.open(); $event.preventDefault()"
+      {{ label }} @if (isRequired()) {
+      *
+    }
+  </label>
+}
+<mat-form-field class="w-100" [ngClass]="{ error: showError }">
+  <input
+    matInput
+    [id]="uniqueId"
+    [placeholder]="placeholderInput"
+    [min]="minDate"
+    [max]="maxDate"
+    [matDatepicker]="picker"
+    [formControl]="formControlInput()"
+    readonly
+    (click)="picker.open(); $event.preventDefault()"
     />
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 </fieldset>
-<ng-container *ngIf="showError">
+@if (showError) {
   <div>
     <span class="error-message">{{ getMessage() }}</span>
   </div>
-</ng-container>
+}

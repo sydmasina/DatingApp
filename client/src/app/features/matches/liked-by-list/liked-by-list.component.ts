@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { PredicateTypes } from '../../../shared/constants/pagination';
@@ -9,7 +9,7 @@ import { MemberCardComponent } from '../../members/member-list/member-card/membe
 @Component({
   selector: 'app-liked-by-list',
   standalone: true,
-  imports: [CommonModule, MemberCardComponent, MatPaginatorModule],
+  imports: [MemberCardComponent, MatPaginatorModule],
   templateUrl: './liked-by-list.component.html',
   styleUrl: './liked-by-list.component.css',
 })

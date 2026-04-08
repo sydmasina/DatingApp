@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   EventEmitter,
@@ -13,7 +13,7 @@ import { MatSliderModule } from '@angular/material/slider';
 @Component({
   selector: 'app-form-range-selector',
   standalone: true,
-  imports: [CommonModule, MatSliderModule, ReactiveFormsModule],
+  imports: [MatSliderModule, ReactiveFormsModule],
   templateUrl: './form-range-selector.component.html',
   styleUrl: './form-range-selector.component.css',
 })

@@ -3,7 +3,7 @@
   (ngSubmit)="register()"
   autocomplete="off"
   class="text-start signup-form"
->
+  >
   <h2 class="text-center text-primary">Sign Up</h2>
   <hr />
   <div class="row">
@@ -55,7 +55,7 @@
         label="Date of Birth"
         [maxDate]="Max_dateOfBirth"
         [minDate]="Min_dateOfBirth"
-      >
+        >
       </app-form-date-field>
     </div>
 
@@ -85,16 +85,15 @@
     </div>
 
     <div class="mb-3 mb-md-0 col-md-6">
-      <ng-container *ngIf="!isFetchingCities; else showLoadingCities">
-        <ng-container *ngIf="enableCityFreeTextInput; else showSelectField">
+      @if (!isFetchingCities) {
+        @if (enableCityFreeTextInput) {
           <app-form-input-field
             [formControlInput]="cityFormControl"
             label="City"
             [isRequired]="true"
             placeholder="Enter city name"
           ></app-form-input-field>
-        </ng-container>
-        <ng-template #showSelectField>
+        } @else {
           <app-form-select-field
             [formControlInput]="cityFormControl"
             [options]="Cities"
@@ -105,13 +104,12 @@
             optionIdentifier="name"
             trackKey="id"
           ></app-form-select-field>
-        </ng-template>
-      </ng-container>
-      <ng-template #showLoadingCities>
+        }
+      } @else {
         <div class="cities-loader text-start">
           <p>Loading...</p>
         </div>
-      </ng-template>
+      }
     </div>
   </div>
 
@@ -171,7 +169,7 @@
       (click)="cancel()"
       type="button"
       class="btn btn-primary btn-lg col-5"
-    >
+      >
       Cancel
     </button>
     <button type="submit" class="btn btn-info btn-lg col-5">Register</button>

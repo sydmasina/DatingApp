@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isLoading && users && pagination">
+@if (!isLoading && users && pagination) {
   <nav class="navbar mt-4">
     <div class="container-fluid">
       <button
@@ -9,7 +9,7 @@
         aria-controls="navbarNavDropdown"
         aria-expanded="false"
         aria-label="Toggle navigation"
-      >
+        >
         <i class="fa fa-filter" aria-hidden="true"></i>
         <span class="pl-3"> Filters</span>
       </button>
@@ -34,7 +34,6 @@
                 id="genderFilter"
               ></app-form-select-field>
             </div>
-
             <div class="col-md-4 mt-2 mt-md-0">
               <label class="pr-2" for="ageFilter">Age Range: </label>
               <app-form-range-selector
@@ -45,11 +44,9 @@
               ></app-form-range-selector>
             </div>
           </div>
-
           <div class="row mb-4">
             <div class="col-md-8">
               <label>Location: </label>
-
               <div class="row">
                 <app-form-select-field
                   [formControlInput]="countryFormControl"
@@ -60,20 +57,14 @@
                   trackKey="id"
                   class="col-md-6"
                 ></app-form-select-field>
-
                 <div class="col-md-6 mt-2 mt-md-0">
-                  <ng-container
-                    *ngIf="!isFetchingCities; else showLoadingCities"
-                  >
-                    <ng-container
-                      *ngIf="enableCityFreeTextInput; else showSelectField"
-                    >
+                  @if (!isFetchingCities) {
+                    @if (enableCityFreeTextInput) {
                       <app-form-input-field
                         [formControlInput]="cityFormControl"
                         placeholder="Enter city name"
                       ></app-form-input-field>
-                    </ng-container>
-                    <ng-template #showSelectField>
+                    } @else {
                       <app-form-select-field
                         [formControlInput]="cityFormControl"
                         [options]="Cities"
@@ -82,24 +73,22 @@
                         optionIdentifier="name"
                         trackKey="id"
                       ></app-form-select-field>
-                    </ng-template>
-                  </ng-container>
-                  <ng-template #showLoadingCities>
+                    }
+                  } @else {
                     <div class="cities-loader text-start">
                       <p>Loading...</p>
                     </div>
-                  </ng-template>
+                  }
                 </div>
               </div>
             </div>
           </div>
-
           <div class="row gap-3 px-2">
             <button
               type="button"
               (click)="resetFilters()"
               class="btn btn-warning col-sm-4"
-            >
+              >
               Reset Filters
             </button>
             <button type="submit" class="btn btn-primary col-sm-4">
@@ -110,19 +99,17 @@
       </div>
     </div>
   </nav>
-
   <hr />
   <div class="row mb-4">
-    <ng-container *ngIf="users.length > 0; else showNoUsersFound">
+    @if (users.length > 0) {
       @for(user of users; track user.id){
-      <div class="mt-4 col-sm-6 col-md-5 col-lg-4 col-xl-3">
-        <app-member-card [user]="user"></app-member-card>
-      </div>
+        <div class="mt-4 col-sm-6 col-md-5 col-lg-4 col-xl-3">
+          <app-member-card [user]="user"></app-member-card>
+        </div>
       }
-    </ng-container>
-    <ng-template #showNoUsersFound>
+    } @else {
       <h3 class="text-center">No users found</h3>
-    </ng-template>
+    }
   </div>
   <hr />
   <mat-paginator
@@ -132,6 +119,6 @@
     [pageSize]="itemsPerPage"
     aria-label="Select page"
     (page)="handlePageEvent($event)"
-  >
+    >
   </mat-paginator>
-</ng-container>
+}

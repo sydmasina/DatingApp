@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isLoading">
+@if (!isLoading) {
   <div class="container">
     <h1 class="text-center">Edit Profile</h1>
     <hr />
@@ -7,7 +7,7 @@
       (input)="onInputChange()"
       (ngSubmit)="submitUserUpdate()"
       autocomplete="off"
-    >
+      >
       <div class="row">
         <div class="mb-3 col-md-6">
           <app-form-input-field
@@ -27,7 +27,6 @@
           ></app-form-select-field>
         </div>
       </div>
-
       <div class="row">
         <div class="mb-3 col-md-6">
           <app-form-select-field
@@ -41,18 +40,16 @@
             trackKey="id"
           ></app-form-select-field>
         </div>
-
         <div class="mb-3 col-md-6">
-          <ng-container *ngIf="!isFetchingCities; else showLoadingCities">
-            <ng-container *ngIf="enableCityFreeTextInput; else showSelectField">
+          @if (!isFetchingCities) {
+            @if (enableCityFreeTextInput) {
               <app-form-input-field
                 [formControlInput]="cityFormControl"
                 label="City"
                 [isRequired]="true"
                 placeholder="Enter city name"
               ></app-form-input-field>
-            </ng-container>
-            <ng-template #showSelectField>
+            } @else {
               <app-form-select-field
                 [formControlInput]="cityFormControl"
                 [options]="Cities"
@@ -63,16 +60,14 @@
                 optionIdentifier="name"
                 trackKey="id"
               ></app-form-select-field>
-            </ng-template>
-          </ng-container>
-          <ng-template #showLoadingCities>
+            }
+          } @else {
             <div class="cities-loader text-start">
               <p>Loading...</p>
             </div>
-          </ng-template>
+          }
         </div>
       </div>
-
       <div class="row">
         <div class="mb-3 col-md-6">
           <app-form-date-field
@@ -81,12 +76,11 @@
             label="Date of Birth"
             [maxDate]="Max_dateOfBirth"
             [minDate]="Min_dateOfBirth"
-          >
+            >
             <div class="mb-3 col-md-6"></div>
           </app-form-date-field>
         </div>
       </div>
-
       <div class="row">
         <div class="mb-3 col-12">
           <app-form-input-field
@@ -147,7 +141,7 @@
           type="button"
           class="btn btn-secondary col-sm-3 col-md-2 mb-2 mb-sm-0"
           routerLink="/members"
-        >
+          >
           Cancel
         </button>
         <button type="submit" class="btn btn-primary col-sm-3 col-md-2">
@@ -156,4 +150,4 @@
       </div>
     </form>
   </div>
-</ng-container>
+}

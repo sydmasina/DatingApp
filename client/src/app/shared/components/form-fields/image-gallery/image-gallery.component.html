@@ -1,65 +1,73 @@
-<ng-container *ngIf="label != null">
+@if (label != null) {
   <label for="usernameInput" class="form-label">
-    {{ label }} <ng-container *ngIf="isRequired()">*</ng-container>
-  </label>
-</ng-container>
+    {{ label }} @if (isRequired()) {
+    *
+  }
+</label>
+}
 
 <div class="gallery-container">
   @if(!hasReachedMax){
-  <input
-    class="form-control custom-input"
-    type="file"
-    placeholder="Choose photos"
-    (change)="onFileSelected($event)"
-    accept="image/*"
-    [multiple]="multiple"
-    [ngClass]="{ error: showError }"
-  />
-  <ng-container *ngIf="showError">
-    <div>
-      <span class="error-message">{{ getMessage() }}</span>
-    </div>
-  </ng-container>
-  } @if(allowWarning){
-  <p *ngIf="hasReachedMax" class="warning">
-    You can upload up to {{ maxCount }} image{{ maxCount > 1 ? "s" : "" }} only.
-  </p>
-  }
+    <input
+      class="form-control custom-input"
+      type="file"
+      placeholder="Choose photos"
+      (change)="onFileSelected($event)"
+      accept="image/*"
+      [multiple]="multiple"
+      [ngClass]="{ error: showError }"
+      />
+      @if (showError) {
+        <div>
+          <span class="error-message">{{ getMessage() }}</span>
+        </div>
+      }
+      } @if(allowWarning){
+      @if (hasReachedMax) {
+        <p class="warning">
+          You can upload up to {{ maxCount }} image{{ maxCount > 1 ? "s" : "" }} only.
+        </p>
+      }
+    }
 
-  <div class="image-grid">
-    <!-- Images that have already been uploaded -->
-    @if(this.images().length > 0){
-    <div *ngFor="let img of images(); let imageIndex = index">
-      <div class="image-item-wrapper">
-        <div class="image-item">
-          <img [src]="img" alt="Uploaded Image" />
-          <button
-            class="delete-icon animate"
-            type="button"
-            (click)="deleteExistingImage(imageIndex)"
-          >
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </button>
-        </div>
-      </div>
+    <div class="image-grid">
+      <!-- Images that have already been uploaded -->
+      @if(this.images().length > 0){
+        @for (img of images(); track img; let imageIndex = $index) {
+          <div>
+            <div class="image-item-wrapper">
+              <div class="image-item">
+                <img [src]="img" alt="Uploaded Image" />
+                <button
+                  class="delete-icon animate"
+                  type="button"
+                  (click)="deleteExistingImage(imageIndex)"
+                  >
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      }
+      <!-- New, yet to upload images -->
+      @if(this.selectedImagesLocalUrls.length > 0){
+        @for (img of selectedImagesLocalUrls; track img; let imageIndex = $index) {
+          <div>
+            <div class="image-item-wrapper">
+              <div class="image-item">
+                <img [src]="img" alt="Uploaded Image" />
+                <button
+                  class="delete-icon animate"
+                  type="button"
+                  (click)="deleteLocalImage(imageIndex)"
+                  >
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      }
     </div>
-    }
-    <!-- New, yet to upload images -->
-    @if(this.selectedImagesLocalUrls.length > 0){
-    <div *ngFor="let img of selectedImagesLocalUrls; let imageIndex = index">
-      <div class="image-item-wrapper">
-        <div class="image-item">
-          <img [src]="img" alt="Uploaded Image" />
-          <button
-            class="delete-icon animate"
-            type="button"
-            (click)="deleteLocalImage(imageIndex)"
-          >
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-    }
   </div>
-</div>

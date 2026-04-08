@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, effect } from '@angular/core';
 import {
   FormBuilder,
@@ -19,15 +19,14 @@ import { MemberCardComponent } from './member-card/member-card.component';
   selector: 'app-member-list',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
     MemberCardComponent,
     FormSelectFieldComponent,
     FormRangeSelectorComponent,
-    FormInputFieldComponent,
-  ],
+    FormInputFieldComponent
+],
   templateUrl: './member-list.component.html',
   styleUrl: './member-list.component.css',
 })
